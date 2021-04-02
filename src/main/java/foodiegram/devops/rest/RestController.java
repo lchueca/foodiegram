@@ -13,7 +13,7 @@ public class RestController {
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public ResponseEntity<?> uploadPhoto(@RequestHeader(value="Content-type") String header, @RequestPart("user") String user, @RequestPart("image1") MultipartFile image) {
-
+        System.out.println("asdasd");
         String type = image.getContentType().split("/")[0];
         String format = image.getContentType().split("/")[1];
 
@@ -42,6 +42,7 @@ public class RestController {
 
     @RequestMapping(value="/saludo", method = RequestMethod.GET)
     public String saluda() {
+        System.out.println("hgola");
         return "Hola";
     }
 }
