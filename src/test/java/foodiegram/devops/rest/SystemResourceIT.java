@@ -10,7 +10,10 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+<<<<<<< HEAD
 import static foodiegram.devops.rest.SystemResource.*;
+=======
+>>>>>>> 34ea68c14f6a60cbf35ba5a4bccbbd87557aef6a
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -25,7 +28,11 @@ class SystemResourceIT {
     @Test
     void testReadBadge() {
         this.webTestClient
+<<<<<<< HEAD
                 .get().uri(SYSTEM + VERSION_BADGE)
+=======
+                .get().uri(SystemResource.SYSTEM + SystemResource.VERSION_BADGE)
+>>>>>>> 34ea68c14f6a60cbf35ba5a4bccbbd87557aef6a
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(byte[].class)
@@ -36,7 +43,11 @@ class SystemResourceIT {
     @Test
     void testReadInfo() {
         this.webTestClient
+<<<<<<< HEAD
                 .get().uri(SYSTEM + APP_INFO)
+=======
+                .get().uri(SystemResource.SYSTEM + SystemResource.APP_INFO)
+>>>>>>> 34ea68c14f6a60cbf35ba5a4bccbbd87557aef6a
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(String.class)
