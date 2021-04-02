@@ -13,7 +13,11 @@
     </parent>
 
     <artifactId>foodiegram</artifactId>
+<<<<<<< HEAD
     <groupId>MythBusters</groupId>
+=======
+    <groupId>Mythbusters</groupId>
+>>>>>>> 34ea68c14f6a60cbf35ba5a4bccbbd87557aef6a
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
