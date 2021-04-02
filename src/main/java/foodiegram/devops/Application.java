@@ -1,12 +1,13 @@
 package foodiegram.devops;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 
-@SpringBootApplication(exclude = {ErrorMvcAutoConfiguration.class}) // Not API: /error
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.PropertySource;
+
+@SpringBootApplication
 public class Application {
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);// mvnw clean spring-boot:run
+        SpringApplication.run(Application.class);
     }
 }
