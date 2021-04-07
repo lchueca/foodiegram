@@ -2,12 +2,15 @@
 package main;
 
 
+import org.apache.tomcat.util.http.fileupload.InvalidFileNameException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.nio.file.Files;
 
 @org.springframework.web.bind.annotation.RestController
 @RequestMapping("/images")
@@ -19,7 +22,7 @@ public class RestController {
         String type = image.getContentType().split("/")[0];
         String format = image.getContentType().split("/")[1];
 
-        if (type.equals("image")) {
+        if (type.equals("image") && (format.equals("jpg") || format.equals("png"))) {
 
             File folder = new File(System.getProperty("user.dir") +"/images/" + user);
             folder.mkdirs();
@@ -33,12 +36,12 @@ public class RestController {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
             }
 
-                return ResponseEntity.status(HttpStatus.OK).body(null);
+            return ResponseEntity.status(HttpStatus.OK).body(null);
 
         }
 
         else
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("That's not an image.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid format");
 
     }
 
@@ -46,4 +49,36 @@ public class RestController {
     public String saluda() {
         return "Hola";
     }
+
+    @RequestMapping(value="/download/{user}/{image:.+}", method = RequestMethod.GET)
+    public ResponseEntity<?> downloadPhoto(@PathVariable String user, @PathVariable String image) {
+
+
+        File file = new File(System.getProperty("user.dir") +"/images/" + user + "/" + image);
+        MediaType type = null;
+
+        try {
+
+            if (image.endsWith(".jpg"))
+                type = MediaType.IMAGE_JPEG;
+            else if (image.endsWith(".png"))
+                type = MediaType.IMAGE_PNG;
+            else throw new InvalidFileNameException(null, null);
+
+            return ResponseEntity.ok().contentType(type).body(Files.readAllBytes(file.toPath()));
+        }
+
+        catch (InvalidFileNameException e) {
+
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Invalid format");
+        }
+
+        catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not found");
+        }
+
+
+
+    }
+
 }
