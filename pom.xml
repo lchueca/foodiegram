@@ -8,6 +8,7 @@
     <artifactId>Pruebas</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+<<<<<<< HEAD
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -37,6 +38,8 @@
 
 =======
 >>>>>>> 35fcaa31cb629988bb61b1382f0786a63ee5ba8d
+=======
+>>>>>>> f9b1b302cf21faeff860703c33eda3a803f21493
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
@@ -48,7 +51,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
 
     </dependencies>
 
