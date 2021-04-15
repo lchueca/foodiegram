@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: areas
+    server:
+  port:
+  datasource:
+    password:
+    url:
+    username:
