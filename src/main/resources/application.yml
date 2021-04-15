@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 spring:
   application:
     name:
@@ -8,6 +7,4 @@ spring:
     password:
     url:
     username:
-=======
 
->>>>>>> 3aec044c25a54f21fec0e41fc2dacd275c78437d
