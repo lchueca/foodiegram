@@ -13,12 +13,14 @@ public class Usuario {
     private Integer Id;     // El id deberia ser tambien generado?
     private String Name;
     private String Passwd;
+    private String  Email;
     private byte[] Image;
 
-    public Usuario(String name, String passwd, byte[] image) {
+    public Usuario(String name, String passwd, byte[] image,String email) {
         Name = name;
         Passwd = passwd;
         Image = image;
+        Email=email;
     }
 
     protected Usuario() {}
@@ -51,7 +53,12 @@ public class Usuario {
         return Image;
     }
 
+    public String getEmail() {
+        return Email;
+    }
+
     public void setImage(byte[] image) {
         Image = image;
     }
+
 }
