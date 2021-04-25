@@ -1,47 +1,60 @@
 package main.persistence.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Publicacion {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Integer Id;
-    private Integer IdUser;
-    private String Text;
-    private byte[] Image;
-    private String  Localization;
+    private Integer id;
+    private Integer iduser;
+    private String text;
+    private String image;
+    private String  localization;
 
-    public Publicacion(Integer idUser, String text, byte[] image, String localization) {
-        IdUser = idUser;
-        Text = text;
-        Image = image;
-        Localization = localization;
+    public Publicacion(String text, Integer idUser, String image, String localization) {
+        this.text = text;
+        this.image = image;
+        this.iduser = idUser;
+        this.localization = localization;
     }
 
-    protected  Publicacion(){}
+    public Publicacion(){}
 
     public Integer getId() {
-        return Id;
+        return id;
     }
 
-    public Integer getIdUser() {
-        return IdUser;
+    public Integer getIduser() {
+        return iduser;
     }
 
     public String getText() {
-        return Text;
+        return text;
     }
 
-    public byte[] getImage() {
-        return Image;
+    public String getImage() {
+        return image;
     }
 
     public String getLocalization() {
-        return Localization;
+        return localization;
+    }
+
+    public void setIduser(Integer iduser) {
+        this.iduser = iduser;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public void setLocalization(String localization) {
+        this.localization = localization;
     }
 }
