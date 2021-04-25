@@ -10,21 +10,21 @@ public class MeetUp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer Id;
-    private Integer IdUser;
+    private Integer id;
+    private Integer iduser;
 
     public MeetUp(Integer id, Integer idUser) {
-        Id = id;
-        IdUser = idUser;
+        this.id = id;
+        this.iduser = idUser;
     }
 
     protected MeetUp() {}
 
     public Integer getId() {
-        return Id;
+        return id;
     }
 
     public Integer getIdUser() {
-        return IdUser;
+        return iduser;
     }
 }
