@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -180,6 +181,16 @@ public class ControllerPublicacion {
         catch (NumberFormatException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("All the values must be an integers.");
         }
+
+    }
+
+    @RequestMapping(value = "/getValoracionAll/{publicacion}", method = RequestMethod.GET)
+    public String getAllValoracion(@PathVariable String publicacion) {
+
+        List<Valoracion> valoracionM = repoVal.findByidPubli(Integer.parseInt(publicacion));
+
+
+        return new Gson().toJson(valoracionM);
 
     }
 
