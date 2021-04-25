@@ -9,25 +9,25 @@ import javax.persistence.*;
 public class Valoracion {
 
   @Id
-  private Integer id_publi;
+  private Integer idpubli;
   @Id
-  private Integer id_user;
+  private Integer iduser;
   private Integer punt;
 
     public Valoracion(Integer idPubli, Integer idUser, Integer Punt) {
-        id_publi = idPubli;
-        id_user = idUser;
+        idpubli = idPubli;
+        iduser = idUser;
         punt = Punt;
     }
 
     protected Valoracion(){}
 
     public Integer getIdPubli() {
-        return id_publi;
+        return idpubli;
     }
 
     public Integer getIdUser() {
-        return id_user;
+        return iduser;
     }
 
     public Integer getPunt() {

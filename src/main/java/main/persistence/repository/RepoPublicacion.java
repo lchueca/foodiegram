@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface RepoPublicacion extends JpaRepository<Publicacion, Integer> {
 
-    @Query(value="select id, image from publicacion where id_user  = :idx", nativeQuery = true)
+    @Query(value="select id, image from publicacion where iduser  = :idx", nativeQuery = true)
     public List<Publicacion> findByiduser(@Param("idx") Integer idx);
 
 }

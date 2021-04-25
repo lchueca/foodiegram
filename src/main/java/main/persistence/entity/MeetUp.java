@@ -11,11 +11,11 @@ public class MeetUp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Integer id_user;
+    private Integer iduser;
 
     public MeetUp(Integer id, Integer idUser) {
         this.id = id;
-        this.id_user = idUser;
+        this.iduser = idUser;
     }
 
     protected MeetUp() {}
@@ -25,6 +25,6 @@ public class MeetUp {
     }
 
     public Integer getIdUser() {
-        return id_user;
+        return iduser;
     }
 }

@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface RepoValoracion extends JpaRepository<Valoracion, IDvaloracion>{
 
-   public List<Valoracion> findByidPubli(Integer idpubli);
+   public List<Valoracion> findByidpubli(Integer id_publi);
 }

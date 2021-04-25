@@ -187,7 +187,7 @@ public class ControllerPublicacion {
     @RequestMapping(value = "/getValoracionAll/{publicacion}", method = RequestMethod.GET)
     public String getAllValoracion(@PathVariable String publicacion) {
 
-        List<Valoracion> valoracionM = repoVal.findByidPubli(Integer.parseInt(publicacion));
+        List<Valoracion> valoracionM = repoVal.findByidpubli(Integer.parseInt(publicacion));
 
 
         return new Gson().toJson(valoracionM);

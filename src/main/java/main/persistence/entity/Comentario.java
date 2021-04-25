@@ -11,13 +11,13 @@ public class Comentario {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
-    private Integer id_publi;
-    private Integer id_user;
+    private Integer idpubli;
+    private Integer iduser;
     private String text;
 
     public Comentario(Integer idPubli, Integer idUser, String text) {
-        this.id_publi = idPubli;
-        id_publi = idUser;
+        this.idpubli = idPubli;
+        iduser = idUser;
         this.text = text;
     }
 
@@ -28,11 +28,11 @@ public class Comentario {
     }
 
     public Integer getIdPubli() {
-        return id_publi;
+        return idpubli;
     }
 
     public Integer getIdUser() {
-        return id_user;
+        return iduser;
     }
 
     public String getText() {

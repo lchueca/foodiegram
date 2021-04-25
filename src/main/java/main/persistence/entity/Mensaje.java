@@ -10,13 +10,13 @@ public class Mensaje {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
-    private Integer id_user1;
-    private Integer id_user2;
+    private Integer iduser1;
+    private Integer iduser2;
     private String text;
 
     public Mensaje (Integer idUser1, Integer idUser2, String text) {
-        id_user1 = idUser1;
-        id_user2 = idUser2;
+        iduser1 = idUser1;
+        iduser2 = idUser2;
         this.text = text;
     }
 
@@ -27,11 +27,11 @@ public class Mensaje {
     }
 
     public Integer getIdUser1() {
-        return id_user1;
+        return iduser1;
     }
 
     public Integer getIdUser2() {
-        return id_user2;
+        return iduser2;
     }
 
     public String getText() {
