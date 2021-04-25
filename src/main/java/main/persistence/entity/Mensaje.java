@@ -9,32 +9,32 @@ import javax.persistence.Id;
 public class Mensaje {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Integer Id;
-    private Integer IdUser1;
-    private Integer IdUser2;
-    private String Text;
+    private Integer id;
+    private Integer iduser1;
+    private Integer iduser2;
+    private String text;
 
     public Mensaje (Integer idUser1, Integer idUser2, String text) {
-        IdUser1 = idUser1;
-        IdUser2 = idUser2;
-        Text = text;
+        iduser1 = idUser1;
+        iduser2 = idUser2;
+        this.text = text;
     }
 
     protected Mensaje() {}
 
     public Integer getId() {
-        return Id;
+        return id;
     }
 
     public Integer getIdUser1() {
-        return IdUser1;
+        return iduser1;
     }
 
     public Integer getIdUser2() {
-        return IdUser2;
+        return iduser2;
     }
 
     public String getText() {
-        return Text;
+        return text;
     }
 }

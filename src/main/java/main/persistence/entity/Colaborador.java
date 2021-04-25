@@ -9,45 +9,45 @@ import javax.persistence.Id;
 public class Colaborador {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Integer Id;
-    private String Origin;
-    private String Type;
-    private String Localization;
-    private Boolean Vip;
-    private Integer Money;
+    private Integer id;
+    private String origin;
+    private String type;
+    private String localization;
+    private Boolean vip;
+    private Integer money;
 
     public Colaborador(String origin, String type, String localization, Boolean vip, Integer money) {
-        Origin = origin;
-        Type = type;
-        Localization = localization;
-        Vip = vip;
-        Money = money;
+        this.origin = origin;
+        this.type = type;
+        this.localization = localization;
+        this.vip = vip;
+        this.money = money;
     }
 
     protected Colaborador() {}
 
 
     public Integer getId() {
-        return Id;
+        return id;
     }
 
     public String getOrigin() {
-        return Origin;
+        return origin;
     }
 
     public String getType() {
-        return Type;
+        return type;
     }
 
     public String getLocalization() {
-        return Localization;
+        return localization;
     }
 
     public Boolean getVip() {
-        return Vip;
+        return vip;
     }
 
     public Integer getMoney() {
-        return Money;
+        return money;
     }
 }
