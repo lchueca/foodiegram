@@ -2,6 +2,7 @@ package main.rest.controller;
 
 
 import com.google.gson.Gson;
+import main.persistence.IDs.IDvaloracion;
 import main.persistence.entity.Publicacion;
 import main.persistence.entity.Usuario;
 import main.persistence.entity.Valoracion;
@@ -15,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.xml.ws.Response;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -148,6 +149,24 @@ public class ControllerPublicacion {
         return ResponseEntity.status(HttpStatus.OK).body("OKAY");
     }
 
+    @RequestMapping(value="/getValoracion/{user}/{publicacion}",method = RequestMethod.GET)
+    public ResponseEntity<?> getValoracion(@PathVariable String user,@PathVariable String publicacion){
+
+        try{
+            Valoracion valor= repoVal.findOne(new IDvaloracion(Integer.parseInt(user),Integer.parseInt(publicacion)));
+            if(valor==null)
+                return  ResponseEntity.status(HttpStatus.NOT_FOUND).body("this Valoration doesn't exist");
+            else
+                return  ResponseEntity.status(HttpStatus.OK).body(new Gson().toJson(valor));
+
+
+        }
+
+        catch (NumberFormatException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("All the values must be an integers.");
+        }
+
+    }
 
 
 
