@@ -10,32 +10,32 @@ public class Comentario {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Integer Id;
-    private Integer IdPubli;
-    private Integer IdUser;
-    private String Text;
+    private Integer id;
+    private Integer id_publi;
+    private Integer id_user;
+    private String text;
 
     public Comentario(Integer idPubli, Integer idUser, String text) {
-        IdPubli = idPubli;
-        IdUser = idUser;
-        Text = text;
+        this.id_publi = idPubli;
+        id_publi = idUser;
+        this.text = text;
     }
 
     protected Comentario() {}
 
     public Integer getId() {
-        return Id;
+        return id;
     }
 
     public Integer getIdPubli() {
-        return IdPubli;
+        return id_publi;
     }
 
     public Integer getIdUser() {
-        return IdUser;
+        return id_user;
     }
 
     public String getText() {
-        return Text;
+        return text;
     }
 }

@@ -62,10 +62,25 @@ public class ControllerPublicacion {
 
     }
 
+    // Devuelve una lista con todas las IDs de las publicaciones del usuario y las imagenes correspondientes.
     @RequestMapping(value = "/getAll/{user}", method = RequestMethod.GET)
-    public String getAll(@PathVariable String user) {
-        List<Publicacion> xD = repoPubli.findByiduser(Integer.parseInt(user));
-        return new Gson().toJson(xD);
+    public ResponseEntity<?> getAll(@PathVariable String user) {
+
+        try {
+
+            List<Publicacion> resul = repoPubli.findByiduser(Integer.parseInt(user));
+
+            if (resul == null)
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A user with that id does not exist.");
+            else
+                return ResponseEntity.status(HttpStatus.OK).body(new Gson().toJson(resul));
+
+        }
+
+        catch (NumberFormatException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Publication id must be an integer.");
+        }
+
     }
 
     @RequestMapping(value = "/getPubli/{pubID}", method = RequestMethod.GET)

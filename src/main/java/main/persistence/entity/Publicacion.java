@@ -8,7 +8,7 @@ public class Publicacion {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
-    private Integer iduser;
+    private Integer id_user;
     private String text;
     private String image;
     private String  localization;
@@ -16,8 +16,15 @@ public class Publicacion {
     public Publicacion(String text, Integer idUser, String image, String localization) {
         this.text = text;
         this.image = image;
-        this.iduser = idUser;
+        this.id_user = idUser;
         this.localization = localization;
+    }
+
+    public Publicacion(String image) {
+        this.text = null;
+        this.image = image;
+        this.id_user = null;
+        this.localization = null;
     }
 
     public Publicacion(){}
@@ -27,7 +34,7 @@ public class Publicacion {
     }
 
     public Integer getIduser() {
-        return iduser;
+        return id_user;
     }
 
     public String getText() {
@@ -43,7 +50,7 @@ public class Publicacion {
     }
 
     public void setIduser(Integer iduser) {
-        this.iduser = iduser;
+        this.id_user = iduser;
     }
 
     public void setText(String text) {

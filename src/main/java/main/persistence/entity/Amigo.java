@@ -10,21 +10,21 @@ public class Amigo {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Integer IdUser1;
-    private Integer IdUser2;
+    private Integer id_user1;
+    private Integer id_user2;
 
     public Amigo(Integer idUser1, Integer idUser2) {
-        IdUser1 = idUser1;
-        IdUser2 = idUser2;
+        id_user1 = idUser1;
+        id_user2 = idUser2;
     }
 
     protected Amigo() {}
 
     public Integer getIdUser1() {
-        return IdUser1;
+        return id_user1;
     }
 
     public Integer getIdUser2() {
-        return IdUser2;
+        return id_user2;
     }
 }
