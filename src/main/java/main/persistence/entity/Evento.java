@@ -11,15 +11,15 @@ public class Evento {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Integer Id;
-    private String Text;
-    private byte[] Image;
+    private Integer id;
+    private String text;
+    private byte[] image;
     private java.sql.Date date;
 
 
     public Evento(String text, byte[] image, Date date) {
-        Text = text;
-        Image = image;
+        this.text = text;
+        this.image = image;
         this.date = date;
 
     }
@@ -28,15 +28,15 @@ public class Evento {
     protected  Evento() {}
 
     public Integer getId() {
-        return Id;
+        return id;
     }
 
     public String getText() {
-        return Text;
+        return text;
     }
 
     public byte[] getImage() {
-        return Image;
+        return image;
     }
 
     public Date getDate() {

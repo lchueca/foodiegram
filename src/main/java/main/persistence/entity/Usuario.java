@@ -10,55 +10,55 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Integer Id;     // El id deberia ser tambien generado?
-    private String Name;
-    private String Passwd;
-    private String  Email;
-    private byte[] Image;
+    private Integer id;
+    private String name;
+    private String passwd;
+    private String  email;
+    private byte[] image;
 
     public Usuario(String name, String passwd, byte[] image,String email) {
-        Name = name;
-        Passwd = passwd;
-        Image = image;
-        Email=email;
+        this.name = name;
+        this.passwd = passwd;
+        this.image = image;
+        this.email=email;
     }
 
     protected Usuario() {}
 
     public Integer getId() {
-        return Id;
+        return id;
     }
 
     public void setId(Integer id) {
-        Id = id;
+        this.id = id;
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
     public String getPasswd() {
-        return Passwd;
+        return passwd;
     }
 
     public void setPasswd(String passwd) {
-        Passwd = passwd;
+        this.passwd = passwd;
     }
 
     public byte[] getImage() {
-        return Image;
+        return image;
     }
 
     public String getEmail() {
-        return Email;
+        return email;
     }
 
     public void setImage(byte[] image) {
-        Image = image;
+        this.image = image;
     }
 
 }
