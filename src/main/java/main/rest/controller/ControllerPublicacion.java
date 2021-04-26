@@ -37,16 +37,18 @@ public class ControllerPublicacion {
     @Value("${apache.address}")
     private String apacheAddress;
 
+    @Value("${apache.rootFolder}")
+    private String apacheRootFolder;
 
     @RequestMapping(value = "/post/{user}", method = RequestMethod.POST)
     public ResponseEntity<?> getAll(@PathVariable String user, @RequestPart("text") String text, @RequestPart("loc") String loc, @RequestPart("image") MultipartFile image)  {
 
         try  {
 
-            File folder = new File("images/" + user);
+            File folder = new File(apacheRootFolder + "/" + user);
             folder.mkdirs();
 
-            FileOutputStream stream = new FileOutputStream("images/" + user + "/"  + image.getOriginalFilename());
+            FileOutputStream stream = new FileOutputStream(folder.getAbsolutePath() + "/"  + image.getOriginalFilename());
             stream.write(image.getBytes());
 
             String address = String.format("%s/%s/%s", apacheAddress, user, image.getOriginalFilename());
