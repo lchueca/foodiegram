@@ -6,6 +6,7 @@ import main.persistence.IDs.IDvaloracion;
 import main.persistence.entity.Publicacion;
 import main.persistence.entity.Usuario;
 import main.persistence.entity.Valoracion;
+import main.persistence.proyecciones.PreviewPublicacion;
 import main.persistence.repository.RepoPublicacion;
 import main.persistence.repository.RepoUsuario;
 import main.persistence.repository.RepoValoracion;
@@ -69,7 +70,7 @@ public class ControllerPublicacion {
 
         try {
 
-            List<Publicacion> resul = repoPubli.findByiduser(Integer.parseInt(user));
+            List<PreviewPublicacion> resul = repoPubli.findByiduser(Integer.parseInt(user));
 
             if (resul == null)
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A user with that id does not exist.");
