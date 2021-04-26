@@ -67,7 +67,7 @@ public class ControllerPublicacion {
     }
 
     @RequestMapping(value = "/getPost/{pubID}", method = RequestMethod.GET)
-    public ResponseEntity<?> getById(@PathVariable String pubID) {
+    public ResponseEntity<?> getPost(@PathVariable String pubID) {
 
         try {
             Publicacion publi = repoPubli.findOne(Integer.parseInt(pubID));
@@ -88,7 +88,7 @@ public class ControllerPublicacion {
 
     // Devuelve una lista con todas las IDs de las publicaciones del usuario y las imagenes correspondientes.
     @RequestMapping(value = "/getPosts/{user}", method = RequestMethod.GET)
-    public ResponseEntity<?> getPreviews(@PathVariable String user) {
+    public ResponseEntity<?> getPosts(@PathVariable String user) {
 
         try {
 
@@ -167,7 +167,7 @@ public class ControllerPublicacion {
     }
 
     @RequestMapping(value="/getRating/{user}/{publicacion}",method = RequestMethod.GET)
-    public ResponseEntity<?> getValoracion(@PathVariable String user,@PathVariable String publicacion){
+    public ResponseEntity<?> getRating(@PathVariable String user,@PathVariable String publicacion){
 
         try{
             Valoracion valor= repoVal.findOne(new IDvaloracion(Integer.parseInt(user),Integer.parseInt(publicacion)));
@@ -186,7 +186,7 @@ public class ControllerPublicacion {
     }
 
     @RequestMapping(value = "/getRatings/{publicacion}", method = RequestMethod.GET)
-    public String getAllValoracion(@PathVariable String publicacion) {
+    public String getRatings(@PathVariable String publicacion) {
         //int suma=0;
         //int total;
         List<Valoracion> valoracionM = repoVal.findByidpubli(Integer.parseInt(publicacion));
