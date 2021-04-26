@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.util.List;
 
 @org.springframework.web.bind.annotation.RestController
-@RequestMapping("/publications")
+@RequestMapping("/posts")
 public class ControllerPublicacion {
 
     @Autowired
@@ -40,8 +40,8 @@ public class ControllerPublicacion {
     @Value("${apache.rootFolder}")
     private String apacheRootFolder;
 
-    @RequestMapping(value = "/post/{user}", method = RequestMethod.POST)
-    public ResponseEntity<?> getAll(@PathVariable String user, @RequestPart("text") String text, @RequestPart("loc") String loc, @RequestPart("image") MultipartFile image)  {
+    @RequestMapping(value = "/upload/{user}", method = RequestMethod.POST)
+    public ResponseEntity<?> upload(@PathVariable String user, @RequestPart("text") String text, @RequestPart("loc") String loc, @RequestPart("image") MultipartFile image)  {
 
         try  {
 
@@ -62,33 +62,12 @@ public class ControllerPublicacion {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("F");
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body("Finish");
+        return ResponseEntity.status(HttpStatus.OK).body("Done.");
 
     }
 
-    // Devuelve una lista con todas las IDs de las publicaciones del usuario y las imagenes correspondientes.
-    @RequestMapping(value = "/getAll/{user}", method = RequestMethod.GET)
-    public ResponseEntity<?> getAll(@PathVariable String user) {
-
-        try {
-
-            List<PreviewPublicacion> resul = repoPubli.findByiduser(Integer.parseInt(user));
-
-            if (resul == null)
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A user with that id does not exist.");
-            else
-                return ResponseEntity.status(HttpStatus.OK).body(new Gson().toJson(resul));
-
-        }
-
-        catch (NumberFormatException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Publication id must be an integer.");
-        }
-
-    }
-
-    @RequestMapping(value = "/getPubli/{pubID}", method = RequestMethod.GET)
-    public ResponseEntity<?> getPublicationById(@PathVariable String pubID) {
+    @RequestMapping(value = "/getPost/{pubID}", method = RequestMethod.GET)
+    public ResponseEntity<?> getById(@PathVariable String pubID) {
 
         try {
             Publicacion publi = repoPubli.findOne(Integer.parseInt(pubID));
@@ -107,10 +86,30 @@ public class ControllerPublicacion {
 
     }
 
+    // Devuelve una lista con todas las IDs de las publicaciones del usuario y las imagenes correspondientes.
+    @RequestMapping(value = "/getPosts/{user}", method = RequestMethod.GET)
+    public ResponseEntity<?> getPreviews(@PathVariable String user) {
+
+        try {
+
+            List<PreviewPublicacion> resul = repoPubli.findByiduser(Integer.parseInt(user));
+
+            if (resul == null)
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A user with that id does not exist.");
+            else
+                return ResponseEntity.status(HttpStatus.OK).body(new Gson().toJson(resul));
+
+        }
+
+        catch (NumberFormatException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Publication id must be an integer.");
+        }
+
+    }
 
     // Falta probar esto.
     @RequestMapping(value = "/edit/{pubID}", method = RequestMethod.POST)
-    ResponseEntity<?> editPublication(@PathVariable String pubID, @RequestPart(value = "text", required = false) String text, @RequestPart(value = "loc", required = false) String loc) {
+    ResponseEntity<?> edit(@PathVariable String pubID, @RequestPart(value = "text", required = false) String text, @RequestPart(value = "loc", required = false) String loc) {
 
         if (text == null && loc == null)
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A new text or location is required");
@@ -147,9 +146,8 @@ public class ControllerPublicacion {
 
     }
 
-
-    @RequestMapping(value="/setValoracion/{user}/{publicacion}/{punt}",method = RequestMethod.GET)
-    public ResponseEntity<?> setValoracion(@PathVariable String user, @PathVariable String publicacion, @PathVariable String punt){
+    @RequestMapping(value="/setRating/{user}/{publicacion}/{punt}",method = RequestMethod.GET)
+    public ResponseEntity<?> setRating(@PathVariable String user, @PathVariable String publicacion, @PathVariable String punt){
 
         try{
             int score = Integer.parseInt(punt);
@@ -168,7 +166,7 @@ public class ControllerPublicacion {
         return ResponseEntity.status(HttpStatus.OK).body("OKAY");
     }
 
-    @RequestMapping(value="/getValoracion/{user}/{publicacion}",method = RequestMethod.GET)
+    @RequestMapping(value="/getRating/{user}/{publicacion}",method = RequestMethod.GET)
     public ResponseEntity<?> getValoracion(@PathVariable String user,@PathVariable String publicacion){
 
         try{
@@ -187,7 +185,7 @@ public class ControllerPublicacion {
 
     }
 
-    @RequestMapping(value = "/getValoracionAll/{publicacion}", method = RequestMethod.GET)
+    @RequestMapping(value = "/getRatings/{publicacion}", method = RequestMethod.GET)
     public String getAllValoracion(@PathVariable String publicacion) {
         //int suma=0;
         //int total;
