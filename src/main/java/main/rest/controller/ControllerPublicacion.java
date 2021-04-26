@@ -12,6 +12,7 @@ import main.persistence.repository.RepoUsuario;
 import main.persistence.repository.RepoValoracion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,10 +23,11 @@ import javax.persistence.criteria.CriteriaBuilder;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 @org.springframework.web.bind.annotation.RestController
-@RequestMapping("/post/{pubID}")
+@RequestMapping("/posts/{pubID}")
 public class ControllerPublicacion {
 
     @Autowired
@@ -118,31 +120,36 @@ public class ControllerPublicacion {
 
     }
 
-    @RequestMapping(value="/ratings/{user}/{punt}",method = RequestMethod.POST)
+    @RequestMapping(value="/ratings/{user}/{punt}",method = RequestMethod.GET)
     public ResponseEntity<?> setRating(@PathVariable String user, @PathVariable String pubID, @PathVariable String punt){
 
         try{
             int score = Integer.parseInt(punt);
-            if(score>0 &&score<5) {
+            if(score>=0 &&score<=5) {
+
                 Valoracion valora = new Valoracion(Integer.parseInt(pubID), Integer.parseInt(user),score);
                 repoVal.save(valora);
             }
             else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Punt must be a integer between 0 and 5");
         }
 
-        catch (NumberFormatException e){
+        catch (NumberFormatException e ){
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("All the values must be an integers.");
         }
+        catch (DataIntegrityViolationException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("this user must exists.");
+        }
+
 
         return ResponseEntity.status(HttpStatus.OK).body("OKAY");
     }
 
     @RequestMapping(value="/ratings/{user}",method = RequestMethod.GET)
-    public ResponseEntity<?> getRating(@PathVariable String user,@PathVariable String publicacion){
+    public ResponseEntity<?> getRating(@PathVariable String user,@PathVariable String pubID){
 
         try{
-            Valoracion valor= repoVal.findOne(new IDvaloracion(Integer.parseInt(user),Integer.parseInt(publicacion)));
+            Valoracion valor= repoVal.findOne(new IDvaloracion(Integer.parseInt(pubID),Integer.parseInt(user)));
             if(valor==null)
                 return  ResponseEntity.status(HttpStatus.NOT_FOUND).body("this Valoration doesn't exist");
             else

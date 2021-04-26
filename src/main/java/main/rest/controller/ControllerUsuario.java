@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.List;
 
 @org.springframework.web.bind.annotation.RestController
-@RequestMapping("/user/{user}")
+@RequestMapping("/users/{user}")
 public class ControllerUsuario {
 
     @Autowired
@@ -89,9 +89,9 @@ public class ControllerUsuario {
 
     //no se si lo llegaremos a usar
     @RequestMapping(value = "/ratings",method = RequestMethod.GET)
-    public ResponseEntity<?> getRatingsUser(@PathVariable String userid) {
+    public ResponseEntity<?> getRatingsUser(@PathVariable String user) {
         try {
-            List<Valoracion> valoracionU= repoVal.findByiduser(Integer.parseInt(userid));
+            List<Valoracion> valoracionU= repoVal.findByiduser(Integer.parseInt(user));
 
             if(!valoracionU.isEmpty())
                 return  ResponseEntity.status(HttpStatus.OK).body(new Gson().toJson(valoracionU)) ;
