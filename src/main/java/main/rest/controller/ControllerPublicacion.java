@@ -187,11 +187,17 @@ public class ControllerPublicacion {
 
     @RequestMapping(value = "/getValoracionAll/{publicacion}", method = RequestMethod.GET)
     public String getAllValoracion(@PathVariable String publicacion) {
-
+        int suma=0;
+        int total;
         List<Valoracion> valoracionM = repoVal.findByidpubli(Integer.parseInt(publicacion));
 
+        for(Valoracion V :valoracionM ){
+          suma+=  V.getPunt();
+        }
 
-        return new Gson().toJson(valoracionM);
+        total=valoracionM.size();
+
+        return new Gson().toJson(valoracionM)+","+String.format("numero total de valoraciones = %d,Puntuacion sumada= %d",total,suma);
 
     }
 
