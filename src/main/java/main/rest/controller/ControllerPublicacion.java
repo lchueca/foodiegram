@@ -185,23 +185,46 @@ public class ControllerPublicacion {
 
     }
 
-    @RequestMapping(value = "/getRatings/{publicacion}", method = RequestMethod.GET)
-    public String getRatings(@PathVariable String publicacion) {
-        //int suma=0;
-        //int total;
-        List<Valoracion> valoracionM = repoVal.findByidpubli(Integer.parseInt(publicacion));
+    @RequestMapping(value = "/getRatingsByPubli/{publicacion}", method = RequestMethod.GET)
+    public ResponseEntity<?> getRatingsPubli(@PathVariable String publicacion) {
 
-      //  for(Valoracion V :valoracionM ){
-       //   suma+=  V.getPunt();
-      //  }
+        try {
+            List<Valoracion> valoracionM = repoVal.findByidpubli(Integer.parseInt(publicacion));
 
-        //total=valoracionM.size();
+            if(!valoracionM.isEmpty())
+                return  ResponseEntity.status(HttpStatus.OK).body(new Gson().toJson(valoracionM)) ;
+            else
+                return  ResponseEntity.status(HttpStatus.NOT_FOUND).body("This Publication has no rating");
 
-
-        return new Gson().toJson(valoracionM)+","+String.format("numero total de valoraciones = %d,Puntuacion sumada= %d");
+        }
+        catch (NumberFormatException e){
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("idPubli must be an integer");
+        }
 
     }
 
+    //no se si lo llegaremos a usar
+    @RequestMapping(value = "/getRatingsByUser/{userid}",method = RequestMethod.GET)
+    public ResponseEntity<?> getRatingsUser(@PathVariable String userid){
+        try {
+            List<Valoracion> valoracionU= repoVal.findByiduser(Integer.parseInt(userid));
+
+            if(!valoracionU.isEmpty())
+                return  ResponseEntity.status(HttpStatus.OK).body(new Gson().toJson(valoracionU)) ;
+            else
+                return  ResponseEntity.status(HttpStatus.NOT_FOUND).body("This User has not rated any publication");
+
+        }
+        catch (NumberFormatException e){
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("iduser must be an integer");
+        }
+
+
+
+
+
+
+    }
 
 
 
