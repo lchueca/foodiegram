@@ -3,10 +3,12 @@ package main.rest.controller;
 
 import com.google.gson.Gson;
 import main.persistence.IDs.IDvaloracion;
+import main.persistence.entity.Comentario;
 import main.persistence.entity.Publicacion;
 import main.persistence.entity.Usuario;
 import main.persistence.entity.Valoracion;
 import main.persistence.proyecciones.PreviewPublicacion;
+import main.persistence.repository.RepoComentario;
 import main.persistence.repository.RepoPublicacion;
 import main.persistence.repository.RepoUsuario;
 import main.persistence.repository.RepoValoracion;
@@ -36,6 +38,9 @@ public class ControllerPublicacion {
 
     @Autowired
     RepoValoracion repoVal;
+
+    @Autowired
+    RepoComentario repoComen;
 
     @Value("${apache.address}")
     private String apacheAddress;
@@ -117,6 +122,8 @@ public class ControllerPublicacion {
     }
 
 
+
+    //devuleve un JSON con todas la valoraciones de una publicacion
     @RequestMapping(value = "/ratings", method = RequestMethod.GET)
     public ResponseEntity<?> getRatingsPubli(@PathVariable String pubID) {
 
@@ -135,8 +142,9 @@ public class ControllerPublicacion {
 
     }
 
-    @RequestMapping(value="/ratings/{user}/{punt}",method = RequestMethod.GET)
-    public ResponseEntity<?> setRating(@PathVariable String user, @PathVariable String pubID, @PathVariable String punt){
+    //setea o updatea la valoracion de un usuario en una publicacion
+    @RequestMapping(value="/ratings/{user}",method = RequestMethod.POST)
+    public ResponseEntity<?> setRating(@PathVariable String user, @PathVariable String pubID, @RequestPart(value="score") String punt){
 
         try{
             int score = Integer.parseInt(punt);
@@ -160,6 +168,7 @@ public class ControllerPublicacion {
         return ResponseEntity.status(HttpStatus.OK).body("OKAY");
     }
 
+    //devuele si un usuario a valorado una publicacion
     @RequestMapping(value="/ratings/{user}",method = RequestMethod.GET)
     public ResponseEntity<?> getRating(@PathVariable String user,@PathVariable String pubID){
 
@@ -179,6 +188,7 @@ public class ControllerPublicacion {
 
     }
 
+    //borra una valoracion dentro una publicacion de un usuario
     @RequestMapping(value = "/ratings/{user}",method=RequestMethod.DELETE)
     public ResponseEntity<?> deleteRating(@PathVariable String user,@PathVariable String pubID){
 
@@ -199,5 +209,49 @@ public class ControllerPublicacion {
 
 
     }
+
+
+
+    @RequestMapping(value="/comments", method=RequestMethod.GET)
+    public ResponseEntity<?> getComments(@PathVariable String pubID) {
+
+        try {
+
+            List<Comentario> resul = repoComen.findAll();
+
+            if (resul == null)
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A user with that id does not exist.");
+            else
+                return ResponseEntity.status(HttpStatus.OK).body(new Gson().toJson(resul));
+
+        }
+
+        catch (NumberFormatException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Publication id must be an integer.");
+        }
+
+    }
+
+
+    @RequestMapping(value = "/comments/{userID}",method = RequestMethod.POST)
+    public ResponseEntity<?> setComment(@PathVariable String userID, @PathVariable String pubID, @RequestPart(value="text") String text){
+
+        try{
+
+             Comentario comment = new Comentario(Integer.parseInt(pubID),Integer.parseInt(userID),text);
+             repoComen.save(comment);
+
+        }
+        catch (DataIntegrityViolationException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("this user must exists.");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body("OKAY");
+
+    }
+
+
+
+
 
 }

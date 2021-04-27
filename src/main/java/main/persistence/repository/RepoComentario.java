@@ -1,4 +1,8 @@
 package main.persistence.repository;
 
-public interface RepoComentario {
+import main.persistence.entity.Comentario;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface RepoComentario extends JpaRepository<Comentario, Integer> {
+
 }

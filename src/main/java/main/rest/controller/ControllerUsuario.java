@@ -56,7 +56,7 @@ public class ControllerUsuario {
         }
 
         catch (NumberFormatException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Publication id must be an integer.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User id must be an integer.");
         }
 
     }
