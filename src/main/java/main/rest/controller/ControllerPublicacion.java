@@ -5,12 +5,9 @@ import com.google.gson.Gson;
 import main.persistence.IDs.IDvaloracion;
 import main.persistence.entity.Comentario;
 import main.persistence.entity.Publicacion;
-import main.persistence.entity.Usuario;
 import main.persistence.entity.Valoracion;
-import main.persistence.proyecciones.PreviewPublicacion;
 import main.persistence.repository.RepoComentario;
 import main.persistence.repository.RepoPublicacion;
-import main.persistence.repository.RepoUsuario;
 import main.persistence.repository.RepoValoracion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,14 +16,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-
-import javax.persistence.criteria.CriteriaBuilder;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 @org.springframework.web.bind.annotation.RestController
@@ -249,9 +239,5 @@ public class ControllerPublicacion {
         return ResponseEntity.status(HttpStatus.OK).body("OKAY");
 
     }
-
-
-
-
 
 }

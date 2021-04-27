@@ -3,7 +3,6 @@ package main.rest.controller;
 
 import com.google.gson.Gson;
 import main.persistence.entity.Publicacion;
-import main.persistence.entity.Usuario;
 import main.persistence.entity.Valoracion;
 import main.persistence.proyecciones.PreviewPublicacion;
 import main.persistence.repository.RepoPublicacion;

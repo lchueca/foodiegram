@@ -2,7 +2,6 @@ package main.rest.controller;
 
 import com.google.gson.Gson;
 import main.persistence.entity.Comentario;
-import main.persistence.entity.Publicacion;
 import main.persistence.repository.RepoComentario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
 
-import java.nio.channels.ReadableByteChannel;
+
 
 
 @org.springframework.web.bind.annotation.RestController
