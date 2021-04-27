@@ -13,6 +13,7 @@ import main.persistence.repository.RepoValoracion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -62,7 +63,6 @@ public class ControllerPublicacion {
 
     }
 
-    // Falta probar esto.
     @RequestMapping(method = RequestMethod.PUT)
     ResponseEntity<?> edit(@PathVariable String pubID, @RequestPart(value = "text", required = false) String text, @RequestPart(value = "loc", required = false) String loc) {
 
@@ -94,10 +94,25 @@ public class ControllerPublicacion {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Publication id must be an integer.");
         }
 
+    }
 
+    @RequestMapping(method = RequestMethod.DELETE)
+    ResponseEntity<?> delete(@PathVariable String pubID, @RequestPart(value = "text", required = false) String text, @RequestPart(value = "loc", required = false) String loc) {
 
+        try {
+            repoPubli.delete(Integer.parseInt(pubID));
 
+            return ResponseEntity.status(HttpStatus.OK).body("Ok");
 
+        }
+
+        catch (NumberFormatException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Publication id must be an integer.");
+        }
+
+        catch(EmptyResultDataAccessException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("A publication with such id does not exist.");
+        }
 
     }
 
@@ -178,7 +193,7 @@ public class ControllerPublicacion {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("All the values must be an integers.");
         }
 
-        catch (DataIntegrityViolationException e){
+        catch (EmptyResultDataAccessException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("this Valoration doesn't exist.");
         }
 
