@@ -164,5 +164,25 @@ public class ControllerPublicacion {
 
     }
 
+    @RequestMapping(value = "/ratings/{user}",method=RequestMethod.DELETE)
+    public ResponseEntity<?> deleteRating(@PathVariable String user,@PathVariable String pubID){
+
+        try{
+            Valoracion valor= repoVal.findOne(new IDvaloracion(Integer.parseInt(pubID),Integer.parseInt(user)));
+            repoVal.delete(new IDvaloracion(Integer.parseInt(pubID),Integer.parseInt(user)));
+            return  ResponseEntity.status(HttpStatus.OK).body(new Gson().toJson(valor)+"has been elimated");
+
+        }
+
+        catch (NumberFormatException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("All the values must be an integers.");
+        }
+
+        catch (DataIntegrityViolationException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("this Valoration doesn't exist.");
+        }
+
+
+    }
 
 }
