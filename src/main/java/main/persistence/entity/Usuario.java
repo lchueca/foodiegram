@@ -14,9 +14,9 @@ public class Usuario {
     private String name;
     private String passwd;
     private String  email;
-    private byte[] image;
+    private String image;
 
-    public Usuario(String name, String passwd, byte[] image,String email) {
+    public Usuario(String name, String passwd, String image, String email) {
         this.name = name;
         this.passwd = passwd;
         this.image = image;
@@ -49,7 +49,7 @@ public class Usuario {
         this.passwd = passwd;
     }
 
-    public byte[] getImage() {
+    public String getImage() {
         return image;
     }
 
@@ -57,7 +57,7 @@ public class Usuario {
         return email;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
