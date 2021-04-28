@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -105,13 +106,40 @@ public class ControllerUsuario {
 
     }
 
-//    @RequestMapping(value="register", method=RequestMethod.POST)
-//    public ResponseEntity<?> registerUser(@RequestPart("user") String user, @RequestPart("passwd") String passwd,  @RequestPart("email") String email) {
-//
-//
-//
-//
-//    }
+    @RequestMapping(value="register", method=RequestMethod.POST)
+    public ResponseEntity<?> registerUser(@RequestPart("user") String user, @RequestPart("passwd") String passwd,  @RequestPart("email") String email) {
+
+        if(user.length()>=20){
+
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The name is to long,"+"\n"
+                    +"please insert a name BELOW 20 characters");
+
+        }
+
+        else if(passwd.length()>=256){
+
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The PASSWORD is to long,"+"\n"
+                    +"please insert a password BELOW 20 characters");
+
+        }
+        else if(!email.contains("@")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The email introduces is NOT valid" + "\n" +
+                    "please insert a valid e-mail");
+        }
+
+        else{
+            BCryptPasswordEncoder encoder=new BCryptPasswordEncoder();
+
+            Usuario newuser=new Usuario(user,encoder.encode(passwd),null,email);
+            repoUsuario.save(newuser);
+
+
+            return ResponseEntity.status(HttpStatus.OK).body("okay");
+        }
+
+
+
+    }
 
 
 }
