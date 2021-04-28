@@ -3,6 +3,7 @@ package main.rest.controller;
 
 import com.google.gson.Gson;
 import main.persistence.entity.Publicacion;
+import main.persistence.entity.Usuario;
 import main.persistence.entity.Valoracion;
 import main.persistence.proyecciones.PreviewPublicacion;
 import main.persistence.repository.RepoPublicacion;
@@ -21,7 +22,7 @@ import java.io.IOException;
 import java.util.List;
 
 @org.springframework.web.bind.annotation.RestController
-@RequestMapping("/users/{user}")
+@RequestMapping("/users")
 public class ControllerUsuario {
 
     @Autowired
@@ -40,7 +41,7 @@ public class ControllerUsuario {
     private String apacheAddress;
 
     // Devuelve una lista con todas las IDs de las publicaciones del usuario y las imagenes correspondientes.
-    @RequestMapping(value = "/posts", method = RequestMethod.GET)
+    @RequestMapping(value = "/{user}/posts", method = RequestMethod.GET)
     public ResponseEntity<?> getPosts(@PathVariable String user) {
 
         try {
@@ -60,7 +61,7 @@ public class ControllerUsuario {
 
     }
 
-    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    @RequestMapping(value = "/{user}/upload", method = RequestMethod.POST)
     public ResponseEntity<?> upload(@PathVariable String user, @RequestPart("text") String text, @RequestPart("loc") String loc, @RequestPart("image") MultipartFile image)  {
 
         try  {
@@ -87,7 +88,7 @@ public class ControllerUsuario {
     }
 
     //no se si lo llegaremos a usar
-    @RequestMapping(value = "/ratings",method = RequestMethod.GET)
+    @RequestMapping(value = "/{user}/ratings",method = RequestMethod.GET)
     public ResponseEntity<?> getRatingsUser(@PathVariable String user) {
         try {
             List<Valoracion> valoracionU= repoVal.findByiduser(Integer.parseInt(user));
@@ -103,4 +104,14 @@ public class ControllerUsuario {
         }
 
     }
+
+//    @RequestMapping(value="register", method=RequestMethod.POST)
+//    public ResponseEntity<?> registerUser(@RequestPart("user") String user, @RequestPart("passwd") String passwd,  @RequestPart("email") String email) {
+//
+//
+//
+//
+//    }
+
+
 }
