@@ -1,21 +1,22 @@
 package main.application.service;
 
-import java.util.List;
-
+import main.domain.resource.PreviewPublicacion;
 import main.domain.resource.PublicacionResource;
 import main.domain.resource.UsuarioResource;
 import main.domain.resource.ValoracionResource;
-import main.persistence.proyecciones.PreviewPublicacion;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 public interface UserService  {
 
+    UsuarioResource getUser(Integer user);
     List<PreviewPublicacion> getPosts(Integer user);
-    PublicacionResource update(Integer user, String text, String loc, MultipartFile image);
+    PublicacionResource upload(Integer user, String text, String loc, MultipartFile image) throws IOException;
     List<ValoracionResource> getRatings(Integer user);
 
-    UsuarioResource register(String user, String passwd, String email);
+    UsuarioResource register(String user, String passwd, String email) throws IllegalArgumentException;
 
 
 }

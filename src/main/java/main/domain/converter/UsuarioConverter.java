@@ -11,7 +11,11 @@ public class UsuarioConverter implements Converter<Usuario, UsuarioResource> {
     @Override
     public UsuarioResource convert(Usuario source ){
 
+        if (source == null)
+            return null;
+
         UsuarioResource response = new UsuarioResource();
+        response.setId(source.getId());
         response.setName(source.getName());
         response.setEmail(source.getEmail());
         response.setImage(source.getImage());

@@ -1,8 +1,5 @@
 package main.application.service;
 
-import com.google.gson.Gson;
-import com.sun.javaws.exceptions.InvalidArgumentException;
-import lombok.AllArgsConstructor;
 import main.domain.converter.ComentarioConverter;
 import main.domain.converter.PublicacionConverter;
 import main.domain.converter.ValoracionConverter;
@@ -12,27 +9,20 @@ import main.domain.resource.ValoracionResource;
 import main.persistence.IDs.IDvaloracion;
 import main.persistence.entity.Comentario;
 import main.persistence.entity.Publicacion;
-import main.persistence.entity.Usuario;
 import main.persistence.entity.Valoracion;
 import main.persistence.repository.RepoComentario;
 import main.persistence.repository.RepoPublicacion;
 import main.persistence.repository.RepoValoracion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Component
+//@Component
 public class PublicationServiceImpl implements PublicationService {
 
     private final PublicacionConverter converterPubli = new PublicacionConverter();

@@ -20,12 +20,12 @@ import java.util.List;
 public class ControllerPublicacion {
 
     @Autowired
-    PublicationService publiService;
+    PublicationService service;
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<PublicacionResource> getPost(@PathVariable Integer pubID) {
 
-        PublicacionResource publi =  publiService.getPost(pubID);
+        PublicacionResource publi =  service.getPost(pubID);
         return publi != null ? ResponseEntity.ok(publi) : ResponseEntity.notFound().build();
 
     }
@@ -34,7 +34,7 @@ public class ControllerPublicacion {
     ResponseEntity<?> edit(@PathVariable Integer pubID, @RequestPart(value = "text", required = false) String text, @RequestPart(value = "loc", required = false) String loc) {
 
         try {
-            PublicacionResource publi = publiService.editPost(pubID, text, loc);
+            PublicacionResource publi = service.editPost(pubID, text, loc);
             return publi != null ? ResponseEntity.ok(publi) : ResponseEntity.notFound().build();
         }
 
@@ -47,7 +47,7 @@ public class ControllerPublicacion {
     @RequestMapping(method = RequestMethod.DELETE)
     ResponseEntity<PublicacionResource> delete(@PathVariable Integer pubID) {
 
-        PublicacionResource publi = publiService.deletePost(pubID);
+        PublicacionResource publi = service.deletePost(pubID);
         return publi != null ? ResponseEntity.ok(publi) : ResponseEntity.notFound().build();
 
     }
@@ -56,7 +56,7 @@ public class ControllerPublicacion {
     @RequestMapping(value = "/ratings", method = RequestMethod.GET)
     public ResponseEntity<List<ValoracionResource>> getRatings(@PathVariable Integer pubID) {
 
-        List<ValoracionResource> valoraciones = publiService.getRatings(pubID);
+        List<ValoracionResource> valoraciones = service.getRatings(pubID);
         return valoraciones != null ? ResponseEntity.ok(valoraciones) : ResponseEntity.notFound().build();
 
     }
@@ -66,7 +66,7 @@ public class ControllerPublicacion {
     public ResponseEntity<?> setRating(@PathVariable Integer user, @PathVariable Integer pubID, @RequestPart(value="score") Integer punt){
 
         try {
-            ValoracionResource valoracion = publiService.setRating(pubID, user, punt);
+            ValoracionResource valoracion = service.setRating(pubID, user, punt);
             return ResponseEntity.ok(valoracion);
         }
 
@@ -81,7 +81,7 @@ public class ControllerPublicacion {
    @RequestMapping(value="/ratings/{user}",method = RequestMethod.GET)
     public ResponseEntity<ValoracionResource> getRating(@PathVariable Integer user,@PathVariable Integer pubID){
 
-        ValoracionResource val=  publiService.getRating(pubID,user);
+        ValoracionResource val=  service.getRating(pubID,user);
 
        return val != null ? ResponseEntity.ok(val) : ResponseEntity.notFound().build();
 
@@ -91,7 +91,7 @@ public class ControllerPublicacion {
     @RequestMapping(value = "/ratings/{user}",method=RequestMethod.DELETE)
     public ResponseEntity<ValoracionResource> deleteRating(@PathVariable Integer user,@PathVariable Integer pubID){
 
-        ValoracionResource val = publiService.deleteRating(pubID, user);
+        ValoracionResource val = service.deleteRating(pubID, user);
         return val != null ? ResponseEntity.ok(val) : ResponseEntity.notFound().build();
 
     }
@@ -100,7 +100,7 @@ public class ControllerPublicacion {
     @RequestMapping(value="/comments", method=RequestMethod.GET)
     public ResponseEntity<List<ComentarioResource>> getComments(@PathVariable Integer pubID) {
 
-        List<ComentarioResource> comentarios = publiService.getComments(pubID);
+        List<ComentarioResource> comentarios = service.getComments(pubID);
         return comentarios != null ? ResponseEntity.ok(comentarios) : ResponseEntity.notFound().build();
 
     }
@@ -110,7 +110,7 @@ public class ControllerPublicacion {
     public ResponseEntity<?> setComment(@PathVariable Integer userID, @PathVariable Integer pubID, @RequestPart(value="text") String text){
 
         try{
-            ComentarioResource coment= publiService.setComment(pubID,userID,text);
+            ComentarioResource coment= service.setComment(pubID,userID,text);
             return ResponseEntity.ok(coment);
         }
         catch (Exception e){

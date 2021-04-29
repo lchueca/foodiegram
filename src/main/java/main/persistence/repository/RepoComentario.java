@@ -1,7 +1,6 @@
 package main.persistence.repository;
 
 import main.persistence.entity.Comentario;
-import main.persistence.entity.Valoracion;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
