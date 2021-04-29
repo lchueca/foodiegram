@@ -63,10 +63,10 @@ public class ControllerPublicacion {
 
     //setea o updatea la valoracion de un usuario en una publicacion
     @RequestMapping(value="/ratings/{user}",method = RequestMethod.POST)
-    public ResponseEntity<?> setRating(@PathVariable Integer user, @PathVariable Integer pubID, @RequestPart(value="score") Integer punt){
-        System.out.println("hola");
+    public ResponseEntity<?> setRating(@PathVariable Integer user, @PathVariable Integer pubID, @RequestPart(value="score") String punt){
+
         try {
-            ValoracionResource valoracion = service.setRating(pubID, user, punt);
+            ValoracionResource valoracion = service.setRating(pubID, user, Integer.parseInt(punt));
             return ResponseEntity.ok(valoracion);
         }
 
@@ -79,7 +79,7 @@ public class ControllerPublicacion {
 
    //devuele si un usuario a valorado una publicacion
    @RequestMapping(value="/ratings/{user}",method = RequestMethod.GET)
-    public ResponseEntity<ValoracionResource> getRating(@PathVariable Integer user,@PathVariable Integer pubID){
+    public ResponseEntity<ValoracionResource> getRating(@PathVariable Integer user, @PathVariable Integer pubID){
 
         ValoracionResource val=  service.getRating(pubID,user);
 

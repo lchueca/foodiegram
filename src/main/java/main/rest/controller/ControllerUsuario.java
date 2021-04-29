@@ -58,7 +58,7 @@ public class ControllerUsuario {
     }
 
     //no se si lo llegaremos a usar
-    @RequestMapping(value = "/{user}/ratings",method = RequestMethod.GET)
+    @RequestMapping(value = "/{user}/ratings", method = RequestMethod.GET)
     public ResponseEntity<List<ValoracionResource> > getRatingsUser(@PathVariable Integer user) {
 
         List<ValoracionResource> valoraciones = service.getRatings(user);
