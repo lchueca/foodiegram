@@ -1,23 +1,17 @@
 package main.rest.controller;
 
 
-import com.google.gson.Gson;
-import com.sun.javafx.scene.control.skin.IntegerFieldSkin;
 import main.application.service.PublicationService;
-import main.application.service.PublicationServiceImpl;
 import main.domain.resource.ComentarioResource;
 import main.domain.resource.PublicacionResource;
 import main.domain.resource.ValoracionResource;
-import main.persistence.IDs.IDvaloracion;
-import main.persistence.entity.Comentario;
-import main.persistence.entity.Publicacion;
-import main.persistence.entity.Valoracion;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestPart;
 
 import java.util.List;
 
@@ -123,8 +117,7 @@ public class ControllerPublicacion {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 
-
-
+        
     }
 
 }
