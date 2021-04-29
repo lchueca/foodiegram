@@ -23,7 +23,7 @@ import java.util.List;
 public class ControllerUsuario {
 
     @Autowired
-    UserService service;
+    private UserService service;
 
 
     // Devuelve una lista con todas las IDs de las publicaciones del usuario y las imagenes correspondientes.

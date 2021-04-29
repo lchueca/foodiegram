@@ -20,7 +20,7 @@ import java.util.List;
 public class ControllerPublicacion {
 
     @Autowired
-    PublicationService service;
+    private PublicationService service;
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<PublicacionResource> getPost(@PathVariable Integer pubID) {
@@ -64,7 +64,7 @@ public class ControllerPublicacion {
     //setea o updatea la valoracion de un usuario en una publicacion
     @RequestMapping(value="/ratings/{user}",method = RequestMethod.POST)
     public ResponseEntity<?> setRating(@PathVariable Integer user, @PathVariable Integer pubID, @RequestPart(value="score") Integer punt){
-
+        System.out.println("hola");
         try {
             ValoracionResource valoracion = service.setRating(pubID, user, punt);
             return ResponseEntity.ok(valoracion);
@@ -77,7 +77,7 @@ public class ControllerPublicacion {
 
     }
 
-   // //devuele si un usuario a valorado una publicacion
+   //devuele si un usuario a valorado una publicacion
    @RequestMapping(value="/ratings/{user}",method = RequestMethod.GET)
     public ResponseEntity<ValoracionResource> getRating(@PathVariable Integer user,@PathVariable Integer pubID){
 
