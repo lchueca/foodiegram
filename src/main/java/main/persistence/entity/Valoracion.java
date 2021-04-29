@@ -2,7 +2,9 @@ package main.persistence.entity;
 
 import main.persistence.IDs.IDvaloracion;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
 
 @Entity
 @IdClass(IDvaloracion.class)
