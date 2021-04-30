@@ -1,4 +1,4 @@
-package main.persistence.proyecciones;
+package main.domain.resource;
 
 import java.util.Objects;
 
