@@ -1,6 +1,9 @@
 package main.persistence.entity;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
 public class Publicacion {
@@ -12,19 +15,27 @@ public class Publicacion {
     private String text;
     private String image;
     private String  localization;
+    private  Integer media;
+    private Integer numerototalval;
 
     public Publicacion(String text, Integer idUser, String image, String localization) {
         this.text = text;
         this.image = image;
         this.iduser = idUser;
         this.localization = localization;
+        this.media=0;
+        this.numerototalval=0;
     }
+
+
 
     public Publicacion(String image) {
         this.text = null;
         this.image = image;
         this.iduser = null;
         this.localization = null;
+        this.media=null;
+        this.numerototalval=null;
     }
 
     public Publicacion(){}
@@ -48,6 +59,10 @@ public class Publicacion {
     public String getLocalization() {
         return localization;
     }
+
+    public Integer getMedia() { return media; }
+
+    public Integer getNumerototalval() { return numerototalval; }
 
     public void setIduser(Integer iduser) {
         this.iduser = iduser;
