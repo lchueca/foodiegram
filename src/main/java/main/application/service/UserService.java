@@ -16,7 +16,9 @@ public interface UserService  {
     PublicacionResource upload(Integer user, String text, String loc, MultipartFile image) throws IOException;
     List<ValoracionResource> getRatings(Integer user);
 
+
     UsuarioResource register(String user, String passwd, String email) throws IllegalArgumentException;
 
+    UsuarioResource verify(Integer token)throws IllegalArgumentException;
 
 }

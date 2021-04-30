@@ -11,9 +11,11 @@ import main.domain.resource.ValoracionResource;
 import main.persistence.entity.Publicacion;
 import main.persistence.entity.Usuario;
 import main.persistence.entity.Valoracion;
+import main.persistence.entity.VerifyToken;
 import main.persistence.repository.RepoPublicacion;
 import main.persistence.repository.RepoUsuario;
 import main.persistence.repository.RepoValoracion;
+import main.persistence.repository.RepoVerifyToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,6 +26,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,6 +39,10 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     RepoUsuario repoUsuario;
+    @Autowired
+    RepoVerifyToken repoToken;
+    @Autowired
+    SendEmailService sendEmailService;
 
     @Autowired
     RepoPublicacion repoPubli;
@@ -122,11 +129,35 @@ public class UserServiceImpl implements UserService {
         else {
 
             BCryptPasswordEncoder encoder=new BCryptPasswordEncoder();
+            Random random=new Random(1);
+            int codigo=random.nextInt(100000);
+            String mensaje="Su codigo de verificacion es : "+codigo;
 
+            sendEmailService.sendEmails("yefelipe78@gmail.com",mensaje, "topic");
             Usuario newUser = new Usuario(user, encoder.encode(passwd),null, email);
-            repoUsuario.save(newUser);
+            VerifyToken verifyToken=new VerifyToken(newUser,codigo);
 
+            repoUsuario.save(newUser);
+            repoToken.save(verifyToken);
             return converterUser.convert(newUser);
         }
+    }
+    public UsuarioResource verify(Integer token){//token  de entrada
+       //token de entrada comparar token con la id del user
+        //
+            VerifyToken verToken =repoToken.findBytoken(token);
+            if(verToken==null){
+                return null;
+            }
+            else{
+
+                Usuario user=repoUsuario.findOne(verToken.getIduser());
+                user.setEnabled(true);
+                repoUsuario.save(user);
+
+            }
+
+
+        return null;
     }
 }

@@ -17,9 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Random;
-import java.util.UUID;
-import java.util.stream.IntStream;
 
 @org.springframework.web.bind.annotation.RestController
 @RequestMapping("/users")
@@ -46,14 +43,12 @@ public class ControllerUsuario {
     }
 
     @RequestMapping(value = "/{user}/upload", method = RequestMethod.POST)
-    public ResponseEntity<?> upload(@PathVariable Integer user, @RequestPart("text") String text, @RequestPart("loc") String loc, @RequestPart("image") MultipartFile image)  {
+    public ResponseEntity<?> upload(@PathVariable Integer user, @RequestPart("text") String text, @RequestPart("loc") String loc, @RequestPart("image") MultipartFile image) {
 
-        try  {
+        try {
             PublicacionResource publi = service.upload(user, text, loc, image);
             return ResponseEntity.ok(publi);
-        }
-
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("F");
         }
@@ -62,27 +57,35 @@ public class ControllerUsuario {
 
     //no se si lo llegaremos a usar
     @RequestMapping(value = "/{user}/ratings", method = RequestMethod.GET)
-    public ResponseEntity<List<ValoracionResource> > getRatingsUser(@PathVariable Integer user) {
+    public ResponseEntity<List<ValoracionResource>> getRatingsUser(@PathVariable Integer user) {
 
         List<ValoracionResource> valoraciones = service.getRatings(user);
         return valoraciones != null ? ResponseEntity.ok(valoraciones) : ResponseEntity.notFound().build();
 
     }
 
-    @RequestMapping(value="register", method=RequestMethod.POST)
-    public ResponseEntity<?> registerUser(@RequestPart("user") String user, @RequestPart("passwd") String passwd,  @RequestPart("email") String email) {
-
+    @RequestMapping(value = "register", method = RequestMethod.POST)
+    public ResponseEntity<?> registerUser(@RequestPart("user") String user, @RequestPart("passwd") String passwd, @RequestPart("email") String email) {
         try {
             UsuarioResource newUser = service.register(user, passwd, email);
             return ResponseEntity.ok(newUser);
-        }
-
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 
     }
 
+    @RequestMapping(value = "verify", method = RequestMethod.POST)
+    public ResponseEntity<?> verifyUser(@RequestPart("token") String token) {
+        try {
 
+            UsuarioResource newUser = service.verify(Integer.parseInt(token));
+            return ResponseEntity.ok(newUser);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
+
+    }
 }
 
