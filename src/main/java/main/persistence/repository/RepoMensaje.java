@@ -1,8 +1,12 @@
 package main.persistence.repository;
 
-import main.persistence.IDs.IDMensajes;
 import main.persistence.entity.Mensaje;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface RepoMensaje extends JpaRepository<Mensaje,IDMensajes>  {
+import java.util.List;
+
+public interface RepoMensaje extends JpaRepository<Mensaje,Integer>  {
+    public List<Mensaje> findByiduser1(Integer iduser1);
+
+
 }

@@ -1,25 +1,20 @@
 package main.persistence.entity;
 
-import main.persistence.IDs.IDMensajes;
-
 import javax.persistence.*;
 
 @Entity
-@IdClass(IDMensajes.class)
+
 public class Mensaje {
     @Id
-
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
-    @Id
-    private Integer idUser1;
-    @Id
-    private Integer idUser2;
+    private Integer iduser1;
+    private Integer iduser2;
     private String text;
 
     public Mensaje (Integer idUser1, Integer idUser2, String text) {
-        this.idUser1 = idUser1;
-        this.idUser2 = idUser2;
+        this.iduser1 = idUser1;
+        this.iduser2 = idUser2;
         this.text = text;
     }
 
@@ -30,14 +25,16 @@ public class Mensaje {
     }
 
     public Integer getIdUser1() {
-        return idUser1;
+        return iduser1;
     }
 
     public Integer getIdUser2() {
-        return idUser2;
+        return iduser2;
     }
 
     public String getText() {
         return text;
     }
+
+
 }
