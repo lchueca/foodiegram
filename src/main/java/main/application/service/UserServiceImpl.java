@@ -11,11 +11,11 @@ import main.domain.resource.ValoracionResource;
 import main.persistence.entity.Publicacion;
 import main.persistence.entity.Usuario;
 import main.persistence.entity.Valoracion;
-import main.persistence.entity.VerifyToken;
+import main.persistence.entity.Verifytoken;
 import main.persistence.repository.RepoPublicacion;
 import main.persistence.repository.RepoUsuario;
 import main.persistence.repository.RepoValoracion;
-import main.persistence.repository.RepoVerifyToken;
+import main.persistence.repository.RepoVerifytoken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     RepoUsuario repoUsuario;
     @Autowired
-    RepoVerifyToken repoToken;
+    RepoVerifytoken repoToken;
     @Autowired
     SendEmailService sendEmailService;
 
@@ -135,9 +135,13 @@ public class UserServiceImpl implements UserService {
 
             sendEmailService.sendEmails("yefelipe78@gmail.com",mensaje, "topic");
             Usuario newUser = new Usuario(user, encoder.encode(passwd),null, email);
-            VerifyToken verifyToken=new VerifyToken(newUser,codigo);
-
             repoUsuario.save(newUser);
+
+            // Se hace otra consulta para ver que id le ha asignado la BD.
+            newUser = repoUsuario.findByemail(email);
+
+            Verifytoken verifyToken=new Verifytoken(newUser.getId(),codigo);
+
             repoToken.save(verifyToken);
             return converterUser.convert(newUser);
         }
@@ -145,15 +149,17 @@ public class UserServiceImpl implements UserService {
     public UsuarioResource verify(Integer token){//token  de entrada
        //token de entrada comparar token con la id del user
         //
-            VerifyToken verToken =repoToken.findBytoken(token);
+            Verifytoken verToken =repoToken.findBytoken(token);
             if(verToken==null){
                 return null;
             }
+
             else{
 
                 Usuario user=repoUsuario.findOne(verToken.getIduser());
                 user.setEnabled(true);
                 repoUsuario.save(user);
+                repoToken.delete(verToken);
 
             }
 

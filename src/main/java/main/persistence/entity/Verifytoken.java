@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 @Entity
-public class VerifyToken {
+public class Verifytoken {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
@@ -16,11 +16,13 @@ public class VerifyToken {
     private Integer token;
     private Date expiredate;
 
-    public VerifyToken(Usuario user, Integer securitytoken){
-        this.iduser=user.getId();
+    public Verifytoken(Integer userID, Integer securitytoken){
+        this.iduser=userID;
         this.token=securitytoken;
         this.expiredate=calculateExpiryDate(20);
     }
+
+    protected Verifytoken(){}
 
     private Date calculateExpiryDate(int expiryTimeInMinutes) {
         Calendar cal = Calendar.getInstance();
@@ -28,6 +30,7 @@ public class VerifyToken {
         cal.add(Calendar.MINUTE, expiryTimeInMinutes);
         return new Date(cal.getTime().getTime());
     }
+
     public Integer getToken(){
 
         return this.token;
