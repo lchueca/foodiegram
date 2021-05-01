@@ -129,11 +129,12 @@ public class UserServiceImpl implements UserService {
         else {
 
             BCryptPasswordEncoder encoder=new BCryptPasswordEncoder();
-            Random random=new Random(1);
-            int codigo=random.nextInt(100000);
+            Random random=new Random();
+            int codigo=random.nextInt(1000000);
+            String mail=email;
             String mensaje="Su codigo de verificacion es : "+codigo;
-
-            sendEmailService.sendEmails("yefelipe78@gmail.com",mensaje, "topic");
+            String topic="Confirmación de correo electrónico en foodiegram";
+            sendEmailService.sendEmails(mail,mensaje, topic);
             Usuario newUser = new Usuario(user, encoder.encode(passwd),null, email);
             repoUsuario.save(newUser);
 
@@ -146,7 +147,7 @@ public class UserServiceImpl implements UserService {
             return converterUser.convert(newUser);
         }
     }
-    public UsuarioResource verify(Integer token){//token  de entrada
+    public UsuarioResource verify(String email,Integer token){//token  de entrada
        //token de entrada comparar token con la id del user
         //
             Verifytoken verToken =repoToken.findBytoken(token);
@@ -154,12 +155,18 @@ public class UserServiceImpl implements UserService {
                 return null;
             }
 
-            else{
+           else{
+                Usuario newuser=repoUsuario.findByemail(email);
+                if(newuser.getId()==verToken.getIduser()){
 
-                Usuario user=repoUsuario.findOne(verToken.getIduser());
-                user.setEnabled(true);
-                repoUsuario.save(user);
-                repoToken.delete(verToken);
+                    newuser.setEnabled(true);
+                    repoUsuario.save(newuser);
+                    repoToken.delete(verToken);
+
+                }
+                else{
+                    return null;
+                }
 
             }
 

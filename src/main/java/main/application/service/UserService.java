@@ -19,6 +19,6 @@ public interface UserService  {
 
     UsuarioResource register(String user, String passwd, String email) throws IllegalArgumentException;
 
-    UsuarioResource verify(Integer token)throws IllegalArgumentException;
+    UsuarioResource verify(String email,Integer token)throws IllegalArgumentException;
 
 }
