@@ -1,98 +1,60 @@
 package main.rest.controller;
 
 
-import com.google.gson.Gson;
-import main.persistence.entity.Mensaje;
-import main.persistence.repository.RepoMensaje;
+
+import main.application.service.MensajeService;
+import main.domain.resource.MensajeResource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @org.springframework.web.bind.annotation.RestController
-@RequestMapping("/messages")
+@RequestMapping("/messages/")
 public class ControllerMensajes {
 
     @Autowired
-    RepoMensaje repoMen;
+    MensajeService service;
 
 
-    @RequestMapping(value = "/getMessage/{mensID}", method = RequestMethod.GET)
-    public ResponseEntity<?> getMessage(@PathVariable String mensID) {
+    @RequestMapping(value="/{mensID}",method = RequestMethod.GET)
+    public ResponseEntity<MensajeResource> getMensaje(@PathVariable Integer mensID) {
+
+        MensajeResource mens =  service.getMensaje(mensID);
+        return mens != null ? ResponseEntity.ok(mens) : ResponseEntity.notFound().build();
+
+    }
+
+    @RequestMapping(value="/menssagesPost",method = RequestMethod.POST)
+    public ResponseEntity<?> setMensaje(@RequestPart (value="user1") String userId1, @RequestPart (value="user2") String userId2,@RequestPart (value="mensaje") String mensaje){
 
         try {
-            Mensaje mensaje = repoMen.findOne(Integer.parseInt(mensID));
-
-            if (mensaje == null)
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("A message with that id doesn't exist");
-            else
-                return ResponseEntity.status(HttpStatus.OK).body(new Gson().toJson(mensaje));
-
+            MensajeResource mens = service.setMensaje(Integer.parseInt(userId1), Integer.parseInt(userId2),mensaje);
+            return ResponseEntity.ok(mens);
         }
 
-        catch (NumberFormatException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Message id must be an integer.");
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 
 
     }
-    // Devuelve una lista con todas los mensajes del usuario
-    @RequestMapping(value = "/getAll/{user}", method = RequestMethod.GET)
-    public ResponseEntity<?> getAll(@PathVariable String user) {
+    @RequestMapping(value="/{mensID}",method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteMensaje(@PathVariable Integer mensID) {
 
-        try {
-
-            List<Mensaje> mensa = repoMen.findByiduser1(Integer.parseInt(user));
-            //cam isempty
-            if (mensa.isEmpty())
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The user does not have messages.");
-            else
-                return ResponseEntity.status(HttpStatus.OK).body(new Gson().toJson(mensa));
-
-        }
-
-        catch (NumberFormatException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The user does not have messages.");
-        }
-
-    }
-    //pinta feo
-    @RequestMapping(value = "/post/{user}/{user2}", method = RequestMethod.POST)
-    public ResponseEntity<?> getAll(@PathVariable String user, @PathVariable String user2, @RequestPart("mensaje") String mensaje)  {
-
-        try  {
-            Mensaje mens = new Mensaje(Integer.parseInt(user),Integer.parseInt(user2),mensaje);
-            repoMen.save(mens);
-            return ResponseEntity.status(HttpStatus.OK).body("Sent");
-        }
-
-        catch (DataIntegrityViolationException e) {
-
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("The receiver does not exist");
-        }
+        MensajeResource  mens= service.deleteMensaje(mensID);
+        return mensID != null ? ResponseEntity.ok(mens) : ResponseEntity.notFound().build();
 
 
     }
-    @RequestMapping(value = "/delete/{mensId}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteMessage(@PathVariable String mensId)  {
+    @RequestMapping(value = "/messagesAll/{user}", method = RequestMethod.GET)
+    public ResponseEntity<?> getMensajes(@PathVariable Integer user) {
 
-        try  {
-
-            repoMen.delete(Integer.parseInt(mensId));
-            return ResponseEntity.status(HttpStatus.OK).body("Message deleted");
-        }
-
-        catch (NumberFormatException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Message id must be an integer.");
-
-        }
-        catch(EmptyResultDataAccessException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Message id not found.");
-        }
+        List<MensajeResource> mens = service.getMensajes(user);
+        return mens !=  null ? ResponseEntity.ok(mens) : ResponseEntity.notFound().build();
 
     }
 
