@@ -53,12 +53,16 @@ public class Usuario {
         return image;
     }
 
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     public String getEmail() {
         return email;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
 }
