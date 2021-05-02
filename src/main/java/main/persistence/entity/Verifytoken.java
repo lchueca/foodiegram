@@ -19,15 +19,16 @@ public class Verifytoken {
     public Verifytoken(String email, Integer securitytoken){
         this.email=email;
         this.token=securitytoken;
-        this.expiredate=calculateExpiryDate(20);
+        this.expiredate=calculateExpiryDate();
     }
 
     protected Verifytoken(){}
 
-    private Date calculateExpiryDate(int expiryTimeInMinutes) {
+    private Date calculateExpiryDate() {
         Calendar cal = Calendar.getInstance();
+        System.out.println(cal.getTime().getTime());
         cal.setTime(new Timestamp(cal.getTime().getTime()));
-        cal.add(Calendar.MINUTE, expiryTimeInMinutes);
+        cal.add(Calendar.MINUTE, 20);
         return new Date(cal.getTime().getTime());
     }
 
