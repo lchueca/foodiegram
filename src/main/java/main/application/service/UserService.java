@@ -11,10 +11,10 @@ import java.util.List;
 
 public interface UserService  {
 
-    UsuarioResource getUser(Integer user);
-    List<PreviewPublicacion> getPosts(Integer user);
-    PublicacionResource upload(Integer user, String text, String loc, MultipartFile image) throws IOException;
-    List<ValoracionResource> getRatings(Integer user);
+    UsuarioResource getUserByName(String user);
+    List<PreviewPublicacion> getPosts(String user);
+    public PublicacionResource upload(String user, String text, String loc, MultipartFile image) throws IOException, IllegalArgumentException;
+    List<ValoracionResource> getRatings(String user);
 
 
     UsuarioResource register(String user, String passwd, String email) throws IllegalArgumentException;

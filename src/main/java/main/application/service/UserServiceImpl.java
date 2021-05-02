@@ -65,27 +65,30 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UsuarioResource getUser(Integer user) {
-        return converterUser.convert(repoUsuario.findOne(user));
+    public UsuarioResource getUserByName(String user) {
+        return converterUser.convert(repoUsuario.findByname(user));
     }
 
     @Override
-    public List<PreviewPublicacion> getPosts(Integer user) {
+    public List<PreviewPublicacion> getPosts(String user) {
 
-        Usuario usuario = repoUsuario.findOne(user);
+        Usuario usuario = repoUsuario.findByname(user);
 
         if (usuario == null)
             return null;
 
         else {
 
-            List<Publicacion> publicaciones = repoPubli.findByiduser(user);
+            List<Publicacion> publicaciones = repoPubli.findByiduser(usuario.getId());
             return publicaciones.stream().map(converterPreview::convert).collect(Collectors.toList());
         }
     }
 
     @Override
-    public PublicacionResource upload(Integer user, String text, String loc, MultipartFile image) throws IOException {
+    public PublicacionResource upload(String user, String text, String loc, MultipartFile image) throws IOException, IllegalArgumentException {
+
+        Usuario usuario = repoUsuario.findByname(user);
+
 
 
         File folder = new File(apacheRootFolder + "/" + user);
@@ -95,7 +98,7 @@ public class UserServiceImpl implements UserService {
         stream.write(image.getBytes());
 
         String address = String.format("%s/%s/%s", apacheAddress, user, image.getOriginalFilename());
-        Publicacion publi = new Publicacion(text, user, address, loc);
+        Publicacion publi = new Publicacion(text, usuario.getId(), address, loc);
         repoPubli.save(publi);
 
 
@@ -103,16 +106,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<ValoracionResource> getRatings(Integer user) {
+    public List<ValoracionResource> getRatings(String user) {
 
-        Usuario usuario = repoUsuario.findOne(user);
+        Usuario usuario = repoUsuario.findByname(user);
 
         if (usuario == null)
             return null;
 
         else {
 
-            List<Valoracion> valoracionU = repoVal.findByiduser(user);
+            List<Valoracion> valoracionU = repoVal.findByiduser(usuario.getId());
             return valoracionU.stream().map(converterVal::convert).collect(Collectors.toList());
         }
     }
