@@ -1,11 +1,9 @@
 package main.persistence.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+
 public class Mensaje {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -15,8 +13,8 @@ public class Mensaje {
     private String text;
 
     public Mensaje (Integer idUser1, Integer idUser2, String text) {
-        iduser1 = idUser1;
-        iduser2 = idUser2;
+        this.iduser1 = idUser1;
+        this.iduser2 = idUser2;
         this.text = text;
     }
 
@@ -37,4 +35,6 @@ public class Mensaje {
     public String getText() {
         return text;
     }
+
+
 }

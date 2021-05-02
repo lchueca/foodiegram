@@ -11,9 +11,11 @@ import main.domain.resource.ValoracionResource;
 import main.persistence.entity.Publicacion;
 import main.persistence.entity.Usuario;
 import main.persistence.entity.Valoracion;
+import main.persistence.entity.Verifytoken;
 import main.persistence.repository.RepoPublicacion;
 import main.persistence.repository.RepoUsuario;
 import main.persistence.repository.RepoValoracion;
+import main.persistence.repository.RepoVerifytoken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,6 +26,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,6 +41,12 @@ public class UserServiceImpl implements UserService {
     RepoUsuario repoUsuario;
 
     @Autowired
+    RepoVerifytoken repoToken;
+
+    @Autowired
+    SendEmailService sendEmailService;
+
+    @Autowired
     RepoPublicacion repoPubli;
 
     @Autowired
@@ -49,29 +58,37 @@ public class UserServiceImpl implements UserService {
     @Value("${apache.address}")
     private String apacheAddress;
 
+    @Value("${direccion}")
+    private String direccionWeb;
+
+    private final Random random = new Random();
+
 
     @Override
-    public UsuarioResource getUser(Integer user) {
-        return converterUser.convert(repoUsuario.findOne(user));
+    public UsuarioResource getUserByName(String user) {
+        return converterUser.convert(repoUsuario.findByname(user));
     }
 
     @Override
-    public List<PreviewPublicacion> getPosts(Integer user) {
+    public List<PreviewPublicacion> getPosts(String user) {
 
-        Usuario usuario = repoUsuario.findOne(user);
+        Usuario usuario = repoUsuario.findByname(user);
 
         if (usuario == null)
             return null;
 
         else {
 
-            List<Publicacion> publicaciones = repoPubli.findByiduser(user);
+            List<Publicacion> publicaciones = repoPubli.findByiduser(usuario.getId());
             return publicaciones.stream().map(converterPreview::convert).collect(Collectors.toList());
         }
     }
 
     @Override
-    public PublicacionResource upload(Integer user, String text, String loc, MultipartFile image) throws IOException {
+    public PublicacionResource upload(String user, String text, String loc, MultipartFile image) throws IOException, IllegalArgumentException {
+
+        Usuario usuario = repoUsuario.findByname(user);
+
 
 
         File folder = new File(apacheRootFolder + "/" + user);
@@ -81,7 +98,7 @@ public class UserServiceImpl implements UserService {
         stream.write(image.getBytes());
 
         String address = String.format("%s/%s/%s", apacheAddress, user, image.getOriginalFilename());
-        Publicacion publi = new Publicacion(text, user, address, loc);
+        Publicacion publi = new Publicacion(text, usuario.getId(), address, loc);
         repoPubli.save(publi);
 
 
@@ -89,16 +106,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<ValoracionResource> getRatings(Integer user) {
+    public List<ValoracionResource> getRatings(String user) {
 
-        Usuario usuario = repoUsuario.findOne(user);
+        Usuario usuario = repoUsuario.findByname(user);
 
         if (usuario == null)
             return null;
 
         else {
 
-            List<Valoracion> valoracionU = repoVal.findByiduser(user);
+            List<Valoracion> valoracionU = repoVal.findByiduser(usuario.getId());
             return valoracionU.stream().map(converterVal::convert).collect(Collectors.toList());
         }
     }
@@ -121,12 +138,45 @@ public class UserServiceImpl implements UserService {
 
         else {
 
-            BCryptPasswordEncoder encoder=new BCryptPasswordEncoder();
+            int token;
+
+            // Por si coincide que ese token ya exista (Dificil, pero bueno...)
+            do {
+                token = random.nextInt(100000000);
+            }while(repoToken.findBytoken(token) != null);
+
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
             Usuario newUser = new Usuario(user, encoder.encode(passwd),null, email);
             repoUsuario.save(newUser);
 
+            Verifytoken verifyToken=new Verifytoken(email, token);
+            repoToken.save(verifyToken);
+
+
+            // Se envia el email de confirmacion
+            String mensaje="Enlace de verificación: " + direccionWeb + "/users/verify/" + token;
+            String topic="Confirmación de correo electrónico en foodiegram.";
+            sendEmailService.sendEmails(email, mensaje, topic);
+
+
             return converterUser.convert(newUser);
+
         }
+    }
+    public UsuarioResource verify(Integer token) {//token  de entrada
+       //token de entrada comparar token con la id del user
+        //
+        Verifytoken verToken = repoToken.findBytoken(token);
+
+        if (verToken==null)
+            return null;
+
+        Usuario newUser = repoUsuario.findByemail(verToken.getEmail());
+        newUser.setEnabled(true);
+        repoUsuario.save(newUser);
+        repoToken.delete(verToken);
+
+        return converterUser.convert(newUser);
     }
 }

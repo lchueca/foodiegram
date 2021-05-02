@@ -9,9 +9,11 @@ import main.domain.resource.ValoracionResource;
 import main.persistence.IDs.IDvaloracion;
 import main.persistence.entity.Comentario;
 import main.persistence.entity.Publicacion;
+import main.persistence.entity.Usuario;
 import main.persistence.entity.Valoracion;
 import main.persistence.repository.RepoComentario;
 import main.persistence.repository.RepoPublicacion;
+import main.persistence.repository.RepoUsuario;
 import main.persistence.repository.RepoValoracion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,6 +41,9 @@ public class PublicationServiceImpl implements PublicationService {
 
     @Autowired
     private RepoComentario repoComen;
+
+    @Autowired
+    private RepoUsuario repoUsuario;
 
     @Value("${apache.address}")
     private String apacheAddress;
@@ -79,6 +84,7 @@ public class PublicationServiceImpl implements PublicationService {
 
     @Override
     public PublicacionResource deletePost(Integer pubID) {
+
         Publicacion publi = repoPubli.findOne(pubID);
 
         if (publi != null)
@@ -104,32 +110,47 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     @Override
-    public ValoracionResource setRating(Integer pubID, Integer user, Integer score) throws IllegalArgumentException, DataIntegrityViolationException {
+    public ValoracionResource setRating(Integer pubID, String user, Integer score) throws IllegalArgumentException {
 
-        if(score>=0 &&score<=5) {
+        Usuario usuario = repoUsuario.findByname(user);
 
-            Valoracion valora = new Valoracion(pubID, user, score);
+        if (usuario == null)
+            throw new IllegalArgumentException("That user does not exist.");
+
+        if(score<0 || score>5)
+            throw new IllegalArgumentException("Punt must be a integer between 0 and 5");
+
+        else {
+            Valoracion valora = new Valoracion(pubID, usuario.getId(), score);
             repoVal.save(valora);
 
             return converterVal.convert(valora);
         }
 
-        else
-            throw new IllegalArgumentException("Punt must be a integer between 0 and 5");
+    }
+
+    @Override
+    public ValoracionResource getRating(Integer pubID, String user) throws IllegalArgumentException {
+
+        Usuario usuario = repoUsuario.findByname(user);
+
+        if (usuario == null)
+            throw new IllegalArgumentException("That user does not exist.");
+
+       return converterVal.convert(repoVal.findOne(new IDvaloracion(pubID,usuario.getId())));
 
     }
 
     @Override
-    public ValoracionResource getRating(Integer pubID, Integer user) {
+    public ValoracionResource deleteRating(Integer pubID, String user) throws IllegalArgumentException {
 
-       return converterVal.convert(repoVal.findOne(new IDvaloracion(pubID,user)));
+        Usuario usuario = repoUsuario.findByname(user);
 
-    }
+        if (usuario == null)
+            throw new IllegalArgumentException("That user does not exist.");
 
-    @Override
-    public ValoracionResource deleteRating(Integer pubID, Integer user) {
+        Valoracion valor = repoVal.findOne(new IDvaloracion(pubID, usuario.getId()));
 
-        Valoracion valor = repoVal.findOne(new IDvaloracion(pubID, user));
         if (valor != null)
             repoVal.delete(valor);
 
@@ -153,11 +174,16 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     @Override
-    public ComentarioResource setComment(Integer pubID, Integer userID, String text) throws DataIntegrityViolationException {
+    public ComentarioResource setComment(Integer pubID, String userID, String text) throws DataIntegrityViolationException {
 
-        Comentario comment = new Comentario(pubID,userID,text);
+        Usuario usuario = repoUsuario.findByname(userID);
+
+        if (usuario == null)
+            throw new IllegalArgumentException("That user does not exist.");
+
+        Comentario comment = new Comentario(pubID, usuario.getId(), text);
         repoComen.save(comment);
-        return  converterCom.convert(comment);
+        return converterCom.convert(comment);
 
     }
 }
