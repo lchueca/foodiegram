@@ -24,6 +24,4 @@ public interface PublicationService {
     List<ComentarioResource> getComments(Integer pubID);
     ComentarioResource setComment(Integer pubID, Integer userID, String text) throws DataIntegrityViolationException;
 
-
-
 }
