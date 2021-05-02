@@ -75,11 +75,11 @@ public class ControllerUsuario {
 
     }
 
-    @RequestMapping(value = "verify", method = RequestMethod.POST)
-    public ResponseEntity<?> verifyUser(@RequestPart("email") String email,@RequestPart("token") String token) {
+    @RequestMapping(value = "verify/{token}", method = RequestMethod.GET)
+    public ResponseEntity<?> verifyUser(@PathVariable Integer token) {
         try {
 
-            UsuarioResource newUser = service.verify(email,Integer.parseInt(token));
+            UsuarioResource newUser = service.verify(token);
             return ResponseEntity.ok(newUser);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

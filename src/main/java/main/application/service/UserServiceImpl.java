@@ -39,8 +39,10 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     RepoUsuario repoUsuario;
+
     @Autowired
     RepoVerifytoken repoToken;
+
     @Autowired
     SendEmailService sendEmailService;
 
@@ -55,6 +57,11 @@ public class UserServiceImpl implements UserService {
 
     @Value("${apache.address}")
     private String apacheAddress;
+
+    @Value("${direccion}")
+    private String direccionWeb;
+
+    private final Random random = new Random();
 
 
     @Override
@@ -128,49 +135,45 @@ public class UserServiceImpl implements UserService {
 
         else {
 
-            BCryptPasswordEncoder encoder=new BCryptPasswordEncoder();
-            Random random=new Random();
-            int codigo=random.nextInt(1000000);
-            String mail=email;
-            String mensaje="Su codigo de verificacion es : "+codigo;
-            String topic="Confirmación de correo electrónico en foodiegram";
-            sendEmailService.sendEmails(mail,mensaje, topic);
+            int token;
+
+            // Por si coincide que ese token ya exista (Dificil, pero bueno...)
+            do {
+                token = random.nextInt(100000000);
+            }while(repoToken.findBytoken(token) != null);
+
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
             Usuario newUser = new Usuario(user, encoder.encode(passwd),null, email);
             repoUsuario.save(newUser);
 
-            // Se hace otra consulta para ver que id le ha asignado la BD.
-            newUser = repoUsuario.findByemail(email);
-
-            Verifytoken verifyToken=new Verifytoken(newUser.getId(),codigo);
-
+            Verifytoken verifyToken=new Verifytoken(email, token);
             repoToken.save(verifyToken);
+
+
+            // Se envia el email de confirmacion
+            String mensaje="Enlace de verificación: " + direccionWeb + "/users/verify/" + token;
+            String topic="Confirmación de correo electrónico en foodiegram.";
+            sendEmailService.sendEmails(email, mensaje, topic);
+
+
             return converterUser.convert(newUser);
+
         }
     }
-    public UsuarioResource verify(String email,Integer token){//token  de entrada
+    public UsuarioResource verify(Integer token) {//token  de entrada
        //token de entrada comparar token con la id del user
         //
-            Verifytoken verToken =repoToken.findBytoken(token);
-            if(verToken==null){
-                return null;
-            }
+        Verifytoken verToken = repoToken.findBytoken(token);
 
-           else{
-                Usuario newuser=repoUsuario.findByemail(email);
-                if(newuser.getId()==verToken.getIduser()){
+        if (verToken==null)
+            return null;
 
-                    newuser.setEnabled(true);
-                    repoUsuario.save(newuser);
-                    repoToken.delete(verToken);
+        Usuario newUser = repoUsuario.findByemail(verToken.getEmail());
+        newUser.setEnabled(true);
+        repoUsuario.save(newUser);
+        repoToken.delete(verToken);
 
-                }
-                else{
-                    return null;
-                }
-
-            }
-
-
-        return null;
+        return converterUser.convert(newUser);
     }
 }

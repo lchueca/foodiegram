@@ -12,12 +12,12 @@ public class Verifytoken {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
-    private Integer iduser;
+    private String email;
     private Integer token;
     private Date expiredate;
 
-    public Verifytoken(Integer userID, Integer securitytoken){
-        this.iduser=userID;
+    public Verifytoken(String email, Integer securitytoken){
+        this.email=email;
         this.token=securitytoken;
         this.expiredate=calculateExpiryDate(20);
     }
@@ -39,9 +39,9 @@ public class Verifytoken {
 
         return this.expiredate;
     }
-    public Integer getIduser(){
+    public String getEmail(){
 
-        return this.iduser;
+        return this.email;
     }
 
     public Integer getId() {
