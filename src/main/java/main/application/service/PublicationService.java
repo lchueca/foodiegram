@@ -16,14 +16,12 @@ public interface PublicationService {
 
     // Valoraciones
     List<ValoracionResource> getRatings(Integer pubID);
-    ValoracionResource setRating(Integer pubID, Integer user, Integer score) throws IllegalArgumentException, DataIntegrityViolationException;
-    ValoracionResource getRating(Integer pubID, Integer user);
-    ValoracionResource deleteRating(Integer pubID, Integer user);
+    ValoracionResource setRating(Integer pubID, String user, Integer score) throws IllegalArgumentException;
+    ValoracionResource getRating(Integer pubID, String user) throws IllegalArgumentException;
+    ValoracionResource deleteRating(Integer pubID, String user) throws IllegalArgumentException;
 
     // Comentarios
     List<ComentarioResource> getComments(Integer pubID);
-    ComentarioResource setComment(Integer pubID, Integer userID, String text) throws DataIntegrityViolationException;
-
-
+    ComentarioResource setComment(Integer pubID, String userID, String text) throws IllegalArgumentException;
 
 }

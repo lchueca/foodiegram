@@ -62,8 +62,8 @@ public class ControllerPublicacion {
     }
 
     //setea o updatea la valoracion de un usuario en una publicacion
-    @RequestMapping(value="/ratings/{user}",method = RequestMethod.POST)
-    public ResponseEntity<?> setRating(@PathVariable Integer user, @PathVariable Integer pubID, @RequestPart(value="score") String punt){
+    @RequestMapping(value="/ratings/{user}", method = RequestMethod.POST)
+    public ResponseEntity<?> setRating(@PathVariable String user, @PathVariable Integer pubID, @RequestPart(value="score") String punt){
 
         try {
             ValoracionResource valoracion = service.setRating(pubID, user, Integer.parseInt(punt));
@@ -78,18 +78,18 @@ public class ControllerPublicacion {
     }
 
    //devuele si un usuario a valorado una publicacion
-   @RequestMapping(value="/ratings/{user}",method = RequestMethod.GET)
-    public ResponseEntity<ValoracionResource> getRating(@PathVariable Integer user, @PathVariable Integer pubID){
+   @RequestMapping(value="/ratings/{user}", method = RequestMethod.GET)
+    public ResponseEntity<ValoracionResource> getRating(@PathVariable String user, @PathVariable Integer pubID){
 
-        ValoracionResource val=  service.getRating(pubID,user);
+        ValoracionResource val=  service.getRating(pubID, user);
 
        return val != null ? ResponseEntity.ok(val) : ResponseEntity.notFound().build();
 
     }
 
     //borra una valoracion dentro una publicacion de un usuario
-    @RequestMapping(value = "/ratings/{user}",method=RequestMethod.DELETE)
-    public ResponseEntity<ValoracionResource> deleteRating(@PathVariable Integer user,@PathVariable Integer pubID){
+    @RequestMapping(value = "/ratings/{user}", method=RequestMethod.DELETE)
+    public ResponseEntity<ValoracionResource> deleteRating(@PathVariable String user, @PathVariable Integer pubID){
 
         ValoracionResource val = service.deleteRating(pubID, user);
         return val != null ? ResponseEntity.ok(val) : ResponseEntity.notFound().build();
@@ -107,13 +107,14 @@ public class ControllerPublicacion {
 
 
     @RequestMapping(value = "/comments/{userID}",method = RequestMethod.POST)
-    public ResponseEntity<?> setComment(@PathVariable Integer userID, @PathVariable Integer pubID, @RequestPart(value="text") String text){
+    public ResponseEntity<?> setComment(@PathVariable String userID, @PathVariable Integer pubID, @RequestPart(value="text") String text){
 
         try{
-            ComentarioResource coment= service.setComment(pubID,userID,text);
-            return ResponseEntity.ok(coment);
+            ComentarioResource comment = service.setComment(pubID, userID, text);
+            return ResponseEntity.ok(comment);
         }
-        catch (Exception e){
+
+        catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 
