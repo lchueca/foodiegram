@@ -26,26 +26,25 @@ public class ControllerUsuario {
     private UserService service;
 
 
-    // Devuelve una lista con todas las IDs de las publicaciones del usuario y las imagenes correspondientes.
     @RequestMapping(value = "/{user}", method = RequestMethod.GET)
-    public ResponseEntity<UsuarioResource> getUser(@PathVariable Integer user) {
+    public ResponseEntity<UsuarioResource> getUserByName(@PathVariable String user) {
 
-        UsuarioResource usuario = service.getUser(user);
+        UsuarioResource usuario = service.getUserByName(user);
         return usuario != null ? ResponseEntity.ok(usuario) : ResponseEntity.notFound().build();
     }
 
     // Devuelve una lista con todas las IDs de las publicaciones del usuario y las imagenes correspondientes.
     @RequestMapping(value = "/{user}/posts", method = RequestMethod.GET)
-    public ResponseEntity<List<PreviewPublicacion>> getPosts(@PathVariable Integer user) {
+    public ResponseEntity<List<PreviewPublicacion>> getPosts(@PathVariable String user) {
 
         List<PreviewPublicacion> publicaciones = service.getPosts(user);
         return publicaciones != null ? ResponseEntity.ok(publicaciones) : ResponseEntity.notFound().build();
     }
 
     @RequestMapping(value = "/{user}/upload", method = RequestMethod.POST)
-    public ResponseEntity<?> upload(@PathVariable Integer user, @RequestPart("text") String text, @RequestPart("loc") String loc, @RequestPart("image") MultipartFile image)  {
+    public ResponseEntity<?> upload(@PathVariable String user, @RequestPart("text") String text, @RequestPart("loc") String loc, @RequestPart("image") MultipartFile image) {
 
-        try  {
+        try {
             PublicacionResource publi = service.upload(user, text, loc, image);
             return ResponseEntity.ok(publi);
         }
@@ -55,30 +54,44 @@ public class ControllerUsuario {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("F");
         }
 
-    }
-
-    //no se si lo llegaremos a usar
-    @RequestMapping(value = "/{user}/ratings", method = RequestMethod.GET)
-    public ResponseEntity<List<ValoracionResource> > getRatingsUser(@PathVariable Integer user) {
-
-        List<ValoracionResource> valoraciones = service.getRatings(user);
-        return valoraciones != null ? ResponseEntity.ok(valoraciones) : ResponseEntity.notFound().build();
-
-    }
-
-    @RequestMapping(value="register", method=RequestMethod.POST)
-    public ResponseEntity<?> registerUser(@RequestPart("user") String user, @RequestPart("passwd") String passwd,  @RequestPart("email") String email) {
-
-        try {
-            UsuarioResource newUser = service.register(user, passwd, email);
-            return ResponseEntity.ok(newUser);
-        }
-
         catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 
     }
 
+    //no se si lo llegaremos a usar
+    @RequestMapping(value = "/{user}/ratings", method = RequestMethod.GET)
+    public ResponseEntity<List<ValoracionResource>> getRatingsUser(@PathVariable String user) {
 
+        List<ValoracionResource> valoraciones = service.getRatings(user);
+        return valoraciones != null ? ResponseEntity.ok(valoraciones) : ResponseEntity.notFound().build();
+
+    }
+
+    @RequestMapping(value = "register", method = RequestMethod.POST)
+    public ResponseEntity<?> registerUser(@RequestPart("user") String user, @RequestPart("passwd") String passwd, @RequestPart("email") String email) {
+        try {
+            UsuarioResource newUser = service.register(user, passwd, email);
+            return ResponseEntity.ok(newUser);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
+    }
+
+    @RequestMapping(value = "verify/{token}", method = RequestMethod.GET)
+    public ResponseEntity<?> verifyUser(@PathVariable Integer token) {
+
+        try {
+
+            UsuarioResource newUser = service.verify(token);
+            return ResponseEntity.ok(newUser);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
+
+    }
 }
+

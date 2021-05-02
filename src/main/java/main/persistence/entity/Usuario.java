@@ -15,12 +15,14 @@ public class Usuario {
     private String passwd;
     private String  email;
     private String image;
+    private boolean enabled;
 
     public Usuario(String name, String passwd, String image, String email) {
         this.name = name;
         this.passwd = passwd;
         this.image = image;
         this.email=email;
+        this.enabled=false;
     }
 
     protected Usuario() {}
@@ -57,8 +59,16 @@ public class Usuario {
         return email;
     }
 
+
     public void setImage(String image) {
         this.image = image;
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean a) {
+        this.enabled=a;
+    }
 }
