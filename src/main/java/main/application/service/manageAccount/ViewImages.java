@@ -6,7 +6,6 @@ import java.util.List;
 
 public interface ViewImages {
 
-    List<PublicacionResource> viewImages(Integer idUser);
+    List<PublicacionResource> viewPost(Integer idUser);
 
-    //futuro sprint: viewRatings(), viewComments();
 }

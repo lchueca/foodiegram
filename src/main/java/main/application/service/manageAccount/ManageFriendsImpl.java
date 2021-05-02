@@ -8,9 +8,11 @@ import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoAmigo;
 import main.persistence.repository.RepoUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class ManageFriendsImpl implements ManageFriends{
 
 
@@ -61,7 +63,7 @@ public class ManageFriendsImpl implements ManageFriends{
                 return null;
             else{
                 ViewImagesImpl viewImagesofFriend = new ViewImagesImpl();
-                return viewImagesofFriend.viewImages(user.getId());
+                return viewImagesofFriend.viewPost(user.getId());
             }
         }
     }

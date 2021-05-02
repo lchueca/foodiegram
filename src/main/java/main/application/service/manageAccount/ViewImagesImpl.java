@@ -7,10 +7,12 @@ import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoPublicacion;
 import main.persistence.repository.RepoUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class ViewImagesImpl implements  ViewImages{
 
     private final PublicacionConverter postConverter = new PublicacionConverter();
@@ -22,7 +24,7 @@ public class ViewImagesImpl implements  ViewImages{
     RepoUsuario repoUser;
 
     @Override
-    public List<PublicacionResource> viewImages(Integer idUser) {
+    public List<PublicacionResource> viewPost(Integer idUser) {
 
         Usuario user = repoUser.findById(idUser);
 

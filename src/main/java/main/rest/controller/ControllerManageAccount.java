@@ -1,0 +1,102 @@
+package main.rest.controller;
+
+import main.application.service.manageAccount.ManageFriends;
+import main.application.service.manageAccount.ManageInfo;
+import main.application.service.manageAccount.Unsubscribe;
+import main.application.service.manageAccount.ViewImages;
+import main.domain.resource.AmigoResource;
+import main.domain.resource.PublicacionResource;
+import main.domain.resource.UsuarioResource;
+import main.persistence.entity.Amigo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestPart;
+
+import java.util.List;
+
+@org.springframework.web.bind.annotation.RestController
+@RequestMapping("/manage_account/{id}")
+public class ControllerManageAccount {
+
+    @Autowired
+    ManageFriends manageFriends;
+    ManageInfo manageInfo;
+    Unsubscribe unsubscribeService;
+    ViewImages viewImagesService;
+
+    //--MANAGE FRIENDS--
+
+    @RequestMapping(method = RequestMethod.PUT)
+    public ResponseEntity<?> add(@PathVariable Integer id, @RequestPart(value = "name", required = true) String name){
+
+        AmigoResource friend = manageFriends.addFriend(id, name);
+        return friend != null ? ResponseEntity.ok(friend) : ResponseEntity.notFound().build();
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE)
+    public ResponseEntity<?> remove(@PathVariable Integer id, @RequestPart(value = "name", required = true) String name){
+
+        AmigoResource friend = manageFriends.removeFriend(id, name);
+        return friend != null ? ResponseEntity.ok(friend) : ResponseEntity.notFound().build();
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<List<PublicacionResource>> viewImagesofFriend(@PathVariable Integer id, @RequestPart(value = "name", required = true) String name){
+
+        List<PublicacionResource> publicacionesAmigo = manageFriends.viewPostOfFriend(id, name);
+        return publicacionesAmigo != null ? ResponseEntity.ok(publicacionesAmigo) : ResponseEntity.notFound().build();
+    }
+    //-------------------------------------------------------------------------------------------------------------------------
+
+    //--MANAGE INFO--
+
+
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<?> changeName(@PathVariable Integer id, @RequestPart(value = "newName", required = true) String newName){
+        UsuarioResource user = manageInfo.changeName(id, newName);
+        return user!= null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<?> changePasswd(@PathVariable Integer id, @RequestPart(value = "newPasswd", required = true) String newPasswd){
+        UsuarioResource user = manageInfo.changePasswd(id, newPasswd);
+        return user!= null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<?> changeEmail(@PathVariable Integer id, @RequestPart(value = "newEmail", required = true) String newEmail){
+        UsuarioResource user = manageInfo.changeEmail(id, newEmail);
+        return user!= null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<?> changeProfilePic(@PathVariable Integer id, @RequestPart(value = "newPic", required = true) String newPic){
+        UsuarioResource user = manageInfo.changeProfilePicture(id, newPic);
+        return user!= null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
+    }
+    //-------------------------------------------------------------------------------------------------------------------------
+
+    //--UNSUBSCRIBE--
+
+    @RequestMapping(method = RequestMethod.DELETE)
+    public ResponseEntity<?> unsubscribe(@PathVariable Integer id){
+        UsuarioResource user = unsubscribeService.unsubscribe(id);
+        return user!= null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
+    }
+
+    //-------------------------------------------------------------------------------------------------------------------------
+
+    //--VIEW MY IMAGES--
+
+    @RequestMapping(method = RequestMethod.DELETE)
+    public ResponseEntity<List<PublicacionResource>> viweMyImages(@PathVariable Integer id){
+        List<PublicacionResource> _listPost = viewImagesService.viewPost(id);
+        return _listPost != null ? ResponseEntity.ok(_listPost) : ResponseEntity.notFound().build();
+    }
+    //-------------------------------------------------------------------------------------------------------------------------
+
+}
