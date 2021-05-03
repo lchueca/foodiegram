@@ -13,7 +13,7 @@ public class PublicacionResource {
     private String text;
     private String image;
     private String localization;
-    private Integer media;
+    private String media;
     private Integer numerototalval;
 
 }

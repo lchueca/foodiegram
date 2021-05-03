@@ -14,9 +14,9 @@ public class Valoracion {
   private Integer idpubli;
   @Id
   private Integer iduser;
-  private Integer punt;
+  private Float punt;
 
-    public Valoracion(Integer idPubli, Integer idUser, Integer Punt) {
+    public Valoracion(Integer idPubli, Integer idUser, Float Punt) {
         idpubli = idPubli;
         iduser = idUser;
         punt = Punt;
@@ -32,7 +32,7 @@ public class Valoracion {
         return iduser;
     }
 
-    public Integer getPunt() {
+    public Float getPunt() {
         return punt;
     }
 }

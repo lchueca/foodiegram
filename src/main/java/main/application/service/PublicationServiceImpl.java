@@ -110,7 +110,7 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     @Override
-    public ValoracionResource setRating(Integer pubID, String user, Integer score) throws IllegalArgumentException {
+    public ValoracionResource setRating(Integer pubID, String user, Float score) throws IllegalArgumentException {
 
         Usuario usuario = repoUsuario.findByname(user);
 

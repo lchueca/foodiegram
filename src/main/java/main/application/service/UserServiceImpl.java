@@ -27,30 +27,34 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    PreviewPublicacionConverter converterPreview = new PreviewPublicacionConverter();
-    PublicacionConverter converterPubli = new PublicacionConverter();
-    ValoracionConverter converterVal = new ValoracionConverter();
-    UsuarioConverter converterUser = new UsuarioConverter();
+    private PreviewPublicacionConverter converterPreview = new PreviewPublicacionConverter();
+    private PublicacionConverter converterPubli = new PublicacionConverter();
+    private ValoracionConverter converterVal = new ValoracionConverter();
+    private UsuarioConverter converterUser = new UsuarioConverter();
+
+    private final Pattern imagePattern = Pattern.compile("\\w+.(png|jpg)$");
 
     @Autowired
-    RepoUsuario repoUsuario;
+    private RepoUsuario repoUsuario;
 
     @Autowired
-    RepoVerifytoken repoToken;
+    private RepoVerifytoken repoToken;
 
     @Autowired
-    SendEmailService sendEmailService;
+    private SendEmailService sendEmailService;
 
     @Autowired
-    RepoPublicacion repoPubli;
+    private RepoPublicacion repoPubli;
 
     @Autowired
-    RepoValoracion repoVal;
+    private RepoValoracion repoVal;
 
     @Value("${apache.rootFolder}")
     private String apacheRootFolder;
@@ -89,18 +93,38 @@ public class UserServiceImpl implements UserService {
 
         Usuario usuario = repoUsuario.findByname(user);
 
+        if (usuario == null)
+            return null;
 
+        Matcher matcher = imagePattern.matcher(image.getOriginalFilename());
 
-        File folder = new File(apacheRootFolder + "/" + user);
-        folder.mkdirs();
+        if (!matcher.matches())
+            throw new IllegalArgumentException("Only jpeg and png images are supported.");
 
-        FileOutputStream stream = new FileOutputStream(folder.getAbsolutePath() + "/"  + image.getOriginalFilename());
-        stream.write(image.getBytes());
+        // Se crea una publicacion sin imagen
+        Publicacion publi = new Publicacion(text, usuario.getId(), loc);
+        publi = repoPubli.save(publi);
 
-        String address = String.format("%s/%s/%s", apacheAddress, user, image.getOriginalFilename());
-        Publicacion publi = new Publicacion(text, usuario.getId(), address, loc);
-        repoPubli.save(publi);
+        try {
+            File folder = new File(apacheRootFolder + "/" + user);
+            folder.mkdirs();
 
+            String name = folder.getAbsolutePath() + "/" + publi.getId() + "." + matcher.group(1);
+            FileOutputStream stream = new FileOutputStream(name);
+            stream.write(image.getBytes());
+            stream.close();
+
+            // Si se ha conseguido guardar la imagen, se le asocia a la publicacion una direccion en la BD.
+            String address = String.format("%s/%s/%s.%s", apacheAddress, user, publi.getId(), matcher.group(1));
+            publi.setImage(address);
+            repoPubli.save(publi);
+        }
+
+        catch (IOException e) {
+            repoPubli.delete(publi);
+            publi = null;
+            throw e;
+        }
 
         return converterPubli.convert(publi);
     }

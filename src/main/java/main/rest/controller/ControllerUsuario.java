@@ -7,6 +7,7 @@ import main.domain.resource.PublicacionResource;
 import main.domain.resource.UsuarioResource;
 import main.domain.resource.ValoracionResource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -25,12 +27,23 @@ public class ControllerUsuario {
     @Autowired
     private UserService service;
 
+    @Value("${direccion}")
+    private String direccionWeb;
+
 
     @RequestMapping(value = "/{user}", method = RequestMethod.GET)
     public ResponseEntity<UsuarioResource> getUserByName(@PathVariable String user) {
 
         UsuarioResource usuario = service.getUserByName(user);
         return usuario != null ? ResponseEntity.ok(usuario) : ResponseEntity.notFound().build();
+    }
+
+    // Si buscas /users/user/postID se te redirige a /posts/postID
+    @RequestMapping(value = "/{user}/{pubID}", method = RequestMethod.GET)
+    public void redirectToPost(HttpServletResponse httpServletResponse, @PathVariable String user, @PathVariable Integer pubID) {
+
+        httpServletResponse.setHeader("Location", direccionWeb + "/posts/" + pubID);
+        httpServletResponse.setStatus(302);
     }
 
     // Devuelve una lista con todas las IDs de las publicaciones del usuario y las imagenes correspondientes.
@@ -46,7 +59,7 @@ public class ControllerUsuario {
 
         try {
             PublicacionResource publi = service.upload(user, text, loc, image);
-            return ResponseEntity.ok(publi);
+            return publi != null ? ResponseEntity.ok(publi) : ResponseEntity.notFound().build();
         }
 
         catch (IOException e) {

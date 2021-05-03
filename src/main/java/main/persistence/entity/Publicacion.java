@@ -15,7 +15,7 @@ public class Publicacion {
     private String text;
     private String image;
     private String  localization;
-    private  Integer media;
+    private  Float media;
     private Integer numerototalval;
 
     public Publicacion(String text, Integer idUser, String image, String localization) {
@@ -23,11 +23,18 @@ public class Publicacion {
         this.image = image;
         this.iduser = idUser;
         this.localization = localization;
-        this.media=0;
+        this.media=0f;
         this.numerototalval=0;
     }
 
-
+    public Publicacion(String text, Integer idUser, String localization) {
+        this.text = text;
+        this.image = null;
+        this.iduser = idUser;
+        this.localization = localization;
+        this.media=0f;
+        this.numerototalval=0;
+    }
 
     public Publicacion(String image) {
         this.text = null;
@@ -60,7 +67,7 @@ public class Publicacion {
         return localization;
     }
 
-    public Integer getMedia() { return media; }
+    public Float getMedia() { return media; }
 
     public Integer getNumerototalval() { return numerototalval; }
 
