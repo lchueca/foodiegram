@@ -5,6 +5,7 @@ import main.application.service.manageAccountService.ManageInfo;
 import main.application.service.manageAccountService.Unsubscribe;
 import main.application.service.manageAccountService.ViewImages;
 import main.domain.resource.AmigoResource;
+import main.domain.resource.PreviewPublicacion;
 import main.domain.resource.PublicacionResource;
 import main.domain.resource.UsuarioResource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +44,9 @@ public class ControllerManageAccount {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<PublicacionResource>> viewImagesofFriend(@PathVariable Integer id, @RequestPart(value = "name", required = true) String name){
+    public ResponseEntity<List<PreviewPublicacion>> viewImagesofFriend(@PathVariable Integer id, @RequestPart(value = "name", required = true) String name){
 
-        List<PublicacionResource> publicacionesAmigo = manageFriends.viewPostOfFriend(id, name);
+        List<PreviewPublicacion> publicacionesAmigo = manageFriends.viewPostOfFriend(id, name);
         return publicacionesAmigo != null ? ResponseEntity.ok(publicacionesAmigo) : ResponseEntity.notFound().build();
     }
     //-------------------------------------------------------------------------------------------------------------------------
@@ -90,9 +91,9 @@ public class ControllerManageAccount {
 
     //--VIEW MY IMAGES--
 
-    @RequestMapping(value = "/viewImage/{user}", method = RequestMethod.DELETE)
-    public ResponseEntity<List<PublicacionResource>> viweMyImages(@PathVariable Integer id){
-        List<PublicacionResource> _listPost = viewImagesService.viewPost(id);
+    @RequestMapping(value = "/viewImage", method = RequestMethod.GET)
+    public ResponseEntity<List<PreviewPublicacion>> viewMyImages(@PathVariable Integer id){
+        List<PreviewPublicacion> _listPost = viewImagesService.viewPost(id);
         return _listPost != null ? ResponseEntity.ok(_listPost) : ResponseEntity.notFound().build();
     }
     //-------------------------------------------------------------------------------------------------------------------------

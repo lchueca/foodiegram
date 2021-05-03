@@ -1,8 +1,8 @@
 package main.application.service.manageAccountService;
 
+import main.application.service.UserServiceImpl;
 import main.domain.converter.PublicacionConverter;
-import main.domain.resource.PublicacionResource;
-import main.persistence.entity.Publicacion;
+import main.domain.resource.PreviewPublicacion;
 import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoPublicacion;
 import main.persistence.repository.RepoUsuario;
@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ViewImagesImpl implements  ViewImages{
@@ -24,15 +23,15 @@ public class ViewImagesImpl implements  ViewImages{
     RepoUsuario repoUser;
 
     @Override
-    public List<PublicacionResource> viewPost(Integer idUser) {
+    public List<PreviewPublicacion> viewPost(Integer idUser) {
 
         Usuario user = repoUser.findById(idUser);
 
         if(user == null) //comprobamos que existe el usuario con idUser
             return null;
         else{
-            List<Publicacion> _listPost = repoPost.findByiduser(idUser);
-            return _listPost.stream().map(postConverter::convert).collect(Collectors.toList());
+            UserServiceImpl userService = new UserServiceImpl();
+            return userService.getPosts(idUser);
 
         }
     }

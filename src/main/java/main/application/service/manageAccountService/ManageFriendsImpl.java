@@ -2,7 +2,7 @@ package main.application.service.manageAccountService;
 
 import main.domain.converter.AmigoConverter;
 import main.domain.resource.AmigoResource;
-import main.domain.resource.PublicacionResource;
+import main.domain.resource.PreviewPublicacion;
 import main.persistence.IDs.IDamigo;
 import main.persistence.entity.Amigo;
 import main.persistence.entity.Usuario;
@@ -27,6 +27,7 @@ public class ManageFriendsImpl implements ManageFriends{
 
     @Override
     public AmigoResource addFriend(Integer id, String name) {
+
         Usuario user = repoUser.findByName(name);
 
         if(user == null) //comprobamos que el usuario existe
@@ -52,7 +53,7 @@ public class ManageFriendsImpl implements ManageFriends{
     }
 
     @Override
-    public List<PublicacionResource> viewPostOfFriend(Integer id, String name) {
+    public List<PreviewPublicacion> viewPostOfFriend(Integer id, String name) {
         Usuario user = repoUser.findByName(name);
 
         if(user == null) //comprobamos que el usuario existe

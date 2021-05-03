@@ -1,11 +1,11 @@
 package main.application.service.manageAccountService;
 
-import main.domain.resource.PublicacionResource;
+import main.domain.resource.PreviewPublicacion;
 
 import java.util.List;
 
 public interface ViewImages {
 
-    List<PublicacionResource> viewPost(Integer idUser);
+    List<PreviewPublicacion> viewPost(Integer idUser);
 
 }

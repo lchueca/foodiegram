@@ -8,6 +8,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RepoAmigo extends JpaRepository<Amigo, IDamigo> {
 
-    //public Amigo findByIds(Integer iduser1, Integer iduser2);
-
 }
