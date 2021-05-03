@@ -66,7 +66,7 @@ public class ControllerPublicacion {
     public ResponseEntity<?> setRating(@PathVariable String user, @PathVariable Integer pubID, @RequestPart(value="score") String punt){
 
         try {
-            ValoracionResource valoracion = service.setRating(pubID, user, Integer.parseInt(punt));
+            ValoracionResource valoracion = service.setRating(pubID, user, Float.parseFloat(punt));
             return ResponseEntity.ok(valoracion);
         }
 

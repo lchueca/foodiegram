@@ -16,7 +16,7 @@ public interface PublicationService {
 
     // Valoraciones
     List<ValoracionResource> getRatings(Integer pubID);
-    ValoracionResource setRating(Integer pubID, String user, Integer score) throws IllegalArgumentException;
+    ValoracionResource setRating(Integer pubID, String user, Float score) throws IllegalArgumentException;
     ValoracionResource getRating(Integer pubID, String user) throws IllegalArgumentException;
     ValoracionResource deleteRating(Integer pubID, String user) throws IllegalArgumentException;
 

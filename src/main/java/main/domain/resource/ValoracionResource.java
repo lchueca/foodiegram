@@ -10,6 +10,6 @@ public class ValoracionResource {
 
     private Integer idpubli;
     private Integer iduser;
-    private Integer punt;
+    private Float punt;
     
 }

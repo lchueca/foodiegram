@@ -1,3 +1,5 @@
+direccion = http://localhost:8080
+
 spring.http.multipart.max-file-size = 20MB
 spring.http.multipart.max-request-size = 20MB
 spring.datasource.platform=mysql
@@ -10,7 +12,7 @@ spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQLDialect
 
 
 
-apache.address = http://localhost:{port}
+apache.address = http://localhost:4555
 
 apache.rootFolder = images/
 

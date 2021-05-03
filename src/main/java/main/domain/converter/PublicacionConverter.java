@@ -5,12 +5,15 @@ import main.persistence.entity.Publicacion;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import java.text.DecimalFormat;
+
 @Component
 public class PublicacionConverter implements Converter<Publicacion, PublicacionResource> {
 
     @Override
     public PublicacionResource convert(Publicacion source){
 
+        DecimalFormat df = new DecimalFormat("#.##");
         if (source == null)
             return null;
 
@@ -20,7 +23,7 @@ public class PublicacionConverter implements Converter<Publicacion, PublicacionR
         response.setText(source.getText());
         response.setImage(source.getImage());
         response.setLocalization(source.getLocalization());
-        response.setMedia(source.getMedia());
+        response.setMedia(df.format(source.getMedia()));
         response.setNumerototalval(source.getNumerototalval());
         return response;
     }
