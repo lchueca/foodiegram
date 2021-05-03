@@ -8,6 +8,10 @@ public class IDamigo implements Serializable {
     private Integer iduser1;
     private Integer iduser2;
 
+    public IDamigo(){
+
+    }
+
     public IDamigo(Integer id1, Integer id2){
         this.iduser1 = id1;
         this.iduser2 = id2;

@@ -6,7 +6,6 @@ import main.application.service.manageAccountService.Unsubscribe;
 import main.application.service.manageAccountService.ViewImages;
 import main.domain.resource.AmigoResource;
 import main.domain.resource.PreviewPublicacion;
-import main.domain.resource.PublicacionResource;
 import main.domain.resource.UsuarioResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
+
 
 import java.util.List;
 
@@ -23,8 +23,14 @@ public class ControllerManageAccount {
 
     @Autowired
     ManageFriends manageFriends;
+
+    @Autowired
     ManageInfo manageInfo;
+
+    @Autowired
     Unsubscribe unsubscribeService;
+
+    @Autowired
     ViewImages viewImagesService;
 
     //--MANAGE FRIENDS--
