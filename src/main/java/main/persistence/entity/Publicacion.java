@@ -27,7 +27,14 @@ public class Publicacion {
         this.numerototalval=0;
     }
 
-
+    public Publicacion(String text, Integer idUser, String localization) {
+        this.text = text;
+        this.image = null;
+        this.iduser = idUser;
+        this.localization = localization;
+        this.media=0;
+        this.numerototalval=0;
+    }
 
     public Publicacion(String image) {
         this.text = null;
