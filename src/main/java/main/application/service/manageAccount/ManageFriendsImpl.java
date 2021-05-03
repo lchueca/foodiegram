@@ -3,6 +3,7 @@ package main.application.service.manageAccount;
 import main.domain.converter.AmigoConverter;
 import main.domain.resource.AmigoResource;
 import main.domain.resource.PublicacionResource;
+import main.persistence.IDs.IDamigo;
 import main.persistence.entity.Amigo;
 import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoAmigo;
@@ -57,7 +58,7 @@ public class ManageFriendsImpl implements ManageFriends{
         if(user == null) //comprobamos que el usuario existe
             return null;
         else{
-            Amigo friend = repoAmigo.findByIds(id, user.getId());
+            Amigo friend = repoAmigo.findOne(new IDamigo(id, user.getId()));
 
             if(friend == null)//comprobamos que son amigos, sino, no podrá ver sus fotos
                 return null;

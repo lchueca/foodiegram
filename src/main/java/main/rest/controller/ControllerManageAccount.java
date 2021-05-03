@@ -55,25 +55,25 @@ public class ControllerManageAccount {
     //--MANAGE INFO--
 
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(value = "/newName", method = RequestMethod.POST)
     public ResponseEntity<?> changeName(@PathVariable Integer id, @RequestPart(value = "newName", required = true) String newName){
         UsuarioResource user = manageInfo.changeName(id, newName);
         return user!= null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(value ="/newPasswd", method = RequestMethod.POST)
     public ResponseEntity<?> changePasswd(@PathVariable Integer id, @RequestPart(value = "newPasswd", required = true) String newPasswd){
         UsuarioResource user = manageInfo.changePasswd(id, newPasswd);
         return user!= null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(value = "/newEmail", method = RequestMethod.POST)
     public ResponseEntity<?> changeEmail(@PathVariable Integer id, @RequestPart(value = "newEmail", required = true) String newEmail){
         UsuarioResource user = manageInfo.changeEmail(id, newEmail);
         return user!= null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(value = "/newPic", method = RequestMethod.POST)
     public ResponseEntity<?> changeProfilePic(@PathVariable Integer id, @RequestPart(value = "newPic", required = true) String newPic){
         UsuarioResource user = manageInfo.changeProfilePicture(id, newPic);
         return user!= null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
@@ -82,7 +82,7 @@ public class ControllerManageAccount {
 
     //--UNSUBSCRIBE--
 
-    @RequestMapping(method = RequestMethod.DELETE)
+    @RequestMapping(value  = "/unsubscribe",method = RequestMethod.DELETE)
     public ResponseEntity<?> unsubscribe(@PathVariable Integer id){
         UsuarioResource user = unsubscribeService.unsubscribe(id);
         return user!= null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
@@ -92,7 +92,7 @@ public class ControllerManageAccount {
 
     //--VIEW MY IMAGES--
 
-    @RequestMapping(method = RequestMethod.DELETE)
+    @RequestMapping(value = "/viewImage/{user}", method = RequestMethod.DELETE)
     public ResponseEntity<List<PublicacionResource>> viweMyImages(@PathVariable Integer id){
         List<PublicacionResource> _listPost = viewImagesService.viewPost(id);
         return _listPost != null ? ResponseEntity.ok(_listPost) : ResponseEntity.notFound().build();
