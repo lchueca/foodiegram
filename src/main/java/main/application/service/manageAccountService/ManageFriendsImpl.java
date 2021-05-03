@@ -1,4 +1,4 @@
-package main.application.service.manageAccount;
+package main.application.service.manageAccountService;
 
 import main.domain.converter.AmigoConverter;
 import main.domain.resource.AmigoResource;

@@ -1,10 +1,9 @@
-package main.application.service.manageAccount;
+package main.application.service.manageAccountService;
 
 
 import main.domain.resource.AmigoResource;
 import main.domain.resource.PublicacionResource;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
 public interface ManageFriends {

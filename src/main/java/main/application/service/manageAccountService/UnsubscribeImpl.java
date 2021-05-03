@@ -1,4 +1,4 @@
-package main.application.service.manageAccount;
+package main.application.service.manageAccountService;
 
 import main.domain.converter.UsuarioConverter;
 import main.domain.resource.UsuarioResource;
