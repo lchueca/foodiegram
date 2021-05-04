@@ -112,7 +112,7 @@ public class PublicationServiceImpl implements PublicationService {
     @Override
     public ValoracionResource setRating(Integer pubID, String user, Float score) throws IllegalArgumentException {
 
-        Usuario usuario = repoUsuario.findByname(user);
+        Usuario usuario = repoUsuario.findByName(user);
 
         if (usuario == null)
             throw new IllegalArgumentException("That user does not exist.");
@@ -132,7 +132,7 @@ public class PublicationServiceImpl implements PublicationService {
     @Override
     public ValoracionResource getRating(Integer pubID, String user) throws IllegalArgumentException {
 
-        Usuario usuario = repoUsuario.findByname(user);
+        Usuario usuario = repoUsuario.findByName(user);
 
         if (usuario == null)
             throw new IllegalArgumentException("That user does not exist.");
@@ -144,7 +144,7 @@ public class PublicationServiceImpl implements PublicationService {
     @Override
     public ValoracionResource deleteRating(Integer pubID, String user) throws IllegalArgumentException {
 
-        Usuario usuario = repoUsuario.findByname(user);
+        Usuario usuario = repoUsuario.findByName(user);
 
         if (usuario == null)
             throw new IllegalArgumentException("That user does not exist.");
@@ -176,7 +176,7 @@ public class PublicationServiceImpl implements PublicationService {
     @Override
     public ComentarioResource setComment(Integer pubID, String userID, String text) throws DataIntegrityViolationException {
 
-        Usuario usuario = repoUsuario.findByname(userID);
+        Usuario usuario = repoUsuario.findByName(userID);
 
         if (usuario == null)
             throw new IllegalArgumentException("That user does not exist.");

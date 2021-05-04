@@ -1,16 +1,16 @@
 package main.persistence.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import main.persistence.IDs.IDamigo;
+
+import javax.persistence.*;
 
 @Entity
+@IdClass(IDamigo.class)
 public class Amigo {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer iduser1;
+    @Id
     private Integer iduser2;
 
     public Amigo(Integer idUser1, Integer idUser2) {
