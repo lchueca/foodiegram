@@ -9,8 +9,8 @@ import javax.persistence.*;
 public class Amigo {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer iduser1;
+    @Id
     private Integer iduser2;
 
     public Amigo(Integer idUser1, Integer idUser2) {
