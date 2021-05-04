@@ -122,7 +122,6 @@ public class UserServiceImpl implements UserService {
 
         catch (IOException e) {
             repoPubli.delete(publi);
-            publi = null;
             throw e;
         }
 

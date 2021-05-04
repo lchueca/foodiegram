@@ -19,7 +19,7 @@ public class ControllerMensajes {
     @Autowired
     MensajeService service;
 
-
+    //devuelve un JSON con el mensaje (segun el mensID)
     @RequestMapping(value="/{mensID}",method = RequestMethod.GET)
     public ResponseEntity<MensajeResource> getMensaje(@PathVariable Integer mensID) {
 
@@ -28,6 +28,7 @@ public class ControllerMensajes {
 
     }
 
+    //hace un upload con el mensaje
     @RequestMapping(value="/menssagesPost",method = RequestMethod.POST)
     public ResponseEntity<?> setMensaje(@RequestPart (value="user1") String userId1, @RequestPart (value="user2") String userId2,@RequestPart (value="mensaje") String mensaje){
 

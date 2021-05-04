@@ -30,7 +30,6 @@ public class ControllerUsuario {
     @Value("${direccion}")
     private String direccionWeb;
 
-
     @RequestMapping(value = "/{user}", method = RequestMethod.GET)
     public ResponseEntity<UsuarioResource> getUserByName(@PathVariable String user) {
 
