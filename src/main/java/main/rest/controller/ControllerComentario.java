@@ -20,6 +20,7 @@ public class ControllerComentario {
     @Autowired
     ComentarioService service;
 
+    //edita el comentario segun el comID (modifica solo el texto)
     @RequestMapping(method = RequestMethod.PUT)
     public ResponseEntity<?> editComment(@PathVariable Integer comID, @RequestPart(value="text") String text){
 
@@ -33,7 +34,7 @@ public class ControllerComentario {
 
     }
 
-
+    //borra el comentario segun el comID
     @RequestMapping(method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteComment(@PathVariable Integer comID) {
 

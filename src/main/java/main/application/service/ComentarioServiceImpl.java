@@ -15,6 +15,7 @@ public class ComentarioServiceImpl implements ComentarioService {
 
     private ComentarioConverter comentarioConverter = new ComentarioConverter();
 
+
     @Override
     public ComentarioResource editComentario(Integer comID,String text) throws IllegalArgumentException {
 

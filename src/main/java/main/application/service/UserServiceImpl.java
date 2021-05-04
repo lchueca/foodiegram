@@ -70,13 +70,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UsuarioResource getUserByName(String user) {
-        return converterUser.convert(repoUsuario.findByname(user));
+        return converterUser.convert(repoUsuario.findByName(user));
     }
 
     @Override
     public List<PreviewPublicacion> getPosts(String user) {
 
-        Usuario usuario = repoUsuario.findByname(user);
+        Usuario usuario = repoUsuario.findByName(user);
 
         if (usuario == null)
             return null;
@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public PublicacionResource upload(String user, String text, String loc, MultipartFile image) throws IOException, IllegalArgumentException {
 
-        Usuario usuario = repoUsuario.findByname(user);
+        Usuario usuario = repoUsuario.findByName(user);
 
         if (usuario == null)
             return null;
@@ -122,7 +122,6 @@ public class UserServiceImpl implements UserService {
 
         catch (IOException e) {
             repoPubli.delete(publi);
-            publi = null;
             throw e;
         }
 
@@ -132,7 +131,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<ValoracionResource> getRatings(String user) {
 
-        Usuario usuario = repoUsuario.findByname(user);
+        Usuario usuario = repoUsuario.findByName(user);
 
         if (usuario == null)
             return null;

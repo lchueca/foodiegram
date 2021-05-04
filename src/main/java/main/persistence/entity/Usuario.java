@@ -1,11 +1,14 @@
 package main.persistence.entity;
 
+import lombok.Data;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
+@Data
 public class Usuario {
 
     @Id
@@ -27,48 +30,4 @@ public class Usuario {
 
     protected Usuario() {}
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPasswd() {
-        return passwd;
-    }
-
-    public void setPasswd(String passwd) {
-        this.passwd = passwd;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean a) {
-        this.enabled=a;
-    }
 }

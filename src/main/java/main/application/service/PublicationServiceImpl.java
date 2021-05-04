@@ -67,7 +67,7 @@ public class PublicationServiceImpl implements PublicationService {
 
         Publicacion publi = repoPubli.findOne(pubID);
 
-        if (publi != null) {
+         if (publi != null) {
 
             if (text != null)
                 publi.setText(text);
@@ -112,7 +112,7 @@ public class PublicationServiceImpl implements PublicationService {
     @Override
     public ValoracionResource setRating(Integer pubID, String user, Float score) throws IllegalArgumentException {
 
-        Usuario usuario = repoUsuario.findByname(user);
+        Usuario usuario = repoUsuario.findByName(user);
 
         if (usuario == null)
             throw new IllegalArgumentException("That user does not exist.");
@@ -130,24 +130,24 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     @Override
-    public ValoracionResource getRating(Integer pubID, String user) throws IllegalArgumentException {
+    public ValoracionResource getRating(Integer pubID, String user)  {
 
-        Usuario usuario = repoUsuario.findByname(user);
+        Usuario usuario = repoUsuario.findByName(user);
 
         if (usuario == null)
-            throw new IllegalArgumentException("That user does not exist.");
+            return  null;
 
        return converterVal.convert(repoVal.findOne(new IDvaloracion(pubID,usuario.getId())));
 
     }
 
     @Override
-    public ValoracionResource deleteRating(Integer pubID, String user) throws IllegalArgumentException {
+    public ValoracionResource deleteRating(Integer pubID, String user)  {
 
-        Usuario usuario = repoUsuario.findByname(user);
+        Usuario usuario = repoUsuario.findByName(user);
 
         if (usuario == null)
-            throw new IllegalArgumentException("That user does not exist.");
+            return null;
 
         Valoracion valor = repoVal.findOne(new IDvaloracion(pubID, usuario.getId()));
 
@@ -174,9 +174,12 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     @Override
-    public ComentarioResource setComment(Integer pubID, String userID, String text) throws DataIntegrityViolationException {
+    public ComentarioResource setComment(Integer pubID, String userID, String text) throws IllegalArgumentException {
 
-        Usuario usuario = repoUsuario.findByname(userID);
+        if (text == null || text.length() == 0)
+            throw new IllegalArgumentException("Text must be not null");
+
+        Usuario usuario = repoUsuario.findByName(userID);
 
         if (usuario == null)
             throw new IllegalArgumentException("That user does not exist.");
