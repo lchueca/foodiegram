@@ -39,7 +39,7 @@ public class ManageFriendsImpl implements ManageFriends{
 
         Usuario user = repoUser.findByName(name);
 
-        if(user == null) //comprobamos que el usuario existe
+        if(user == null || user.getId() == id) //comprobamos que el usuario existe
             return null;
         else{
             Amigo friend = new Amigo(id, user.getId());
@@ -49,29 +49,42 @@ public class ManageFriendsImpl implements ManageFriends{
     }
 
     @Override
-    public AmigoResource removeFriend(Integer id, String name) {
+    public AmigoResource removeFriend(Integer id, String name) throws IllegalArgumentException{
         Usuario user = repoUser.findByName(name);
 
         if(user == null)//comprobamos que el usuario existe
-            return null;
+            throw new IllegalArgumentException("The is not a user with name: " + name);
         else{
-            Amigo friend = new Amigo(id, user.getId());
-            repoAmigo.delete(friend);
-            return friendConverter.convert(friend);
+            Amigo friend1 = repoAmigo.findOne(new IDamigo(id, user.getId())); //comprobamos que son amigos
+            Amigo friend2 = repoAmigo.findOne(new IDamigo(user.getId(), id));
+
+            if(friend1 == null && friend2 != null){
+                repoAmigo.delete(friend2);
+                return friendConverter.convert(friend2);
+            }
+            else if(friend1 != null && friend2 == null){
+                repoAmigo.delete(friend1);
+                return friendConverter.convert(friend1);
+            }
+            else{
+                throw new IllegalArgumentException("You have no friend with name: " + name);
+            }
+
         }
     }
 
     @Override
-    public List<PreviewPublicacion> viewPostOfFriend(Integer id, String name) {
+    public List<PreviewPublicacion> viewPostOfFriend(Integer id, String name) throws IllegalArgumentException{
         Usuario user = repoUser.findByName(name);
 
         if(user == null) //comprobamos que el usuario existe
             return null;
         else{
-            Amigo friend = repoAmigo.findOne(new IDamigo(id, user.getId()));
+            Amigo friend1 = repoAmigo.findOne(new IDamigo(id, user.getId()));
+            Amigo friend2 = repoAmigo.findOne(new IDamigo(user.getId(), id));
 
-            if(friend == null)//comprobamos que son amigos, sino, no podrá ver sus fotos
-                return null;
+            if(friend1 == null && friend2 == null)//comprobamos que son amigos, sino, no podrá ver sus fotos
+                throw new IllegalArgumentException("You have no friend with name: " + name);
             else{
                 List<Publicacion> post = repoPost.findByiduser(user.getId());
                 return post.stream().map(converterPreview::convert).collect(Collectors.toList());

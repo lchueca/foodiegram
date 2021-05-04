@@ -18,7 +18,7 @@ public class ManageInfoImpl implements ManageInfo{
 
 
     @Override
-    public UsuarioResource changeName(Integer idUser, String newName) {
+    public UsuarioResource changeName(Integer idUser, String newName) throws IllegalArgumentException{
 
         Usuario user = repoUser.findById(idUser);
 
@@ -29,6 +29,9 @@ public class ManageInfoImpl implements ManageInfo{
 
             if(nameUnique == null)//si no hay usuarios con newName, podrá cambiar el nombre
                 user.setName(newName);
+            else{
+                throw new IllegalArgumentException("There is already a user with name : " + newName);
+            }
 
             repoUser.save(user);
             return userConverter.convert(user);
