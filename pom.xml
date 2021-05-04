@@ -68,6 +68,7 @@
             <artifactId>lombok</artifactId>
             <version>1.16.22</version>
         </dependency>
+
         
     </dependencies>
     <build>
@@ -75,7 +76,24 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>spring-boot</classifier>
+                            <mainClass>
+                                main.Main
+                            </mainClass>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
+
         </plugins>
+
+
     </build>
 </project>
+
