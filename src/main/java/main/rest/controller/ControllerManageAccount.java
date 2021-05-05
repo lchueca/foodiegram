@@ -95,6 +95,10 @@ public class ControllerManageAccount {
             return user!= null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
         }
 
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
         catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

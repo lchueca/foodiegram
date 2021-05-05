@@ -17,5 +17,5 @@ public interface ManageInfo {
     UsuarioResource changeEmail(Integer idUser, String newMail);
 
     //Cambia la foto de perfil del usuario idUser, retorn null si no existe el usuario con idUser
-    UsuarioResource changeProfilePicture(Integer idUser, MultipartFile newProfilePic) throws IOException;
+    UsuarioResource changeProfilePicture(Integer idUser, MultipartFile newProfilePic) throws IOException, IllegalArgumentException;
 }
