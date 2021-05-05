@@ -8,13 +8,16 @@ import main.domain.resource.AmigoResource;
 import main.domain.resource.PreviewPublicacion;
 import main.domain.resource.UsuarioResource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
 
+import java.io.IOException;
 import java.util.List;
 
 @org.springframework.web.bind.annotation.RestController
@@ -85,9 +88,17 @@ public class ControllerManageAccount {
 
     //permite cambiar la foto de perfil del usuario con id
     @RequestMapping(value = "/newPic", method = RequestMethod.POST)
-    public ResponseEntity<?> changeProfilePic(@PathVariable Integer id, @RequestPart(value = "newPic", required = true) String newPic){
-        UsuarioResource user = manageInfo.changeProfilePicture(id, newPic);
-        return user!= null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
+    public ResponseEntity<?> changeProfilePic(@PathVariable Integer id, @RequestPart("image") MultipartFile image) {
+
+        try {
+            UsuarioResource user = manageInfo.changeProfilePicture(id, image);
+            return user!= null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
+        }
+
+        catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+
     }
     //-------------------------------------------------------------------------------------------------------------------------
 

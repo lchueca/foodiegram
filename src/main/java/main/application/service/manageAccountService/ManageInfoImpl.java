@@ -5,8 +5,16 @@ import main.domain.resource.UsuarioResource;
 import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class ManageInfoImpl implements ManageInfo{
@@ -16,6 +24,13 @@ public class ManageInfoImpl implements ManageInfo{
     @Autowired
     RepoUsuario repoUser;
 
+    @Value("${apache.rootFolder}")
+    private String apacheRootFolder;
+
+    @Value("${apache.address}")
+    private String apacheAddress;
+
+    private final Pattern imagePattern = Pattern.compile("\\w+.(png|jpg)$");
 
 
     @Override
@@ -67,15 +82,32 @@ public class ManageInfoImpl implements ManageInfo{
     }
 
     @Override
-    public UsuarioResource changeProfilePicture(Integer idUser, String newProfilePic) {
+    public UsuarioResource changeProfilePicture(Integer idUser, MultipartFile newProfilePic) throws IOException {
+
         Usuario user = repoUser.findById(idUser);
 
         if(user == null)
             return null;
-        else{
-            user.setImage(newProfilePic);
-            repoUser.save(user);
-            return userConverter.convert(user);
-        }
+
+        Matcher matcher = imagePattern.matcher(newProfilePic.getOriginalFilename());
+
+        if (!matcher.matches())
+            throw new IllegalArgumentException("Only jpeg and png images are supported.");
+
+
+        File folder = new File(apacheRootFolder + "/" + user.getId());
+        folder.mkdirs();
+
+        String name = folder.getAbsolutePath() + "/pfp." + matcher.group(1);
+        FileOutputStream stream = new FileOutputStream(name);
+        stream.write(newProfilePic.getBytes());
+        stream.close();
+
+        String address = String.format("%s/%s/pfp.%s", apacheAddress, user.getId(), matcher.group(1));
+        user.setImage(address);
+        repoUser.save(user);
+
+        return userConverter.convert(user);
+
     }
 }

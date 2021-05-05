@@ -1,6 +1,9 @@
 package main.application.service.manageAccountService;
 
 import main.domain.resource.UsuarioResource;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 public interface ManageInfo {
 
@@ -14,5 +17,5 @@ public interface ManageInfo {
     UsuarioResource changeEmail(Integer idUser, String newMail);
 
     //Cambia la foto de perfil del usuario idUser, retorn null si no existe el usuario con idUser
-    UsuarioResource changeProfilePicture(Integer idUser, String newProfilePic);
+    UsuarioResource changeProfilePicture(Integer idUser, MultipartFile newProfilePic) throws IOException;
 }
