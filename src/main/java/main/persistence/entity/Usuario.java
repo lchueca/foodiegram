@@ -16,7 +16,7 @@ public class Usuario {
     private Integer id;
     private String name;
     private String passwd;
-    private String  email;
+    private String email;
     private String image;
     private boolean enabled;
 

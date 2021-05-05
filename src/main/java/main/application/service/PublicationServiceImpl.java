@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-//@Component
 public class PublicationServiceImpl implements PublicationService {
 
     private final PublicacionConverter converterPubli = new PublicacionConverter();
@@ -34,7 +33,7 @@ public class PublicationServiceImpl implements PublicationService {
     private final ComentarioConverter converterCom = new ComentarioConverter();
 
     @Autowired
-    RepoPublicacion repoPubli;
+    private RepoPublicacion repoPubli;
 
     @Autowired
     private RepoValoracion repoVal;
