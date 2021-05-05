@@ -5,6 +5,7 @@ import main.domain.resource.UsuarioResource;
 import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -45,7 +46,8 @@ public class ManageInfoImpl implements ManageInfo{
         if(user == null)
             return null;
         else{
-            user.setPasswd(newPasswd);
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            user.setPasswd(encoder.encode(newPasswd));
             repoUser.save(user);
             return userConverter.convert(user);
         }
