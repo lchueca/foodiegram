@@ -1,16 +1,14 @@
 package main.domain.resource;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-
 import javax.annotation.Resource;
 
 @Resource
 @Data
-public class UsuarioResource {
+@AllArgsConstructor
+public class PreviewUsuario {
 
-    private Integer id;
     private String name;
-    private String email;
     private String image;
-
 }
