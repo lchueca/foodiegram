@@ -106,11 +106,11 @@ public class ControllerPublicacion {
     }
 
 
-    @RequestMapping(value = "/comments/{userID}",method = RequestMethod.POST)
-    public ResponseEntity<?> setComment(@PathVariable String userID, @PathVariable Integer pubID, @RequestPart(value="text") String text){
+    @RequestMapping(value = "/comments/{user}",method = RequestMethod.POST)
+    public ResponseEntity<?> setComment(@PathVariable String user, @PathVariable Integer pubID, @RequestPart(value="text") String text){
 
         try{
-            ComentarioResource comment = service.setComment(pubID, userID, text);
+            ComentarioResource comment = service.setComment(pubID, user, text);
             return ResponseEntity.ok(comment);
         }
 

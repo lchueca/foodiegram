@@ -29,11 +29,11 @@ public class ControllerMensajes {
     }
 
     //hace un upload con el mensaje
-    @RequestMapping(value="/menssagesPost",method = RequestMethod.POST)
-    public ResponseEntity<?> setMensaje(@RequestPart (value="user1") String userId1, @RequestPart (value="user2") String userId2,@RequestPart (value="mensaje") String mensaje){
+    @RequestMapping(value="/{user1}/{user2}",method = RequestMethod.POST)
+    public ResponseEntity<?> setMensaje(@PathVariable String user1, @PathVariable String user2, @RequestPart (value="text") String mensaje){
 
         try {
-            MensajeResource mens = service.setMensaje(Integer.parseInt(userId1), Integer.parseInt(userId2),mensaje);
+            MensajeResource mens = service.setMensaje(user1, user2,mensaje);
             return ResponseEntity.ok(mens);
         }
 
@@ -51,19 +51,6 @@ public class ControllerMensajes {
 
 
     }
-    @RequestMapping(value = "/messagesAll/{user}", method = RequestMethod.GET)
-    public ResponseEntity<?> getMensajes(@PathVariable Integer user) {
-
-        List<MensajeResource> mens = service.getMensajes(user);
-        return mens !=  null ? ResponseEntity.ok(mens) : ResponseEntity.notFound().build();
-
-    }
-
-
-
-
-
-
 
 }
 

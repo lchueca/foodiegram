@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface RepoComentario extends JpaRepository<Comentario, Integer> {
 
-    public List<Comentario> findByidpubli(Integer idpubli);
-    public List<Comentario> findByiduser(Integer iduser);
+    public List<Comentario> findByIdpubli(Integer idpubli);
+    public List<Comentario> findByIduser(Integer iduser);
 }

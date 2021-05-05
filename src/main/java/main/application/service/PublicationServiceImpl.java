@@ -17,7 +17,6 @@ import main.persistence.repository.RepoUsuario;
 import main.persistence.repository.RepoValoracion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -103,7 +102,7 @@ public class PublicationServiceImpl implements PublicationService {
             return null;
 
         else {
-            List<Valoracion> valoraciones = repoVal.findByidpubli(pubID);
+            List<Valoracion> valoraciones = repoVal.findByIdpubli(pubID);
             return valoraciones.stream().map(converterVal::convert).collect(Collectors.toList());
         }
     }
@@ -166,7 +165,7 @@ public class PublicationServiceImpl implements PublicationService {
 
         else {
 
-            List<Comentario> comentarios = repoComen.findByidpubli(pubID);
+            List<Comentario> comentarios = repoComen.findByIdpubli(pubID);
             return comentarios.stream().map(converterCom::convert).collect(Collectors.toList());
         }
 

@@ -2,10 +2,7 @@ package main.rest.controller;
 
 
 import main.application.service.UserService;
-import main.domain.resource.PreviewPublicacion;
-import main.domain.resource.PublicacionResource;
-import main.domain.resource.UsuarioResource;
-import main.domain.resource.ValoracionResource;
+import main.domain.resource.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -105,5 +102,15 @@ public class ControllerUsuario {
 
 
     }
+
+    @RequestMapping(value = "/{user}/messages", method = RequestMethod.GET)
+    public ResponseEntity<?> getMensajes(@PathVariable String user) {
+
+        List<MensajeResource> mens = service.getMensajes(user);
+        return mens !=  null ? ResponseEntity.ok(mens) : ResponseEntity.notFound().build();
+
+    }
+
+
 }
 

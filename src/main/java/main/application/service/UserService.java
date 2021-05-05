@@ -1,9 +1,6 @@
 package main.application.service;
 
-import main.domain.resource.PreviewPublicacion;
-import main.domain.resource.PublicacionResource;
-import main.domain.resource.UsuarioResource;
-import main.domain.resource.ValoracionResource;
+import main.domain.resource.*;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -33,5 +30,8 @@ public interface UserService  {
 
     // Sudad de este.
     UsuarioResource verify(Integer token);
+
+    //Devuelve una lista de MensajeResource con los mensajes que ha enviado el user1ID.
+    List<MensajeResource> getMensajes(String userName);
 
 }

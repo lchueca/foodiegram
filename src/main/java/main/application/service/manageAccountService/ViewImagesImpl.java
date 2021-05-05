@@ -1,6 +1,5 @@
 package main.application.service.manageAccountService;
 
-import main.application.service.UserServiceImpl;
 import main.domain.converter.PreviewPublicacionConverter;
 import main.domain.converter.PublicacionConverter;
 import main.domain.resource.PreviewPublicacion;
@@ -34,7 +33,7 @@ public class ViewImagesImpl implements  ViewImages{
         if(user == null) //comprobamos que existe el usuario con idUser
             return null;
         else{
-            List<Publicacion> post = repoPost.findByiduser(idUser);
+            List<Publicacion> post = repoPost.findByIduser(idUser);
             return post.stream().map(converterPreview::convert).collect(Collectors.toList());
         }
     }

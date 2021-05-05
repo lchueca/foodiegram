@@ -86,7 +86,7 @@ public class ManageFriendsImpl implements ManageFriends{
             if(friend1 == null && friend2 == null)//comprobamos que son amigos, sino, no podrá ver sus fotos
                 throw new IllegalArgumentException("You have no friend with name: " + name);
             else{
-                List<Publicacion> post = repoPost.findByiduser(user.getId());
+                List<Publicacion> post = repoPost.findByIduser(user.getId());
                 return post.stream().map(converterPreview::convert).collect(Collectors.toList());
             }
         }

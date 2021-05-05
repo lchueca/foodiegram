@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface RepoUsuario extends JpaRepository<Usuario, Integer> {
 
-    public Usuario findByemail(String email);
+    public Usuario findByEmail(String email);
     public Usuario findById(Integer id);
     public Usuario findByName(String name);
     List<Usuario> findBynameContainingIgnoreCase(String name);

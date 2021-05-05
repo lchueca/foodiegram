@@ -10,7 +10,7 @@ import java.util.List;
 public interface RepoPublicacion extends JpaRepository<Publicacion, Integer> {
 
 
-    public List<Publicacion> findByiduser(Integer id);
+    public List<Publicacion> findByIduser(Integer id);
 
 
 

@@ -17,14 +17,12 @@ import java.util.stream.Collectors;
 public class MensajeServiceImpl implements MensajeService{
 
 
-
     private final MensajeConverter converterMens = new MensajeConverter();
 
     @Autowired
     RepoMensaje repoMens;
     @Autowired
     RepoUsuario repoUser;
-
 
 
     @Override
@@ -46,23 +44,16 @@ public class MensajeServiceImpl implements MensajeService{
     }
 
     @Override
-    public List<MensajeResource> getMensajes(Integer user1ID) {
+    public MensajeResource setMensaje(String userName1, String userName2, String mensaje) throws IllegalArgumentException {
 
-        Usuario user = repoUser.findOne(user1ID);
+        Usuario user1 = repoUser.findByName(userName1);
+        Usuario user2 = repoUser.findByName(userName2);
 
-        if (user == null)
-            return null;
+        if (user1 == null || user2 == null)
+            throw new IllegalArgumentException("Both users should exist.");
 
-        else {
-            List<Mensaje> mensajes = repoMens.findByiduser1(user1ID);
-            return mensajes.stream().map(converterMens::convert).collect(Collectors.toList());
-        }
-    }
 
-    @Override
-    public MensajeResource setMensaje(Integer user1ID, Integer user2ID, String mensaje) throws DataIntegrityViolationException {
-
-        Mensaje mens = new Mensaje(user1ID,user2ID,mensaje);
+        Mensaje mens = new Mensaje(user1.getId(), user2.getId(), mensaje);
         repoMens.save(mens);
         return converterMens.convert(mens);
 
