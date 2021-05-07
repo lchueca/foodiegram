@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class PublicationServiceTest {
+class PublicationServiceImplTest {
 
     @Test
     void getPost() {
@@ -16,6 +16,14 @@ class PublicationServiceTest {
 
     @Test
     void deletePost() {
+    }
+
+    @Test
+    void getRatings() {
+    }
+
+    @Test
+    void setRating() {
     }
 
     @Test
