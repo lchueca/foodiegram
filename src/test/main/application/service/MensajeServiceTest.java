@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MensajeServiceTest {
 
+    @Autowired
+
     @Test
     void getMensaje() {
     }
