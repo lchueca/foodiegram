@@ -4,23 +4,21 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MensajeServiceTest {
-
-    @Autowired
+class SearchServiceImplTest {
 
     @Test
-    void getMensaje() {
+    void getUserList() {
     }
 
     @Test
-    void deleteMensaje() {
+    void getColabListByName() {
     }
 
     @Test
-    void getMensajes() {
+    void getColabListByOrigin() {
     }
 
     @Test
-    void setMensaje() {
+    void getColabListByType() {
     }
 }
