@@ -1,12 +1,16 @@
 package main.application.service;
 
 import main.domain.converter.PreviewColabJOINUserConverter;
+import main.domain.converter.PreviewPubliJOINUserConverter;
 import main.domain.converter.PreviewUserConverter;
 import main.domain.resource.PreviewColabJOINUser;
+import main.domain.resource.PreviewPubliJOINUser;
 import main.domain.resource.PreviewUsuario;
 import main.persistence.entity.ColabJOINUser;
+import main.persistence.entity.PubliJOINUser;
 import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoColabJOINUser;
+import main.persistence.repository.RepoPubliJOINUser;
 import main.persistence.repository.RepoUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,12 +23,14 @@ public class SearchServiceImpl implements SearchService {
 
     private final PreviewUserConverter converterPreviewUser = new PreviewUserConverter();
     private final PreviewColabJOINUserConverter converterPreviewColabJUser = new PreviewColabJOINUserConverter();
+    private final PreviewPubliJOINUserConverter converterPreviewPubliJUser = new PreviewPubliJOINUserConverter();
 
     @Autowired
     private RepoUsuario repoUser;
-
     @Autowired
     private RepoColabJOINUser repoColabJUser;
+    @Autowired
+    private RepoPubliJOINUser repoPubliJUser;
 
     // BUSQUEDA DE USUARIOS
     //
@@ -59,5 +65,11 @@ public class SearchServiceImpl implements SearchService {
     }
 
     // BUSQUEDA DE PUBLICACIONES
+    //
+    // devuelve una lista de publicaciones cuyo texto contenga un hastag coincidente con tag
+    public List<PreviewPubliJOINUser> getPubliListByTag(String tag) {
 
+        List<PubliJOINUser> publiJuser = repoPubliJUser.findByTag(tag);
+        return publiJuser.stream().map(converterPreviewPubliJUser::convert).collect(Collectors.toList());
+    }
 }

@@ -2,6 +2,7 @@ package main.rest.controller;
 
 import main.application.service.SearchService;
 import main.domain.resource.PreviewColabJOINUser;
+import main.domain.resource.PreviewPubliJOINUser;
 import main.domain.resource.PreviewUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -63,5 +64,15 @@ public class SearchRestController {
     }
 
     // BUSQUEDA DE PUBLICACIONES
+    //
+    // busca las publicaciones que contengan un hashtag coincidente con "tag"y devuelve
+    // una lista con los datos de las publicaciones (menos los ids) y el nombre del usuario que hizo
+    // la publicacion
+    // si no encuentra devuelve una lista vacia
+    @RequestMapping(value = "/publi/{tag}", method = RequestMethod.GET)
+    public ResponseEntity<List<PreviewPubliJOINUser>> getPubliListByTag(@PathVariable String tag) {
 
+        List<PreviewPubliJOINUser> publiList = service.getPubliListByTag("#" + tag);
+        return publiList != null ? ResponseEntity.ok(publiList) : ResponseEntity.notFound().build();
+    }
 }
