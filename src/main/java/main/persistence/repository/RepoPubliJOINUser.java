@@ -3,9 +3,11 @@ package main.persistence.repository;
 import main.persistence.entity.PubliJOINUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface RepoPubliJOINUser extends JpaRepository<PubliJOINUser, Integer> {
 
     @Query(value = "SELECT p.id, u.id as userid, u.name, u.image as userimage, " +

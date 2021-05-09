@@ -10,11 +10,13 @@ import main.persistence.entity.ColabJOINUser;
 import main.persistence.entity.PubliJOINUser;
 import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoColabJOINUser;
+import main.persistence.repository.RepoNumValPubli;
 import main.persistence.repository.RepoPubliJOINUser;
 import main.persistence.repository.RepoUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,6 +40,20 @@ public class SearchServiceImpl implements SearchService {
     public List<PreviewUsuario> getUserList(String username) {
 
         List<Usuario> userList = repoUser.findBynameContainingIgnoreCase(username);
+        return userList.stream().map(converterPreviewUser::convert).collect(Collectors.toList());
+    }
+
+    // devuelve una lista de usuarios por numero de publicaciones
+    public List<PreviewUsuario> getUserListByPubli() {
+
+        List<Usuario> userList = repoUser.findByPopuPubli();
+        return userList.stream().map(converterPreviewUser::convert).collect(Collectors.toList());
+    }
+
+    // devuelve una lista de usuarios por numero de valoraciones recibidas
+    public List<PreviewUsuario> getUserListByVal() {
+
+        List<Usuario> userList = repoUser.findByPopuVal();
         return userList.stream().map(converterPreviewUser::convert).collect(Collectors.toList());
     }
 
