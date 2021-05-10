@@ -9,14 +9,9 @@ import java.util.Collection;
 @AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
 
-    private  String password;
-    private  String username;
-    private  boolean isEnabled;
-
-    public UserDetailsImpl() {
-    }
-
-
+    private final String password;
+    private final String userName;
+    private final boolean isEnabled;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -30,7 +25,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return userName;
     }
 
     @Override
