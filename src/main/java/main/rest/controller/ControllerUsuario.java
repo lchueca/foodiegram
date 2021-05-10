@@ -1,16 +1,21 @@
 package main.rest.controller;
 
 
+import com.google.gson.Gson;
 import main.application.service.UserService;
 import main.domain.resource.*;
+import main.security.JWTokenGenerator;
+import main.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -26,6 +31,12 @@ public class ControllerUsuario {
 
     @Value("${direccion}")
     private String direccionWeb;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JWTokenGenerator jwtGenerator;
 
     @RequestMapping(value = "/{user}", method = RequestMethod.GET)
     public ResponseEntity<UsuarioResource> getUserByName(@PathVariable String user) {
@@ -109,6 +120,31 @@ public class ControllerUsuario {
         List<MensajeResource> mens = service.getMensajes(user);
         return mens !=  null ? ResponseEntity.ok(mens) : ResponseEntity.notFound().build();
 
+    }
+
+    @RequestMapping(value="/login", method=RequestMethod.POST)
+    public ResponseEntity<String> login(@RequestBody String body) {
+
+        Gson g = new Gson();
+        UserDetailsImpl cred = g.fromJson(body, UserDetailsImpl.class);
+
+        try {
+            Authentication authenticate = authenticationManager.authenticate(
+                            new UsernamePasswordAuthenticationToken(
+                                    cred.getUsername(), cred.getPassword()
+                            )
+                    );
+
+            return ResponseEntity.ok(jwtGenerator.buildToken(cred.getUsername(), cred.getPassword()));
+        }
+
+        catch (BadCredentialsException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong credentials.");
+        }
+
+        catch (DisabledException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is disabled.");
+        }
     }
 
 
