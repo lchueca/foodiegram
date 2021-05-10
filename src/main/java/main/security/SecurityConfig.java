@@ -39,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         http.csrf().disable()
-                .addFilterAfter(new JwtTokenFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new JwtTokenFilter(userRepo), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/users/login").permitAll()
                 .antMatchers(HttpMethod.POST, "/users/register").permitAll()

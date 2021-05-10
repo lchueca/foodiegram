@@ -4,6 +4,7 @@ package main.security;
 import io.jsonwebtoken.*;
 import main.persistence.entity.Jwtoken;
 import main.persistence.repository.RepoJwtoken;
+import main.persistence.repository.RepoUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,6 +25,11 @@ import java.io.IOException;
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     private static final String SECRET = "MamiChanXFungus";
+
+    public JwtTokenFilter(RepoUsuario repo) {
+
+
+    }
 
     @Autowired
     private RepoJwtoken repoTokens;
