@@ -4,8 +4,8 @@ package main.rest.controller;
 import com.google.gson.Gson;
 import main.application.service.UserService;
 import main.domain.resource.*;
-//import main.security.JWTokenGenerator;
-//import main.security.UserDetailsImpl;
+import main.security.JWTokenGenerator;
+import main.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -35,8 +35,8 @@ public class ControllerUsuario {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-//    @Autowired
-//    private JWTokenGenerator jwtGenerator;
+    @Autowired
+    private JWTokenGenerator jwtGenerator;
 
     @RequestMapping(value = "/{user}", method = RequestMethod.GET)
     public ResponseEntity<UsuarioResource> getUserByName(@PathVariable String user) {
@@ -122,30 +122,30 @@ public class ControllerUsuario {
 
     }
 
-//    @RequestMapping(value="/login", method=RequestMethod.POST)
-//    public ResponseEntity<String> login(@RequestBody String body) {
-//
-//        Gson g = new Gson();
-//        UserDetailsImpl cred = g.fromJson(body, UserDetailsImpl.class);
-//
-//        try {
-//            Authentication authenticate = authenticationManager.authenticate(
-//                            new UsernamePasswordAuthenticationToken(
-//                                    cred.getUsername(), cred.getPassword()
-//                            )
-//                    );
-//
-//            return ResponseEntity.ok(jwtGenerator.buildToken(cred.getUsername(), cred.getPassword()));
-//        }
-//
-//        catch (BadCredentialsException ex) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong credentials.");
-//        }
-//
-//        catch (DisabledException e) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is disabled.");
-//        }
-//    }
+    @RequestMapping(value="/login", method=RequestMethod.POST)
+    public ResponseEntity<String> login(@RequestBody String body) {
+
+        Gson g = new Gson();
+        UserDetailsImpl cred = g.fromJson(body, UserDetailsImpl.class);
+
+        try {
+            Authentication authenticate = authenticationManager.authenticate(
+                            new UsernamePasswordAuthenticationToken(
+                                    cred.getUsername(), cred.getPassword()
+                            )
+                    );
+
+            return ResponseEntity.ok(jwtGenerator.buildToken(cred.getUsername(), cred.getPassword()));
+        }
+
+        catch (BadCredentialsException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong credentials.");
+        }
+
+        catch (DisabledException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is disabled.");
+        }
+    }
 
 
 }
