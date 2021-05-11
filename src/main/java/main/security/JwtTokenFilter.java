@@ -3,15 +3,12 @@ package main.security;
 
 import io.jsonwebtoken.*;
 import main.persistence.entity.Jwtoken;
+import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoJwtoken;
 import main.persistence.repository.RepoUsuario;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -28,8 +25,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private RepoJwtoken repoTokens;
 
-    public JwtTokenFilter(RepoJwtoken repoToken) {
+    private RepoUsuario repoUsuario;
+
+    public JwtTokenFilter(RepoJwtoken repoToken, RepoUsuario repoUsuario) {
         this.repoTokens = repoToken;
+        this.repoUsuario = repoUsuario;
     }
 
 
@@ -60,12 +60,15 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         Claims claims =  Jwts.parser().setSigningKey(SECRET.getBytes()).parseClaimsJws(jwtToken).getBody();
 
-        Jwtoken lastToken = repoTokens.findByUsername(claims.getSubject());
+        Usuario user = repoUsuario.findByName(claims.getSubject());
+
+        Jwtoken lastToken = repoTokens.findByUserid(user.getId());
 
         if (claims.getExpiration().compareTo(lastToken.getExpiredate()) < 0)
             throw new ExpiredJwtException(null, claims, "A new token for this user has been created");
 
         request.setAttribute("tokenUser", claims.getSubject());
+        request.setAttribute("tokenId", Integer.parseInt(claims.getId()));
         return claims;
     }
 

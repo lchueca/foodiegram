@@ -62,27 +62,6 @@ public class ControllerUsuario {
         return publicaciones != null ? ResponseEntity.ok(publicaciones) : ResponseEntity.notFound().build();
     }
 
-    @RequestMapping(value = "/{user}/upload", method = RequestMethod.POST)
-    public ResponseEntity<?> upload(HttpServletRequest request, @PathVariable String user, @RequestPart("text") String text, @RequestPart("loc") String loc, @RequestPart("image") MultipartFile image) {
-
-        if (!user.equals(request.getAttribute("tokenUser").toString()))
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("JWT user and URL user don't match.");
-
-        try {
-            PublicacionResource publi = service.upload(user, text, loc, image);
-            return publi != null ? ResponseEntity.ok(publi) : ResponseEntity.notFound().build();
-        }
-
-        catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("F");
-        }
-
-        catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-
-    }
 
     //no se si lo llegaremos a usar
     @RequestMapping(value = "/{user}/ratings", method = RequestMethod.GET)
@@ -95,6 +74,7 @@ public class ControllerUsuario {
 
     @RequestMapping(value = "register", method = RequestMethod.POST)
     public ResponseEntity<?> registerUser(@Valid @ModelAttribute("employee") UserForm user) {
+
         try {
             UsuarioResource newUser = service.register(user.getUsername(), user.getPassword(), user.getEmail());
             return ResponseEntity.ok(newUser);
@@ -121,17 +101,6 @@ public class ControllerUsuario {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 
-
-    }
-
-    @RequestMapping(value = "/{user}/messages", method = RequestMethod.GET)
-    public ResponseEntity<?> getMensajes(HttpServletRequest request, @PathVariable String user) {
-
-        if (!user.equals(request.getAttribute("tokenUser").toString()))
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("JWT user and URL user don't match.");
-
-        List<MensajeResource> mens = service.getMensajes(user);
-        return mens !=  null ? ResponseEntity.ok(mens) : ResponseEntity.notFound().build();
 
     }
 

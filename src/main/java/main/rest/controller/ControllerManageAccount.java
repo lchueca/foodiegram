@@ -17,11 +17,12 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 
 @org.springframework.web.bind.annotation.RestController
-@RequestMapping("/manage_account/{id}")
+@RequestMapping("/manage_account")
 public class ControllerManageAccount {
 
     @Autowired
@@ -40,25 +41,25 @@ public class ControllerManageAccount {
 
     //añade un amigo pasando un id de la persona que añade amigo y el nombre de la persona que quiere añadir
     @RequestMapping(method = RequestMethod.PUT)
-    public ResponseEntity<?> add(@PathVariable Integer id, @RequestPart(value = "name", required = true) String name){
+    public ResponseEntity<?> add(HttpServletRequest req, @RequestPart(value = "name", required = true) String name){
 
-        AmigoResource friend = manageFriends.addFriend(id, name);
+        AmigoResource friend = manageFriends.addFriend((Integer) req.getAttribute("tokenId"), name);
         return friend != null ? ResponseEntity.ok(friend) : ResponseEntity.notFound().build();
     }
 
     //elimina un amigo pasando un id de la persona que elimina amigo y el nombre de la persona que quiere eliminar
     @RequestMapping(method = RequestMethod.DELETE)
-    public ResponseEntity<?> remove(@PathVariable Integer id, @RequestPart(value = "name", required = true) String name){
+    public ResponseEntity<?> remove(HttpServletRequest req, @RequestPart(value = "name", required = true) String name){
 
-        AmigoResource friend = manageFriends.removeFriend(id, name);
+        AmigoResource friend = manageFriends.removeFriend((Integer) req.getAttribute("tokenId"), name);
         return friend != null ? ResponseEntity.ok(friend) : ResponseEntity.notFound().build();
     }
 
     //permite ver las imagenes del usuario con nombre name si el amigo del usuario con id
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<PreviewPublicacion>> viewImagesofFriend(@PathVariable Integer id, @RequestPart(value = "name", required = true) String name){
+    public ResponseEntity<List<PreviewPublicacion>> viewImagesofFriend(HttpServletRequest req, @RequestPart(value = "name", required = true) String name){
 
-        List<PreviewPublicacion> publicacionesAmigo = manageFriends.viewPostOfFriend(id, name);
+        List<PreviewPublicacion> publicacionesAmigo = manageFriends.viewPostOfFriend((Integer) req.getAttribute("tokenId"), name);
         return publicacionesAmigo != null ? ResponseEntity.ok(publicacionesAmigo) : ResponseEntity.notFound().build();
     }
     //-------------------------------------------------------------------------------------------------------------------------
@@ -67,31 +68,33 @@ public class ControllerManageAccount {
 
     //permite cambiar el nombre de la persona con id si este nombre no esta cogido por otro usuario
     @RequestMapping(value = "/newName", method = RequestMethod.POST)
-    public ResponseEntity<?> changeName(@PathVariable Integer id, @RequestPart(value = "newName", required = true) String newName){
-        UsuarioResource user = manageInfo.changeName(id, newName);
+    public ResponseEntity<?> changeName(HttpServletRequest req, @RequestPart(value = "newName", required = true) String newName) {
+
+        UsuarioResource user = manageInfo.changeName((Integer) req.getAttribute("tokenId"), newName);
         return user!= null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
     }
 
     //permite cambiar la contraseña del usuario con id
     @RequestMapping(value ="/newPasswd", method = RequestMethod.POST)
-    public ResponseEntity<?> changePasswd(@PathVariable Integer id, @RequestPart(value = "newPasswd", required = true) String newPasswd){
-        UsuarioResource user = manageInfo.changePasswd(id, newPasswd);
+    public ResponseEntity<?> changePasswd(HttpServletRequest req, @RequestPart(value = "newPasswd", required = true) String newPasswd) {
+        UsuarioResource user = manageInfo.changePasswd((Integer) req.getAttribute("tokenId"), newPasswd);
         return user!= null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
     }
 
     //permite cambiar el email del usuario con id
     @RequestMapping(value = "/newEmail", method = RequestMethod.POST)
-    public ResponseEntity<?> changeEmail(@PathVariable Integer id, @RequestPart(value = "newEmail", required = true) String newEmail){
-        UsuarioResource user = manageInfo.changeEmail(id, newEmail);
+    public ResponseEntity<?> changeEmail(HttpServletRequest req, @RequestPart(value = "newEmail", required = true) String newEmail) {
+
+        UsuarioResource user = manageInfo.changeEmail((Integer) req.getAttribute("tokenId"), newEmail);
         return user!= null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
     }
 
     //permite cambiar la foto de perfil del usuario con id
     @RequestMapping(value = "/newPic", method = RequestMethod.POST)
-    public ResponseEntity<?> changeProfilePic(@PathVariable Integer id, @RequestPart("image") MultipartFile image) {
+    public ResponseEntity<?> changeProfilePic(HttpServletRequest req, @RequestPart("image") MultipartFile image) {
 
         try {
-            UsuarioResource user = manageInfo.changeProfilePicture(id, image);
+            UsuarioResource user = manageInfo.changeProfilePicture((Integer) req.getAttribute("tokenId"), image);
             return user!= null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
         }
 
@@ -110,8 +113,9 @@ public class ControllerManageAccount {
 
     //permite darte de baja de la aplicación
     @RequestMapping(value  = "/unsubscribe",method = RequestMethod.DELETE)
-    public ResponseEntity<?> unsubscribe(@PathVariable Integer id){
-        UsuarioResource user = unsubscribeService.unsubscribe(id);
+    public ResponseEntity<?> unsubscribe(HttpServletRequest req) {
+
+        UsuarioResource user = unsubscribeService.unsubscribe((Integer) req.getAttribute("tokenId"));
         return user!= null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
     }
 
@@ -121,8 +125,9 @@ public class ControllerManageAccount {
 
     //permite ver tus publicaciones
     @RequestMapping(value = "/viewImage", method = RequestMethod.GET)
-    public ResponseEntity<List<PreviewPublicacion>> viewMyImages(@PathVariable Integer id){
-        List<PreviewPublicacion> _listPost = viewImagesService.viewPost(id);
+    public ResponseEntity<List<PreviewPublicacion>> viewMyImages(HttpServletRequest req) {
+
+        List<PreviewPublicacion> _listPost = viewImagesService.viewPost((Integer) req.getAttribute("tokenId"));
         return _listPost != null ? ResponseEntity.ok(_listPost) : ResponseEntity.notFound().build();
     }
     //-------------------------------------------------------------------------------------------------------------------------

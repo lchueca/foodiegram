@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RepoJwtoken extends JpaRepository<Jwtoken, Integer> {
 
-    public Jwtoken findByUsername(String username);
+    public Jwtoken findByUserid(Integer userid);
 
 }

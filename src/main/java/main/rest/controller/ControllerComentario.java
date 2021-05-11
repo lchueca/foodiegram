@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
 
-
+import javax.naming.NoPermissionException;
+import javax.servlet.http.HttpServletRequest;
 
 
 @org.springframework.web.bind.annotation.RestController
@@ -22,13 +23,17 @@ public class ControllerComentario {
 
     //edita el comentario segun el comID (modifica solo el texto)
     @RequestMapping(method = RequestMethod.PUT)
-    public ResponseEntity<?> editComment(@PathVariable Integer comID, @RequestPart(value="text") String text){
+    public ResponseEntity<?> editComment(@PathVariable Integer comID, HttpServletRequest req, @RequestPart(value="text") String text){
 
        try{
-           ComentarioResource comment = service.editComentario(comID,text);
+           ComentarioResource comment = service.editComentario(comID,(Integer) req.getAttribute("tokenId"),text);
            return comment != null ? ResponseEntity.ok(comment) : ResponseEntity.notFound().build();
        }
-       catch (Exception e){
+
+       catch (NoPermissionException e) {
+           return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+       }
+       catch (IllegalArgumentException e){
            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
        }
 
@@ -36,10 +41,16 @@ public class ControllerComentario {
 
     //borra el comentario segun el comID
     @RequestMapping(method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteComment(@PathVariable Integer comID) {
+    public ResponseEntity<?> deleteComment(@PathVariable Integer comID,HttpServletRequest req) {
 
-        ComentarioResource comment = service.deleteComentario(comID);
-        return comment != null ? ResponseEntity.ok(comment) : ResponseEntity.notFound().build();
+        try{
+            ComentarioResource comment = service.deleteComentario(comID,(Integer) req.getAttribute("tokenId"));
+            return comment != null ? ResponseEntity.ok(comment) : ResponseEntity.notFound().build();
+        }
+
+        catch (NoPermissionException e){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        }
 
 
     }

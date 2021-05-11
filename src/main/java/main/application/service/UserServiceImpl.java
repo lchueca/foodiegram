@@ -23,12 +23,10 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private PreviewPublicacionConverter converterPreview = new PreviewPublicacionConverter();
-    private PublicacionConverter converterPubli = new PublicacionConverter();
     private ValoracionConverter converterVal = new ValoracionConverter();
     private UsuarioConverter converterUser = new UsuarioConverter();
     private final MensajeConverter converterMens = new MensajeConverter();
 
-    private final Pattern imagePattern = Pattern.compile("\\w+.(png|jpg)$");
 
     @Autowired
     private RepoUsuario repoUsuario;
@@ -80,45 +78,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Override
-    public PublicacionResource upload(String user, String text, String loc, MultipartFile image) throws IOException, IllegalArgumentException {
 
-        Usuario usuario = repoUsuario.findByName(user);
-
-        if (usuario == null)
-            return null;
-
-        Matcher matcher = imagePattern.matcher(image.getOriginalFilename());
-
-        if (!matcher.matches())
-            throw new IllegalArgumentException("Only jpeg and png images are supported.");
-
-        // Se crea una publicacion sin imagen
-        Publicacion publi = new Publicacion(text, usuario.getId(), loc);
-        publi = repoPubli.save(publi);
-
-        try {
-            File folder = new File(apacheRootFolder + "/" + usuario.getId());
-            folder.mkdirs();
-
-            String name = folder.getAbsolutePath() + "/" + publi.getId() + "." + matcher.group(1);
-            FileOutputStream stream = new FileOutputStream(name);
-            stream.write(image.getBytes());
-            stream.close();
-
-            // Si se ha conseguido guardar la imagen, se le asocia a la publicacion una direccion en la BD.
-            String address = String.format("%s/%s/%s.%s", apacheAddress, usuario.getId(), publi.getId(), matcher.group(1));
-            publi.setImage(address);
-            repoPubli.save(publi);
-        }
-
-        catch (IOException e) {
-            repoPubli.delete(publi);
-            throw e;
-        }
-
-        return converterPubli.convert(publi);
-    }
 
     @Override
     public List<ValoracionResource> getRatings(String user) {
@@ -199,17 +159,5 @@ public class UserServiceImpl implements UserService {
         return converterUser.convert(newUser);
     }
 
-    @Override
-    public List<MensajeResource> getMensajes(String userName) {
 
-        Usuario user = repoUsuario.findByName(userName);
-
-        if (user == null)
-            return null;
-
-        else {
-            List<Mensaje> mensajes = repoMens.findByIduser1OrIduser2(user.getId(), user.getId());
-                 return mensajes.stream().map(converterMens::convert).collect(Collectors.toList());
-        }
-    }
 }

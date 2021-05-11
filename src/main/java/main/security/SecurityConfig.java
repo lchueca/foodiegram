@@ -21,7 +21,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -39,18 +38,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests().antMatchers(HttpMethod.POST, "*").authenticated();
 
-        http.addFilterAfter(new JwtTokenFilter(repoTokens), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAfter(new JwtTokenFilter(repoTokens, repoUsuario), UsernamePasswordAuthenticationFilter.class);
 
     }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
-                .antMatchers("/users/login")
-                .antMatchers("/users/register")
-                .antMatchers("/users/verify/*");
-    }
 
+                // Controller usuario
+                .antMatchers("/users/**")
+
+                // Controller publicacion
+                .regexMatchers(HttpMethod.GET, "\\/posts\\/\\w+$")
+                .regexMatchers(HttpMethod.GET, "\\/posts\\/\\w+\\/ratings$")
+                .regexMatchers(HttpMethod.GET, "\\/posts\\/\\w+\\/comments$")
+
+                // Controller search
+                .antMatchers("/search/**");
+    }
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {

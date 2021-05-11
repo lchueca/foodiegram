@@ -16,11 +16,11 @@ public class Jwtoken {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
-    private String username;
+    private Integer userid;
     private Date expiredate;
 
-    public Jwtoken(String username, Date expiredate) {
-        this.username = username;
+    public Jwtoken(Integer userid, Date expiredate) {
+        this.userid = userid;
         this.expiredate = expiredate;
     }
 
