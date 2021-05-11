@@ -1,14 +1,12 @@
 package main.rest.controller;
 
 
-import com.google.gson.Gson;
 import main.application.service.UserService;
 import main.domain.resource.*;
 import main.security.JWTokenGenerator;
-import main.security.UserDetailsImpl;
+import main.security.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -95,11 +94,17 @@ public class ControllerUsuario {
     }
 
     @RequestMapping(value = "register", method = RequestMethod.POST)
-    public ResponseEntity<?> registerUser(@RequestPart("user") String user, @RequestPart("passwd") String passwd, @RequestPart("email") String email) {
+    public ResponseEntity<?> registerUser(@Valid @ModelAttribute("employee") UserForm user) {
         try {
-            UsuarioResource newUser = service.register(user, passwd, email);
+            UsuarioResource newUser = service.register(user.getUsername(), user.getPassword(), user.getEmail());
             return ResponseEntity.ok(newUser);
-        } catch (IllegalArgumentException e) {
+        }
+
+        catch (NullPointerException e) {
+            return ResponseEntity.badRequest().body("Invalid form.");
+        }
+
+        catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 
@@ -131,19 +136,17 @@ public class ControllerUsuario {
     }
 
     @RequestMapping(value="/login", method=RequestMethod.POST)
-    public ResponseEntity<String> login(@RequestBody String body) {
-
-        Gson g = new Gson();
-        UserDetailsImpl cred = g.fromJson(body, UserDetailsImpl.class);
+    public ResponseEntity<String> login(@Valid @ModelAttribute("employee") UserForm user) {
 
         try {
-            Authentication authenticate = authenticationManager.authenticate(
-                            new UsernamePasswordAuthenticationToken(
-                                    cred.getUsername(), cred.getPassword()
-                            )
-                    );
+            UsernamePasswordAuthenticationToken userData = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
+            Authentication authenticate = authenticationManager.authenticate(userData);
+            String jwToken = jwtGenerator.buildToken(user.getUsername(), user.getPassword());
+            return ResponseEntity.ok(String.format("{\"status\": \"200\", \"token\": \"%s\"}", jwToken));
+        }
 
-            return ResponseEntity.ok(jwtGenerator.buildToken(cred.getUsername(), cred.getPassword()));
+        catch (NullPointerException e) {
+            return ResponseEntity.badRequest().body("Invalid form.");
         }
 
         catch (BadCredentialsException ex) {

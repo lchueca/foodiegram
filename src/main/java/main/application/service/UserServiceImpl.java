@@ -139,17 +139,21 @@ public class UserServiceImpl implements UserService {
     public UsuarioResource register(String user, String passwd, String email) throws IllegalArgumentException {
 
         if(user.length()>=20)
-            throw new IllegalArgumentException("The name is to long, please insert a name BELOW 20 characters");
+            throw new IllegalArgumentException("The name is to long, please insert a name BELOW 20 characters.");
 
         else if(passwd.length()>=256)
-            throw new IllegalArgumentException("The PASSWORD is to long, please insert a password BELOW 20 characters");
+            throw new IllegalArgumentException("The PASSWORD is to long, please insert a password BELOW 20 characters.");
 
 
         else if(!email.contains("@"))
-            throw new IllegalArgumentException("The email introduces is NOT valid, please insert a valid e-mail");
+            throw new IllegalArgumentException("The email introduces is NOT valid, please insert a valid e-mail.");
 
         else if (repoUsuario.findByEmail(email) != null)
-            throw new IllegalArgumentException("That e-mail is already registered");
+            throw new IllegalArgumentException("That e-mail is already registered.");
+
+        else if (repoUsuario.findByName(user) != null)
+            throw new IllegalArgumentException("That username is already taken.");
+
 
         else {
 

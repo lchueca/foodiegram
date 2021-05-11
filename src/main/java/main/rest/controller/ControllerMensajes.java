@@ -46,7 +46,7 @@ public class ControllerMensajes {
     @RequestMapping(value="/{mensID}",method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteMensaje(@PathVariable Integer mensID) {
 
-        MensajeResource  mens= service.deleteMensaje(mensID);
+        MensajeResource  mens = service.deleteMensaje(mensID);
         return mensID != null ? ResponseEntity.ok(mens) : ResponseEntity.notFound().build();
 
 
