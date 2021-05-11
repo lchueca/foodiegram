@@ -8,6 +8,7 @@ import main.security.JWTokenGenerator;
 import main.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
@@ -39,7 +41,7 @@ public class ControllerUsuario {
     private JWTokenGenerator jwtGenerator;
 
     @RequestMapping(value = "/{user}", method = RequestMethod.GET)
-    public ResponseEntity<UsuarioResource> getUserByName(@PathVariable String user) {
+    public ResponseEntity<?> getUserByName(@PathVariable String user) {
 
         UsuarioResource usuario = service.getUserByName(user);
         return usuario != null ? ResponseEntity.ok(usuario) : ResponseEntity.notFound().build();
@@ -62,7 +64,10 @@ public class ControllerUsuario {
     }
 
     @RequestMapping(value = "/{user}/upload", method = RequestMethod.POST)
-    public ResponseEntity<?> upload(@PathVariable String user, @RequestPart("text") String text, @RequestPart("loc") String loc, @RequestPart("image") MultipartFile image) {
+    public ResponseEntity<?> upload(HttpServletRequest request, @PathVariable String user, @RequestPart("text") String text, @RequestPart("loc") String loc, @RequestPart("image") MultipartFile image) {
+
+        if (!user.equals(request.getAttribute("tokenUser").toString()))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("JWT user and URL user don't match.");
 
         try {
             PublicacionResource publi = service.upload(user, text, loc, image);
@@ -115,7 +120,10 @@ public class ControllerUsuario {
     }
 
     @RequestMapping(value = "/{user}/messages", method = RequestMethod.GET)
-    public ResponseEntity<?> getMensajes(@PathVariable String user) {
+    public ResponseEntity<?> getMensajes(HttpServletRequest request, @PathVariable String user) {
+
+        if (!user.equals(request.getAttribute("tokenUser").toString()))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("JWT user and URL user don't match.");
 
         List<MensajeResource> mens = service.getMensajes(user);
         return mens !=  null ? ResponseEntity.ok(mens) : ResponseEntity.notFound().build();

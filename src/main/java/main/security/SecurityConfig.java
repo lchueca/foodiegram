@@ -28,6 +28,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     RepoJwtoken repoTokens;
 
+    @Autowired
+    RepoUsuario repoUsuario;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
          http.cors().and().csrf().disable();

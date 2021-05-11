@@ -65,6 +65,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         if (claims.getExpiration().compareTo(lastToken.getExpiredate()) < 0)
             throw new ExpiredJwtException(null, claims, "A new token for this user has been created");
 
+        request.setAttribute("tokenUser", claims.getSubject());
         return claims;
     }
 
