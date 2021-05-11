@@ -3,12 +3,14 @@ package main.security;
 import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoJwtoken;
 import main.persistence.repository.RepoUsuario;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -32,10 +34,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
          http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
 
 
-        http.authorizeRequests()
-            .antMatchers(HttpMethod.POST, "*").permitAll();
+        http.authorizeRequests().antMatchers(HttpMethod.POST, "*").authenticated();
+
+        http.addFilterAfter(new JwtTokenFilter(repoTokens), UsernamePasswordAuthenticationFilter.class);
 
     }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/users/login");
+    }
+
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {

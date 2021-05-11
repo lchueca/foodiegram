@@ -37,18 +37,17 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+
+
         try {
-            if (checkJWTToken(request, response)) {
-                Claims claims = validateToken(request);
+            // Comprueba si se ha dado un token valido. Se lanza una UnsupportedJwtException si no es valido.
+            checkJWTToken(request, response);
+            Claims claims = validateToken(request);
+            setUpSpringAuthentication(claims);
 
-                if (claims != null)
-                    setUpSpringAuthentication(claims);
-
-                else
-                    SecurityContextHolder.clearContext();
-
-            }
             chain.doFilter(request, response);
+
+
 
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException e) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -64,9 +63,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         Jwtoken lastToken = repoTokens.findByUsername(claims.getSubject());
 
         if (claims.getExpiration().compareTo(lastToken.getExpiredate()) < 0)
-            return null;
-        else
-            return claims;
+            throw new ExpiredJwtException(null, claims, "A new token for this user has been created");
+
+        return claims;
     }
 
 
@@ -80,11 +79,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     }
 
-    private boolean checkJWTToken(HttpServletRequest request, HttpServletResponse res) {
+    private void checkJWTToken(HttpServletRequest request, HttpServletResponse res) throws UnsupportedJwtException {
         String authenticationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+
         if (authenticationHeader == null || !authenticationHeader.startsWith("Bearer"))
-            return false;
-        return true;
+            throw new UnsupportedJwtException("You must be logged in to access this resource.");
     }
 
 
