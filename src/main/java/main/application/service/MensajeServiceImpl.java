@@ -28,36 +28,13 @@ public class MensajeServiceImpl implements MensajeService{
 
 
     @Override
-    public MensajeResource getMensaje(Integer mensID, Integer loggedInUserId) throws NoPermissionException {
-
-        Mensaje mensaje = repoMens.findOne(mensID);
-
-        if (mensaje == null)
-            return null;
-
-        else if (mensaje.getIdUser1().equals(loggedInUserId) || mensaje.getIdUser2().equals(loggedInUserId))
-            return converterMens.convert(mensaje);
-
-        else
-            throw new NoPermissionException("You're not allowed to view that message.");
-    }
-
-
-    @Override
-    public MensajeResource deleteMensaje(Integer mensID, Integer loggedInUserId) throws NoPermissionException {
+    public MensajeResource deleteMensaje(Integer mensID) throws NoPermissionException {
         Mensaje mens = repoMens.findOne(mensID);
 
-        if (mens != null) {
-            if (!mens.getIdUser1().equals(loggedInUserId))
-                throw new NoPermissionException("You're not allowed to do that.");
-
+        if (mens != null)
             repoMens.delete(mens);
 
-        }
-
-
         return converterMens.convert(mens);
-
 
     }
 

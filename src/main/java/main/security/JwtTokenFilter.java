@@ -60,15 +60,14 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         Claims claims =  Jwts.parser().setSigningKey(SECRET.getBytes()).parseClaimsJws(jwtToken).getBody();
 
-        Usuario user = repoUsuario.findByName(claims.getSubject());
+        Usuario user = repoUsuario.findOne(Integer.parseInt(claims.getSubject()));
 
         Jwtoken lastToken = repoTokens.findByUserid(user.getId());
 
         if (claims.getExpiration().compareTo(lastToken.getExpiredate()) < 0)
             throw new ExpiredJwtException(null, claims, "A new token for this user has been created");
 
-        request.setAttribute("tokenUser", claims.getSubject());
-        request.setAttribute("tokenId", Integer.parseInt(claims.getId()));
+
         return claims;
     }
 

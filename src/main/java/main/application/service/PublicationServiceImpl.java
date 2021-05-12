@@ -66,7 +66,7 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     @Override
-    public PublicacionResource editPost(Integer pubID,Integer loggedInUserID, String text, String loc) throws IllegalArgumentException,NoPermissionException {
+    public PublicacionResource editPost(Integer pubID, String text, String loc) throws IllegalArgumentException,NoPermissionException {
 
         if (text == null && loc == null)
             throw new IllegalArgumentException("Text or loc should be not null");
@@ -76,18 +76,14 @@ public class PublicationServiceImpl implements PublicationService {
 
          if (publi != null) {
 
-             if (!publi.getIduser().equals(loggedInUserID))
-                 throw new NoPermissionException("You're not the owner of this images.");
+             if (text != null)
+                 publi.setText(text);
 
-             else {
-                 if (text != null)
-                     publi.setText(text);
+             if (loc != null)
+                 publi.setLocalization(loc);
 
-                 if (loc != null)
-                     publi.setLocalization(loc);
+             repoPubli.save(publi);
 
-                 repoPubli.save(publi);
-             }
         }
 
         return converterPubli.convert(publi);
@@ -95,16 +91,13 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     @Override
-    public PublicacionResource deletePost(Integer pubID, Integer loggedInUserID) throws NoPermissionException {
+    public PublicacionResource deletePost(Integer pubID) throws NoPermissionException {
 
         Publicacion publi = repoPubli.findOne(pubID);
 
-        if (publi != null) {
-            if (!publi.getIduser().equals(loggedInUserID))
-                throw new NoPermissionException("You're not the owner of this images.");
-
+        if (publi != null)
             repoPubli.delete(publi);
-        }
+
 
 
         return converterPubli.convert(publi);

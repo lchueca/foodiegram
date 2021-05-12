@@ -29,8 +29,7 @@ public class JWTokenGenerator {
         Usuario user = repoUser.findByName(username);
 
         String token = Jwts.builder()
-        .setSubject(username)
-        .setId(user.getId().toString())
+        .setSubject(user.getId().toString())
         .setIssuedAt(new Date(System.currentTimeMillis()))
         .setExpiration(new Date(System.currentTimeMillis() + 1800000))
         .signWith(SignatureAlgorithm.HS512, secretKey.getBytes()).compact();

@@ -1,9 +1,9 @@
 package main.persistence.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import javax.naming.NoPermissionException;
+import javax.persistence.*;
 
 @Entity
 public class Comentario {
@@ -42,5 +42,15 @@ public class Comentario {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    @PreRemove
+    @PreUpdate
+    private void preventUnauthorizedRemove() throws NoPermissionException {
+
+        Integer deleterId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        if (!deleterId.equals(iduser))
+            throw new NoPermissionException("You're not allowed to do that");
     }
 }

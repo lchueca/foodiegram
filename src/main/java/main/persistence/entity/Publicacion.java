@@ -1,9 +1,12 @@
 package main.persistence.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import main.persistence.repository.RepoUsuario;
+import main.security.UserForm;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import javax.naming.NoPermissionException;
+import javax.persistence.*;
 
 @Entity
 public class Publicacion {
@@ -86,4 +89,15 @@ public class Publicacion {
     public void setLocalization(String localization) {
         this.localization = localization;
     }
+
+    @PreRemove
+    @PreUpdate
+    private void preventUnauthorizedRemove() throws NoPermissionException {
+
+        Integer deleterId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        if (!deleterId.equals(iduser))
+            throw new NoPermissionException("You're not allowed to do that");
+    }
+
 }

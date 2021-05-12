@@ -1,5 +1,8 @@
 package main.persistence.entity;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import javax.naming.NoPermissionException;
 import javax.persistence.*;
 
 @Entity
@@ -36,5 +39,14 @@ public class Mensaje {
         return text;
     }
 
+
+    @PreRemove
+    private void preventUnauthorizedRemove() throws NoPermissionException {
+
+        Integer deleterId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        if (!deleterId.equals(iduser1))
+            throw new NoPermissionException("You're not allowed to do that");
+    }
 
 }
