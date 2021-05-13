@@ -13,8 +13,8 @@ public class AmigoConverter implements Converter<Amigo, AmigoResource> {
             return null;
 
         AmigoResource response = new AmigoResource();
-        response.setIduser1(amigo.getIdUser1());
-        response.setIduser2(amigo.getIdUser2());
+        response.setIduser1(amigo.getIduser1());
+        response.setIduser2(amigo.getIduser2());
         return response;
     }
 }

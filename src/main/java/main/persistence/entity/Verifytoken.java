@@ -1,5 +1,8 @@
 package main.persistence.entity;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,6 +11,8 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 @Entity
+@Data
+@NoArgsConstructor
 public class Verifytoken {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -22,8 +27,6 @@ public class Verifytoken {
         this.expiredate=calculateExpiryDate();
     }
 
-    protected Verifytoken(){}
-
     private Date calculateExpiryDate() {
         Calendar cal = Calendar.getInstance();
         System.out.println(cal.getTime().getTime());
@@ -32,20 +35,4 @@ public class Verifytoken {
         return new Date(cal.getTime().getTime());
     }
 
-    public Integer getToken(){
-
-        return this.token;
-    }
-    public Date getExpiredate(){
-
-        return this.expiredate;
-    }
-    public String getEmail(){
-
-        return this.email;
-    }
-
-    public Integer getId() {
-        return id;
-    }
 }

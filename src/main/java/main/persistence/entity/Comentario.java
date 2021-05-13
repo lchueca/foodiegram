@@ -1,11 +1,15 @@
 package main.persistence.entity;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.naming.NoPermissionException;
 import javax.persistence.*;
 
 @Entity
+@Data
+@NoArgsConstructor
 public class Comentario {
 
     @Id
@@ -18,29 +22,6 @@ public class Comentario {
     public Comentario(Integer idPubli, Integer idUser, String text) {
         this.idpubli = idPubli;
         iduser = idUser;
-        this.text = text;
-    }
-
-    protected Comentario() {}
-
-    public Integer getId() {
-        return id;
-    }
-
-    public Integer getIdPubli() {
-        return idpubli;
-    }
-
-    public Integer getIdUser() {
-        return iduser;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-
-    public void setText(String text) {
         this.text = text;
     }
 

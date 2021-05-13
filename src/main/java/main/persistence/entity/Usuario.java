@@ -22,12 +22,14 @@ public class Usuario {
     private String image;
     private boolean enabled;
 
+
     public Usuario(String name, String passwd, String image, String email) {
         this.name = name;
         this.passwd = passwd;
         this.image = image;
         this.email=email;
         this.enabled=false;
+
     }
 
     protected Usuario() {}

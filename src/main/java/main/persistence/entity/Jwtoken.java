@@ -2,6 +2,7 @@ package main.persistence.entity;
 
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +12,7 @@ import java.util.Date;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class Jwtoken {
 
     @Id
@@ -22,9 +24,6 @@ public class Jwtoken {
     public Jwtoken(Integer userid, Date expiredate) {
         this.userid = userid;
         this.expiredate = expiredate;
-    }
-
-    public Jwtoken() {
     }
 
 }

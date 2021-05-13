@@ -1,12 +1,15 @@
 package main.persistence.entity;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.naming.NoPermissionException;
 import javax.persistence.*;
 
 @Entity
-
+@Data
+@NoArgsConstructor
 public class Mensaje {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -20,25 +23,6 @@ public class Mensaje {
         this.iduser2 = idUser2;
         this.text = text;
     }
-
-    protected Mensaje() {}
-
-    public Integer getId() {
-        return id;
-    }
-
-    public Integer getIdUser1() {
-        return iduser1;
-    }
-
-    public Integer getIdUser2() {
-        return iduser2;
-    }
-
-    public String getText() {
-        return text;
-    }
-
 
     @PreRemove
     private void preventUnauthorizedRemove() throws NoPermissionException {
