@@ -243,7 +243,13 @@ public class UserServiceImpl implements UserService {
         return null;
     }
     public List<UsuarioResource> getBannedUserList(){
-        List<Usuario> lista=repoUsuario.findByEnabled(false);
+        List<Usuario_baneado> listabaneado=repoUsuario_baneado.findAll();
+        List<Usuario>lista=new ArrayList<>();
+
+        for(int i=0;i<listabaneado.size();i++){
+            lista.add(repoUsuario.findById(listabaneado.get(i).getId()));
+        }
+
         return lista.stream().map(converterUser::convert).collect(Collectors.toList());
     }
 //user/ban
