@@ -21,6 +21,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @org.springframework.web.bind.annotation.RestController
@@ -125,6 +128,41 @@ public class ControllerUsuario {
         catch (DisabledException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is disabled.");
         }
+    }
+    @RequestMapping(value="ban",method=RequestMethod.POST)
+    public ResponseEntity<?> banUser(@RequestPart("user") String user,@RequestPart("severity") String severe) {
+        try{
+
+            Usuario_baneadoResource bannedUser=service.banUser(user,severe);
+            return ResponseEntity.ok(bannedUser);
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+    @RequestMapping(value="unban",method=RequestMethod.POST)
+    public ResponseEntity<?> unbanUser(@RequestPart("user") String user) {
+        try{
+            Usuario_baneadoResource bannedUser=service.unbanUser(user);
+            return ResponseEntity.ok(bannedUser);
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+    @RequestMapping(value="/{user}",method=RequestMethod.DELETE)
+    public ResponseEntity<?> delete(HttpServletRequest req, @PathVariable String user) {
+        try{
+            UsuarioResource bannedUser=service.deleteUser(user);
+            return ResponseEntity.ok(bannedUser);
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<?> getBannedUser(HttpServletRequest request) {
+
+        List<UsuarioResource> bulist = service.getBannedUserList();
+        return bulist !=  null ? ResponseEntity.ok(bulist) : ResponseEntity.notFound().build();
+
     }
 
 

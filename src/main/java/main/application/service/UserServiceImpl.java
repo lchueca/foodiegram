@@ -13,8 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
-import java.util.Random;
+import java.sql.Timestamp;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -25,6 +25,7 @@ public class UserServiceImpl implements UserService {
     private PreviewPublicacionConverter converterPreview = new PreviewPublicacionConverter();
     private ValoracionConverter converterVal = new ValoracionConverter();
     private UsuarioConverter converterUser = new UsuarioConverter();
+    private Usuario_baneadoConverter converterBannedUser= new Usuario_baneadoConverter();
     private final MensajeConverter converterMens = new MensajeConverter();
 
 
@@ -33,7 +34,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private RepoVerifytoken repoToken;
-
+    @Autowired
+    private RepoUsuario_baneado repoUsuario_baneado;
     @Autowired
     private SendEmailService sendEmailService;
 
@@ -148,9 +150,13 @@ public class UserServiceImpl implements UserService {
         //
         Verifytoken verToken = repoToken.findByToken(token);
 
-        if (verToken==null)
+        if (verToken==null) {
             return null;
-
+        }           //11     antes   ahora 12:
+        if(verToken.getExpiredate().before(new Date())) {
+            repoToken.delete(verToken);
+            return null;
+        }
         Usuario newUser = repoUsuario.findByEmail(verToken.getEmail());
         newUser.setEnabled(true);
         repoUsuario.save(newUser);
@@ -159,5 +165,86 @@ public class UserServiceImpl implements UserService {
         return converterUser.convert(newUser);
     }
 
+    @Override
+    public Usuario_baneadoResource banUser(String user,String severity) throws IllegalArgumentException{
+        //nombre es unico
+        Usuario newUser=repoUsuario.findByName(user);
+        newUser.setEnabled(false);
+        Integer maxPenalty=5; //maximo
+        Integer Severity; //local
+        try {
+             Severity = Integer.parseInt(severity);
+        }catch(Exception e){
+            throw new IllegalArgumentException("the type introduced in severity must be a number between 1-5");
+        }
+        Date date;
+        if(Severity>maxPenalty||Severity<=0) {
+            return null;
+        }
+        if(!newUser.isEnabled()){
+            throw new IllegalArgumentException("the account is not enabled");
+        }
+        date=this.calculateDate(Severity);
+        Usuario_baneado bannedUser=new Usuario_baneado(newUser.getId(),date);
 
+        repoUsuario_baneado.save(bannedUser);
+        if(date.before(new Date())){
+            newUser.setEnabled(true);
+        }
+        return converterBannedUser.convert(bannedUser);
+    }
+
+    public Date calculateDate(Integer severity){
+
+        Calendar cal = Calendar.getInstance();
+        System.out.println(cal.getTime().getTime());
+        cal.setTime(new Timestamp(cal.getTime().getTime()));
+        switch(severity){
+            case 1:
+                cal.add(Calendar.HOUR,24); //1 day
+                break;
+            case 2:
+                cal.add(Calendar.HOUR,168); //1 week
+                break;
+            case 3:
+                cal.add(Calendar.MONTH,1); //1 month
+                break;
+            case 4:
+                cal.add(Calendar.MONTH,6); //6 month
+                break;
+            case 5:
+                cal.add(Calendar.YEAR,50); //permanent
+                break;
+
+        }
+        Date banDate=new Date(cal.getTime().getTime());
+        return banDate;
+    }
+
+    @Override
+    public Usuario_baneadoResource unbanUser(String user) throws IllegalArgumentException{
+        Usuario newUser=repoUsuario.findByName(user);
+        newUser.setEnabled(true);
+        Integer id=newUser.getId();
+
+        Usuario_baneado bannedUser=repoUsuario_baneado.findById(id);
+        repoUsuario_baneado.delete(bannedUser);
+        newUser.setEnabled(true);
+
+        return null;
+
+
+    }
+    @Override
+    public UsuarioResource deleteUser(String user){
+
+        Usuario newUser=repoUsuario.findByName(user);
+        repoUsuario.delete(newUser);
+        return null;
+    }
+    public List<UsuarioResource> getBannedUserList(){
+        List<Usuario> lista=repoUsuario.findByEnabled(false);
+        return lista.stream().map(converterUser::convert).collect(Collectors.toList());
+    }
+//user/ban
 }

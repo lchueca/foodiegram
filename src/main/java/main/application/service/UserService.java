@@ -1,10 +1,12 @@
 package main.application.service;
 
 import main.domain.resource.*;
+import main.persistence.entity.Usuario_baneado;
 import org.springframework.web.multipart.MultipartFile;
 
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 public interface UserService  {
@@ -28,6 +30,10 @@ public interface UserService  {
     // Sudad de este.
     UsuarioResource verify(Integer token);
 
+    Usuario_baneadoResource banUser(String user, String severity);
+    Usuario_baneadoResource unbanUser(String user);
+    UsuarioResource deleteUser(String user);
 
+    List<UsuarioResource> getBannedUserList();
 
 }
