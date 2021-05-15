@@ -1,9 +1,6 @@
 package main.application.service;
 
-import main.domain.resource.PreviewPublicacion;
-import main.domain.resource.PublicacionResource;
-import main.domain.resource.UsuarioResource;
-import main.domain.resource.ValoracionResource;
+import main.domain.resource.*;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -18,10 +15,7 @@ public interface UserService  {
     // Devuelve una lista con todas las publicaciones (id e imagen) del usuario, o null si el usuario no existe.
     List<PreviewPublicacion> getPosts(String user);
 
-    // Sube una publicacion. Devuelve la propia publicacion si ha habido exito, null si el usuario no existe.
-    // Lanza excepcion si el usuario no existe, o si no se puede guardar la imagen.
-    // Con este vais a tener problemas haciendo pruebas, yo pasaria de él.
-    public PublicacionResource upload(String user, String text, String loc, MultipartFile image) throws IOException, IllegalArgumentException;
+
 
     // Devuelve todoas las valoraciones que ha hecho un usuario (En todas las publicaciones), o null si el usuario no existe.
     List<ValoracionResource> getRatings(String user);
@@ -33,5 +27,7 @@ public interface UserService  {
 
     // Sudad de este.
     UsuarioResource verify(Integer token);
+
+
 
 }

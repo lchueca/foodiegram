@@ -1,21 +1,9 @@
 package main.application.service;
 
-import main.domain.converter.PreviewPublicacionConverter;
-import main.domain.converter.PublicacionConverter;
-import main.domain.converter.UsuarioConverter;
-import main.domain.converter.ValoracionConverter;
-import main.domain.resource.PreviewPublicacion;
-import main.domain.resource.PublicacionResource;
-import main.domain.resource.UsuarioResource;
-import main.domain.resource.ValoracionResource;
-import main.persistence.entity.Publicacion;
-import main.persistence.entity.Usuario;
-import main.persistence.entity.Valoracion;
-import main.persistence.entity.Verifytoken;
-import main.persistence.repository.RepoPublicacion;
-import main.persistence.repository.RepoUsuario;
-import main.persistence.repository.RepoValoracion;
-import main.persistence.repository.RepoVerifytoken;
+import main.domain.converter.*;
+import main.domain.resource.*;
+import main.persistence.entity.*;
+import main.persistence.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -35,11 +23,10 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private PreviewPublicacionConverter converterPreview = new PreviewPublicacionConverter();
-    private PublicacionConverter converterPubli = new PublicacionConverter();
     private ValoracionConverter converterVal = new ValoracionConverter();
     private UsuarioConverter converterUser = new UsuarioConverter();
+    private final MensajeConverter converterMens = new MensajeConverter();
 
-    private final Pattern imagePattern = Pattern.compile("\\w+.(png|jpg)$");
 
     @Autowired
     private RepoUsuario repoUsuario;
@@ -55,6 +42,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private RepoValoracion repoVal;
+
+    @Autowired
+    private RepoRole repoRole;
 
     @Value("${apache.rootFolder}")
     private String apacheRootFolder;
@@ -83,50 +73,12 @@ public class UserServiceImpl implements UserService {
 
         else {
 
-            List<Publicacion> publicaciones = repoPubli.findByiduser(usuario.getId());
+            List<Publicacion> publicaciones = repoPubli.findByIduser(usuario.getId());
             return publicaciones.stream().map(converterPreview::convert).collect(Collectors.toList());
         }
     }
 
-    @Override
-    public PublicacionResource upload(String user, String text, String loc, MultipartFile image) throws IOException, IllegalArgumentException {
 
-        Usuario usuario = repoUsuario.findByName(user);
-
-        if (usuario == null)
-            return null;
-
-        Matcher matcher = imagePattern.matcher(image.getOriginalFilename());
-
-        if (!matcher.matches())
-            throw new IllegalArgumentException("Only jpeg and png images are supported.");
-
-        // Se crea una publicacion sin imagen
-        Publicacion publi = new Publicacion(text, usuario.getId(), loc);
-        publi = repoPubli.save(publi);
-
-        try {
-            File folder = new File(apacheRootFolder + "/" + user);
-            folder.mkdirs();
-
-            String name = folder.getAbsolutePath() + "/" + publi.getId() + "." + matcher.group(1);
-            FileOutputStream stream = new FileOutputStream(name);
-            stream.write(image.getBytes());
-            stream.close();
-
-            // Si se ha conseguido guardar la imagen, se le asocia a la publicacion una direccion en la BD.
-            String address = String.format("%s/%s/%s.%s", apacheAddress, user, publi.getId(), matcher.group(1));
-            publi.setImage(address);
-            repoPubli.save(publi);
-        }
-
-        catch (IOException e) {
-            repoPubli.delete(publi);
-            throw e;
-        }
-
-        return converterPubli.convert(publi);
-    }
 
     @Override
     public List<ValoracionResource> getRatings(String user) {
@@ -138,7 +90,7 @@ public class UserServiceImpl implements UserService {
 
         else {
 
-            List<Valoracion> valoracionU = repoVal.findByiduser(usuario.getId());
+            List<Valoracion> valoracionU = repoVal.findByIduser(usuario.getId());
             return valoracionU.stream().map(converterVal::convert).collect(Collectors.toList());
         }
     }
@@ -147,17 +99,21 @@ public class UserServiceImpl implements UserService {
     public UsuarioResource register(String user, String passwd, String email) throws IllegalArgumentException {
 
         if(user.length()>=20)
-            throw new IllegalArgumentException("The name is to long, please insert a name BELOW 20 characters");
+            throw new IllegalArgumentException("The name is to long, please insert a name BELOW 20 characters.");
 
         else if(passwd.length()>=256)
-            throw new IllegalArgumentException("The PASSWORD is to long, please insert a password BELOW 20 characters");
+            throw new IllegalArgumentException("The PASSWORD is to long, please insert a password BELOW 20 characters.");
 
 
         else if(!email.contains("@"))
-            throw new IllegalArgumentException("The email introduces is NOT valid, please insert a valid e-mail");
+            throw new IllegalArgumentException("The email introduces is NOT valid, please insert a valid e-mail.");
 
-        else if (repoUsuario.findByemail(email) != null)
-            throw new IllegalArgumentException("That e-mail is already registered");
+        else if (repoUsuario.findByEmail(email) != null)
+            throw new IllegalArgumentException("That e-mail is already registered.");
+
+        else if (repoUsuario.findByName(user) != null)
+            throw new IllegalArgumentException("That username is already taken.");
+
 
         else {
 
@@ -166,7 +122,7 @@ public class UserServiceImpl implements UserService {
             // Por si coincide que ese token ya exista (Dificil, pero bueno...)
             do {
                 token = random.nextInt(100000000);
-            }while(repoToken.findBytoken(token) != null);
+            }while(repoToken.findByToken(token) != null);
 
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
@@ -183,6 +139,8 @@ public class UserServiceImpl implements UserService {
             sendEmailService.sendEmails(email, mensaje, topic);
 
 
+
+
             return converterUser.convert(newUser);
 
         }
@@ -190,16 +148,19 @@ public class UserServiceImpl implements UserService {
     public UsuarioResource verify(Integer token) {//token  de entrada
        //token de entrada comparar token con la id del user
         //
-        Verifytoken verToken = repoToken.findBytoken(token);
+        Verifytoken verToken = repoToken.findByToken(token);
 
         if (verToken==null)
             return null;
 
-        Usuario newUser = repoUsuario.findByemail(verToken.getEmail());
+        Usuario newUser = repoUsuario.findByEmail(verToken.getEmail());
         newUser.setEnabled(true);
         repoUsuario.save(newUser);
         repoToken.delete(verToken);
 
+        repoRole.save(new Role(newUser.getId(),RoleEnum.ROLE_USER));
         return converterUser.convert(newUser);
     }
+
+
 }

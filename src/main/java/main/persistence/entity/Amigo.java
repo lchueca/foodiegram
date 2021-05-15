@@ -1,11 +1,17 @@
 package main.persistence.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import main.persistence.IDs.IDamigo;
 
 import javax.persistence.*;
 
 @Entity
 @IdClass(IDamigo.class)
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Amigo {
 
     @Id
@@ -13,18 +19,4 @@ public class Amigo {
     @Id
     private Integer iduser2;
 
-    public Amigo(Integer idUser1, Integer idUser2) {
-        iduser1 = idUser1;
-        iduser2 = idUser2;
-    }
-
-    protected Amigo() {}
-
-    public Integer getIdUser1() {
-        return iduser1;
-    }
-
-    public Integer getIdUser2() {
-        return iduser2;
-    }
 }

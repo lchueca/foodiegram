@@ -1,11 +1,18 @@
 package main.persistence.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import main.persistence.repository.RepoUsuario;
+import main.security.UserForm;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import javax.naming.NoPermissionException;
+import javax.persistence.*;
 
 @Entity
+@NoArgsConstructor
+@Data
 public class Publicacion {
 
     @Id
@@ -36,54 +43,14 @@ public class Publicacion {
         this.numerototalval=0;
     }
 
-    public Publicacion(String image) {
-        this.text = null;
-        this.image = image;
-        this.iduser = null;
-        this.localization = null;
-        this.media=null;
-        this.numerototalval=null;
+    @PreRemove
+    @PreUpdate
+    private void preventUnauthorizedRemove() throws NoPermissionException {
+
+        Integer deleterId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        if (!deleterId.equals(iduser))
+            throw new NoPermissionException("You're not allowed to do that");
     }
 
-    public Publicacion(){}
-
-    public Integer getId() {
-        return id;
-    }
-
-    public Integer getIduser() {
-        return iduser;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public String getLocalization() {
-        return localization;
-    }
-
-    public Float getMedia() { return media; }
-
-    public Integer getNumerototalval() { return numerototalval; }
-
-    public void setIduser(Integer iduser) {
-        this.iduser = iduser;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public void setLocalization(String localization) {
-        this.localization = localization;
-    }
 }

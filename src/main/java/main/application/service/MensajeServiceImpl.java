@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import javax.naming.NoPermissionException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,24 +18,17 @@ import java.util.stream.Collectors;
 public class MensajeServiceImpl implements MensajeService{
 
 
-
     private final MensajeConverter converterMens = new MensajeConverter();
 
     @Autowired
     RepoMensaje repoMens;
+
     @Autowired
     RepoUsuario repoUser;
 
 
-
     @Override
-    public MensajeResource getMensaje(Integer mensID) {
-        return converterMens.convert(repoMens.findOne(mensID));
-    }
-
-
-    @Override
-    public MensajeResource deleteMensaje(Integer mensID) {
+    public MensajeResource deleteMensaje(Integer mensID) throws NoPermissionException {
         Mensaje mens = repoMens.findOne(mensID);
 
         if (mens != null)
@@ -42,29 +36,31 @@ public class MensajeServiceImpl implements MensajeService{
 
         return converterMens.convert(mens);
 
-
     }
 
     @Override
-    public List<MensajeResource> getMensajes(Integer user1ID) {
+    public MensajeResource setMensaje(Integer user1ID, String username2, String mensaje) throws IllegalArgumentException {
 
-        Usuario user = repoUser.findOne(user1ID);
 
-        if (user == null)
-            return null;
+        Usuario user2 = repoUser.findByName(username2);
 
-        else {
-            List<Mensaje> mensajes = repoMens.findByiduser1(user1ID);
-            return mensajes.stream().map(converterMens::convert).collect(Collectors.toList());
-        }
-    }
+        if (user2 == null)
+            throw new IllegalArgumentException("That user does not exist.");
 
-    @Override
-    public MensajeResource setMensaje(Integer user1ID, Integer user2ID, String mensaje) throws DataIntegrityViolationException {
 
-        Mensaje mens = new Mensaje(user1ID,user2ID,mensaje);
+        Mensaje mens = new Mensaje(user1ID, user2.getId(), mensaje);
         repoMens.save(mens);
         return converterMens.convert(mens);
+
+    }
+
+    @Override
+    public List<MensajeResource> getMensajes(Integer userID) {
+
+        Usuario user = repoUser.findOne(userID);
+
+        List<Mensaje> mensajes = repoMens.findByIduser1OrIduser2(user.getId(), user.getId());
+        return mensajes.stream().map(converterMens::convert).collect(Collectors.toList());
 
     }
 

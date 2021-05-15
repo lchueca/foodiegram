@@ -1,6 +1,8 @@
 package main.persistence.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,9 +18,10 @@ public class Usuario {
     private Integer id;
     private String name;
     private String passwd;
-    private String  email;
+    private String email;
     private String image;
     private boolean enabled;
+
 
     public Usuario(String name, String passwd, String image, String email) {
         this.name = name;
@@ -26,6 +29,7 @@ public class Usuario {
         this.image = image;
         this.email=email;
         this.enabled=false;
+
     }
 
     protected Usuario() {}
