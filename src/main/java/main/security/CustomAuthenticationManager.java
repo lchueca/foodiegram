@@ -35,7 +35,7 @@ public class CustomAuthenticationManager implements AuthenticationManager {
             throw new DisabledException("1001");
 
         else
-            return new UsernamePasswordAuthenticationToken(username, password, null);
+            return new UsernamePasswordAuthenticationToken(usuario.getId(), password, null);
 
 
     }

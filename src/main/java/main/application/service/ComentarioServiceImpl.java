@@ -19,7 +19,7 @@ public class ComentarioServiceImpl implements ComentarioService {
 
 
     @Override
-    public ComentarioResource editComentario(Integer comID,Integer userID, String text) throws IllegalArgumentException, NoPermissionException {
+    public ComentarioResource editComentario(Integer comID, String text) throws IllegalArgumentException, NoPermissionException {
 
 
         Comentario comment = repoComen.findOne(comID);
@@ -28,15 +28,12 @@ public class ComentarioServiceImpl implements ComentarioService {
             return null;
 
         else {
-            if(!comment.getIdUser().equals(userID)){
-                throw new NoPermissionException("You have not posted this comment.");
-            }
-            else {
-                if (text != null)
-                    comment.setText(text);
-                else
-                    throw new IllegalArgumentException();
-            }
+
+            if (text != null)
+                comment.setText(text);
+            else
+                throw new IllegalArgumentException();
+
         }
 
             repoComen.save(comment);
@@ -45,15 +42,11 @@ public class ComentarioServiceImpl implements ComentarioService {
     }
 
     @Override
-    public ComentarioResource deleteComentario(Integer comID,Integer userID) throws NoPermissionException {
+    public ComentarioResource deleteComentario(Integer comID) throws NoPermissionException {
 
         Comentario comment = repoComen.findOne(comID);
 
         if (comment != null)
-            if(!comment.getIdUser().equals(userID)){
-                throw new NoPermissionException("You have not posted this comment.");
-            }
-
             repoComen.delete(comID);
 
         return comentarioConverter.convert(comment);

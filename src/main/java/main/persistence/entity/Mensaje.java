@@ -1,9 +1,15 @@
 package main.persistence.entity;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import javax.naming.NoPermissionException;
 import javax.persistence.*;
 
 @Entity
-
+@Data
+@NoArgsConstructor
 public class Mensaje {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -18,23 +24,13 @@ public class Mensaje {
         this.text = text;
     }
 
-    protected Mensaje() {}
+    @PreRemove
+    private void preventUnauthorizedRemove() throws NoPermissionException {
 
-    public Integer getId() {
-        return id;
+        Integer deleterId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        if (!deleterId.equals(iduser1))
+            throw new NoPermissionException("You're not allowed to do that");
     }
-
-    public Integer getIdUser1() {
-        return iduser1;
-    }
-
-    public Integer getIdUser2() {
-        return iduser2;
-    }
-
-    public String getText() {
-        return text;
-    }
-
 
 }

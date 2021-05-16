@@ -16,8 +16,8 @@ public class ValoracionConverter implements Converter<Valoracion, ValoracionReso
 
         ValoracionResource respose= new ValoracionResource();
         respose.setPunt(source.getPunt());
-        respose.setIdpubli(source.getIdPubli());
-        respose.setIduser(source.getIdUser());
+        respose.setIdpubli(source.getIdpubli());
+        respose.setIduser(source.getIduser());
         return respose;
     }
 }

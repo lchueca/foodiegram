@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
     private RepoValoracion repoVal;
 
     @Autowired
-    private RepoMensaje repoMens;
+    private RepoRole repoRole;
 
     @Value("${apache.rootFolder}")
     private String apacheRootFolder;
@@ -141,6 +141,8 @@ public class UserServiceImpl implements UserService {
             sendEmailService.sendEmails(email, mensaje, topic);
 
 
+
+
             return converterUser.convert(newUser);
 
         }
@@ -162,6 +164,7 @@ public class UserServiceImpl implements UserService {
         repoUsuario.save(newUser);
         repoToken.delete(verToken);
 
+        repoRole.save(new Role(newUser.getId(),RoleEnum.ROLE_USER));
         return converterUser.convert(newUser);
     }
 

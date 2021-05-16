@@ -8,6 +8,7 @@ import main.domain.resource.ValoracionResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.naming.NoPermissionException;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 
@@ -28,11 +28,13 @@ public class ControllerPublicacion {
 
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> upload(HttpServletRequest request, @RequestPart("text") String text, @RequestPart("loc") String loc, @RequestPart("image") MultipartFile image) {
+    public ResponseEntity<?> upload(@RequestPart("text") String text, @RequestPart("loc") String loc, @RequestPart("image") MultipartFile image) {
 
 
         try {
-            PublicacionResource publi = service.upload((Integer) request.getAttribute("tokenId"), text, loc, image);
+           //PublicacionResource publi = service.upload((Integer) request.getAttribute("tokenId"), text, loc, image);
+            Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+            PublicacionResource publi = service.upload(userID, text, loc, image);
             return publi != null ? ResponseEntity.ok(publi) : ResponseEntity.notFound().build();
         }
 
@@ -56,10 +58,10 @@ public class ControllerPublicacion {
     }
 
     @RequestMapping(value="/{pubID}", method = RequestMethod.PUT)
-    ResponseEntity<?> edit(@PathVariable Integer pubID,HttpServletRequest req ,@RequestPart(value = "text", required = false) String text, @RequestPart(value = "loc", required = false) String loc) {
+    ResponseEntity<?> edit(@PathVariable Integer pubID, @RequestPart(value = "text", required = false) String text, @RequestPart(value = "loc", required = false) String loc) {
 
         try {
-            PublicacionResource publi = service.editPost(pubID,(Integer) req.getAttribute("tokenId"), text, loc);
+            PublicacionResource publi = service.editPost(pubID, text, loc);
             return publi != null ? ResponseEntity.ok(publi) : ResponseEntity.notFound().build();
         }
 
@@ -73,9 +75,9 @@ public class ControllerPublicacion {
     }
 
     @RequestMapping(value="/{pubID}",method = RequestMethod.DELETE)
-    ResponseEntity<?> delete(HttpServletRequest req, @PathVariable Integer pubID) {
+    ResponseEntity<?> delete(@PathVariable Integer pubID) {
         try {
-            PublicacionResource publi = service.deletePost(pubID, (Integer) req.getAttribute("tokenId"));
+            PublicacionResource publi = service.deletePost(pubID);
             return publi != null ? ResponseEntity.ok(publi) : ResponseEntity.notFound().build();
         }
 
@@ -98,10 +100,11 @@ public class ControllerPublicacion {
 
     //setea o updatea la valoracion de un usuario en una publicacion
     @RequestMapping(value="/{pubID}/ratings", method = RequestMethod.POST)
-    public ResponseEntity<?> setRating(HttpServletRequest req, @PathVariable Integer pubID, @RequestPart(value="score") String punt){
+    public ResponseEntity<?> setRating(@PathVariable Integer pubID, @RequestPart(value="score") String punt){
 
         try {
-            ValoracionResource valoracion = service.setRating(pubID,  (Integer)req.getAttribute("tokenId"), Float.parseFloat(punt));
+            Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+            ValoracionResource valoracion = service.setRating(pubID,  userID, Float.parseFloat(punt));
             return ResponseEntity.ok(valoracion);
         }
 
@@ -124,9 +127,10 @@ public class ControllerPublicacion {
 
     //borra una valoracion dentro una publicacion de un usuario
     @RequestMapping(value = "/{pubID}/ratings", method=RequestMethod.DELETE)
-    public ResponseEntity<ValoracionResource> deleteRating(HttpServletRequest req, @PathVariable Integer pubID){
+    public ResponseEntity<ValoracionResource> deleteRating(@PathVariable Integer pubID){
 
-        ValoracionResource val = service.deleteRating(pubID, (Integer)req.getAttribute("tokenId"));
+        Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+        ValoracionResource val = service.deleteRating(pubID, userID);
         return val != null ? ResponseEntity.ok(val) : ResponseEntity.notFound().build();
 
     }
@@ -142,10 +146,11 @@ public class ControllerPublicacion {
 
 
     @RequestMapping(value = "/{pubID}/comments",method = RequestMethod.POST)
-    public ResponseEntity<?> setComment(HttpServletRequest req, @PathVariable Integer pubID, @RequestPart(value="text") String text){
+    public ResponseEntity<?> setComment(@PathVariable Integer pubID, @RequestPart(value="text") String text){
 
         try{
-            ComentarioResource comment = service.setComment(pubID, (Integer)req.getAttribute("tokenId"), text);
+            Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+            ComentarioResource comment = service.setComment(pubID, userID, text);
             return ResponseEntity.ok(comment);
         }
 

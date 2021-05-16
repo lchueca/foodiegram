@@ -3,6 +3,7 @@ package main.rest.controller;
 
 import main.application.service.UserService;
 import main.domain.resource.*;
+import main.persistence.entity.RoleEnum;
 import main.security.JWTokenGenerator;
 import main.security.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -42,7 +43,7 @@ public class ControllerUsuario {
     @Autowired
     private JWTokenGenerator jwtGenerator;
 
-    @RequestMapping(value = "/{user}", method = RequestMethod.GET)
+       @RequestMapping(value = "/{user}", method = RequestMethod.GET)
     public ResponseEntity<?> getUserByName(@PathVariable String user) {
 
         UsuarioResource usuario = service.getUserByName(user);

@@ -4,19 +4,25 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import main.persistence.IDs.IDamigo;
+import main.persistence.IDs.IDrole;
 
 import javax.persistence.*;
 
-@Entity
-@IdClass(IDamigo.class)
 @Data
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Amigo {
+@IdClass(IDrole.class)
+public class Role {
+
 
     @Id
-    private Integer iduser1;
+    private Integer iduser;
+
     @Id
-    private Integer iduser2;
+    @Enumerated(EnumType.STRING)
+    private RoleEnum role;
+
+
 
 }

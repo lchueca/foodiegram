@@ -1,11 +1,16 @@
 package main.persistence.entity;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
+@Data
+@NoArgsConstructor
 public class MeetUp {
 
     @Id
@@ -13,18 +18,8 @@ public class MeetUp {
     private Integer id;
     private Integer iduser;
 
-    public MeetUp(Integer id, Integer idUser) {
-        this.id = id;
+    public MeetUp(Integer idUser) {
         this.iduser = idUser;
     }
 
-    protected MeetUp() {}
-
-    public Integer getId() {
-        return id;
-    }
-
-    public Integer getIdUser() {
-        return iduser;
-    }
 }

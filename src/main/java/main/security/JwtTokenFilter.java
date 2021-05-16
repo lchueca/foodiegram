@@ -3,6 +3,8 @@ package main.security;
 
 import io.jsonwebtoken.*;
 import main.persistence.entity.Jwtoken;
+import main.persistence.entity.Role;
+import main.persistence.entity.RoleEnum;
 import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoJwtoken;
 import main.persistence.repository.RepoUsuario;
@@ -17,23 +19,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class JwtTokenFilter extends OncePerRequestFilter {
 
-    private static final String SECRET = "MamiChanXFungus";
+    private final String SECRET;
 
     private RepoJwtoken repoTokens;
 
-    private RepoUsuario repoUsuario;
-
-    public JwtTokenFilter(RepoJwtoken repoToken, RepoUsuario repoUsuario) {
+    public JwtTokenFilter(RepoJwtoken repoToken, String secret) {
         this.repoTokens = repoToken;
-        this.repoUsuario = repoUsuario;
+        this.SECRET = secret;
     }
-
-
-
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
@@ -60,15 +59,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         Claims claims =  Jwts.parser().setSigningKey(SECRET.getBytes()).parseClaimsJws(jwtToken).getBody();
 
-        Usuario user = repoUsuario.findByName(claims.getSubject());
+        Jwtoken lastToken = repoTokens.findByUserid(Integer.parseInt(claims.getSubject()));
 
-        Jwtoken lastToken = repoTokens.findByUserid(user.getId());
-
-        if (claims.getExpiration().compareTo(lastToken.getExpiredate()) < 0)
+        if (lastToken != null && claims.getExpiration().compareTo(lastToken.getExpiredate()) < 0)
             throw new ExpiredJwtException(null, claims, "A new token for this user has been created");
 
-        request.setAttribute("tokenUser", claims.getSubject());
-        request.setAttribute("tokenId", Integer.parseInt(claims.getId()));
+
         return claims;
     }
 
@@ -77,9 +73,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         // para cuando hagamos con admins y cosas chidas
         //List<String> authorities = (List) claims.get("authorities");
 
-        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(claims.getSubject(), null,
-                null);
+        List<String> roles1 = (List<String>) claims.get("roles");
+        List<RoleEnum> roles2 = roles1.stream().map(rol -> RoleEnum.valueOf(rol)).collect(Collectors.toList());;
+
+        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(claims.getSubject(), null, roles2);
+
         SecurityContextHolder.getContext().setAuthentication(auth);
+
 
     }
 

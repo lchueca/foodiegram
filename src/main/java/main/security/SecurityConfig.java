@@ -1,18 +1,22 @@
 package main.security;
 
+import main.persistence.entity.RoleEnum;
 import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoJwtoken;
 import main.persistence.repository.RepoUsuario;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,8 +31,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     RepoJwtoken repoTokens;
 
-    @Autowired
-    RepoUsuario repoUsuario;
+    @Value("${jwt.secret}")
+    private String secretKey;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -36,9 +40,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
          http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
 
 
-        http.authorizeRequests().antMatchers(HttpMethod.POST, "*").authenticated();
+        http.authorizeRequests().antMatchers(HttpMethod.POST, "*").hasRole("USER");
+        //    .antMatchers("/admin/**").hasRole("ADMIN");
 
-        http.addFilterAfter(new JwtTokenFilter(repoTokens, repoUsuario), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAfter(new JwtTokenFilter(repoTokens, secretKey), UsernamePasswordAuthenticationFilter.class);
 
     }
 

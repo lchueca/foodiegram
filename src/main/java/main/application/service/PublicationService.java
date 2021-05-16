@@ -21,11 +21,11 @@ PublicationService {
     // Para cambiar el texto lo la localizacion de una publicacion.
     // Devuelve la misma publicacion tras haberse aplicado el cambio.
     // Lanza excepcion si tanto text como loc son nulos.
-    PublicacionResource editPost(Integer pubID,Integer loggedInUserID, String text, String loc) throws IllegalArgumentException,NoPermissionException;
+    PublicacionResource editPost(Integer pubID, String text, String loc) throws IllegalArgumentException,NoPermissionException;
 
     // Elimina una publicaicon.
     // Devuelve la publicacion eliminada, o null si no existe.
-    PublicacionResource deletePost(Integer pubID, Integer loggedInUserId) throws NoPermissionException;
+    PublicacionResource deletePost(Integer pubID) throws NoPermissionException;
 
     // Sube una publicacion. Devuelve la propia publicacion si ha habido exito, null si el usuario no existe.
     // Lanza excepcion si el usuario no existe, o si no se puede guardar la imagen.
