@@ -181,7 +181,7 @@ public class UserServiceImpl implements UserService {
         if(Severity>maxPenalty||Severity<=0) {
             return null;
         }
-        if(!newUser.isEnabled()){
+        if(newUser.isEnabled()){
             throw new IllegalArgumentException("the account is not enabled");
         }
         date=this.calculateDate(Severity);
