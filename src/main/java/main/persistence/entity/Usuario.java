@@ -32,6 +32,6 @@ public class Usuario {
 
     }
 
-    protected Usuario() {}
+    public Usuario() {}
 
 }
