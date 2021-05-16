@@ -40,8 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
          http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
 
 
-        http.authorizeRequests().antMatchers(HttpMethod.POST, "*").hasRole("USER");
-        //    .antMatchers("/admin/**").hasRole("ADMIN");
+        http.authorizeRequests().antMatchers(HttpMethod.POST, "*").hasRole("USER")
+                .antMatchers("/admin/**").hasRole("ADMIN");
 
         http.addFilterAfter(new JwtTokenFilter(repoTokens, secretKey), UsernamePasswordAuthenticationFilter.class);
 
