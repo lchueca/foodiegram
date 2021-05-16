@@ -175,6 +175,7 @@ public class UserServiceImpl implements UserService {
         newUser.setEnabled(false);
         Integer maxPenalty=5; //maximo
         Integer Severity; //local
+
         try {
              Severity = Integer.parseInt(severity);
         }catch(Exception e){
@@ -191,9 +192,9 @@ public class UserServiceImpl implements UserService {
         Usuario_baneado bannedUser=new Usuario_baneado(newUser.getId(),date);
 
         repoUsuario_baneado.save(bannedUser);
-        if(date.before(new Date())){
-            newUser.setEnabled(true);
-        }
+
+
+
         return converterBannedUser.convert(bannedUser);
     }
 
@@ -252,7 +253,6 @@ public class UserServiceImpl implements UserService {
         for(int i=0;i<listabaneado.size();i++){
             lista.add(repoUsuario.findById(listabaneado.get(i).getId()));
         }
-
         return lista.stream().map(converterUser::convert).collect(Collectors.toList());
     }
 //user/ban

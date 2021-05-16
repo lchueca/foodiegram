@@ -1,4 +1,6 @@
 package main.rest.controller;
+import main.application.service.ComentarioService;
+import main.application.service.PublicationService;
 import main.application.service.UserService;
 import main.domain.resource.*;
 import main.security.JWTokenGenerator;
@@ -15,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.naming.NoPermissionException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -37,10 +40,16 @@ public class ControllerAdmin {
     private AuthenticationManager authenticationManager;
 
     @Autowired
+    private PublicationService pubService;
+
+    @Autowired
+    private ComentarioService comService;
+
+    @Autowired
     private JWTokenGenerator jwtGenerator;
 
 
-    @RequestMapping(value="ban",method=RequestMethod.POST)
+    @RequestMapping(value="/ban",method=RequestMethod.POST)
     public ResponseEntity<?> banUser(@RequestPart("user") String user,@RequestPart("severity") String severe) {
         try{
 
@@ -50,7 +59,7 @@ public class ControllerAdmin {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-    @RequestMapping(value="unban",method=RequestMethod.POST)
+    @RequestMapping(value="/unban",method=RequestMethod.POST)
     public ResponseEntity<?> unbanUser(@RequestPart("user") String user) {
         try{
             Usuario_baneadoResource bannedUser=service.unbanUser(user);
@@ -59,8 +68,8 @@ public class ControllerAdmin {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-    @RequestMapping(value="/{user}",method=RequestMethod.DELETE)
-    public ResponseEntity<?> delete(HttpServletRequest req, @PathVariable String user) {
+    @RequestMapping(value="/deleteUser",method=RequestMethod.DELETE)
+    public ResponseEntity<?> deleteUser(@RequestPart("user") String user) {
         try{
             UsuarioResource bannedUser=service.deleteUser(user);
             return ResponseEntity.ok(bannedUser);
@@ -68,14 +77,33 @@ public class ControllerAdmin {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-    @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<?> getBannedUser(HttpServletRequest request) {
+    @RequestMapping(value="/banlist",method = RequestMethod.GET)
+    public ResponseEntity<?> getBannedUser() {
 
         List<UsuarioResource> bulist = service.getBannedUserList();
         return bulist !=  null ? ResponseEntity.ok(bulist) : ResponseEntity.notFound().build();
 
     }
+    @RequestMapping(value="/deletePub",method=RequestMethod.DELETE)
+    public ResponseEntity<?> deletePub(@RequestPart ("pubID")String pubID) {
+        try{
 
+            PublicacionResource deletedPost=pubService.deletePost(Integer.parseInt(pubID));
+            return ResponseEntity.ok(deletedPost);
+        }catch (IllegalArgumentException | NoPermissionException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+    @RequestMapping(value="/deleteComment",method=RequestMethod.DELETE)
+    public ResponseEntity<?> deleteComment(@RequestPart ("comID")String comID) {
+        try{
+
+            ComentarioResource deletedCom=comService.deleteComentario(Integer.parseInt(comID));
+            return ResponseEntity.ok(deletedCom);
+        }catch (IllegalArgumentException | NoPermissionException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 
 
 }
