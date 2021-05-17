@@ -13,9 +13,7 @@ public class IDamigo implements Serializable {
     private Integer iduser1;
     private Integer iduser2;
 
-    public IDamigo(){
-
-    }
+    protected IDamigo(){}
 
 
 

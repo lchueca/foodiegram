@@ -7,25 +7,22 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.sql.Date;
+import java.util.Date;
 
-@Entity
-@Data
 @NoArgsConstructor
-public class Evento {
+@Data
+@Entity
+public class Refreshtoken {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
-    private String text;
-    private byte[] image;
-    private java.sql.Date date;
+    private Integer userid;
+    private Date expiredate;
 
-
-    public Evento(String text, byte[] image, Date date) {
-        this.text = text;
-        this.image = image;
-        this.date = date;
-
+    public Refreshtoken(Integer userid, Date expiredate) {
+        this.userid = userid;
+        this.expiredate = expiredate;
     }
+
 }

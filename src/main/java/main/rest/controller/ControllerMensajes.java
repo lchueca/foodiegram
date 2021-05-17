@@ -7,33 +7,37 @@ import main.domain.resource.MensajeResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.naming.NoPermissionException;
 import java.util.List;
 
 
 @org.springframework.web.bind.annotation.RestController
-@RequestMapping("/messages/")
+@RequestMapping("/messages")
 public class ControllerMensajes {
 
     @Autowired
     MensajeService service;
 
-    //devuelve un JSON con el mensaje (segun el mensID)
-    @RequestMapping(value="/{mensID}",method = RequestMethod.GET)
-    public ResponseEntity<MensajeResource> getMensaje(@PathVariable Integer mensID) {
 
-        MensajeResource mens =  service.getMensaje(mensID);
-        return mens != null ? ResponseEntity.ok(mens) : ResponseEntity.notFound().build();
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<?> getMensajes() {
+
+        Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+        List<MensajeResource> mens = service.getMensajes(userID);
+        return mens !=  null ? ResponseEntity.ok(mens) : ResponseEntity.notFound().build();
 
     }
 
     //hace un upload con el mensaje
-    @RequestMapping(value="/{user1}/{user2}",method = RequestMethod.POST)
-    public ResponseEntity<?> setMensaje(@PathVariable String user1, @PathVariable String user2, @RequestPart (value="text") String mensaje){
+    @RequestMapping(value="/{user2}",method = RequestMethod.POST)
+    public ResponseEntity<?> setMensaje(@PathVariable String user2, @RequestPart (value="text") String mensaje){
 
         try {
-            MensajeResource mens = service.setMensaje(user1, user2,mensaje);
+            Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+            MensajeResource mens = service.setMensaje(userID, user2, mensaje);
             return ResponseEntity.ok(mens);
         }
 
@@ -41,13 +45,20 @@ public class ControllerMensajes {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 
-
     }
+
     @RequestMapping(value="/{mensID}",method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteMensaje(@PathVariable Integer mensID) {
 
-        MensajeResource  mens= service.deleteMensaje(mensID);
-        return mensID != null ? ResponseEntity.ok(mens) : ResponseEntity.notFound().build();
+        try {
+            MensajeResource  mens = service.deleteMensaje(mensID);
+            return mensID != null ? ResponseEntity.ok(mens) : ResponseEntity.notFound().build();
+        }
+
+        catch (NoPermissionException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        }
+
 
 
     }
