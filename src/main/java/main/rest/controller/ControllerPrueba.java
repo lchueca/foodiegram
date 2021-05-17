@@ -12,11 +12,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value ="/pruebas")
@@ -42,32 +41,64 @@ public class ControllerPrueba {
     ModelAndView register(Model model){
         ModelAndView modelAndView = new ModelAndView("registerForm");
 
-        model.addAttribute("user", new Usuario());
+        model.addAttribute("newUser", new Usuario());
         return modelAndView;
 
     }
 
-    @PostMapping("/process_register")
-    public ModelAndView processRegister(UserForm user) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encodedPassword);
 
-        UsuarioResource newUser = service.register(user.getUsername(), user.getPassword(), user.getEmail());
+    @PostMapping("/postRegister")
+    public void processRegister(@ModelAttribute Usuario user) {
+
+        System.out.println(user.getName() + ": " + user.getEmail() + ": " + user.getPasswd());
+        /*
+        try {
+            UsuarioResource newUser = service.register(user.getUsername(), user.getPassword(), user.getEmail());
+            return new ModelAndView("landingPage");
+        }
+
+        catch (NullPointerException e) {
+            model.addAttribute("problem", "Invalid form.");
+            return new ModelAndView("problems");
+        }
+
+        catch (IllegalArgumentException e) {
+            model.addAttribute("problem",  e.getMessage());
+            return new ModelAndView("problems");
+        }
+        */
+       // return new ModelAndView("landingPage");
+    }
+
+
+    /*
+    @PostMapping("/postRegister")
+    public ModelAndView processRegister(@ModelAttribute Usuario user) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(user.getPasswd());
+        user.setPasswd(encodedPassword);
+
+        UsuarioResource newUser = service.register(user.getName(), user.getPasswd(), user.getEmail());
         ResponseEntity.ok(newUser);
         //repoUsuario.save(newUser);
 
         return landingPage(model);
     }
-
+    */
 
     @GetMapping()
     public ModelAndView landingPage(Model model){
 
         ModelAndView modelAndView = new ModelAndView("landingPage");
 
-        model.addAttribute("header", "Welcome to Foodiegram" );
+        model.addAttribute("userLog", new Usuario());
+
         return modelAndView;
+    }
+
+    @PostMapping("/postLogin")
+    public void userLogAtributes(@ModelAttribute Usuario user){
+        System.out.println(user.getName() + ": " + user.getPasswd());
     }
 
 }

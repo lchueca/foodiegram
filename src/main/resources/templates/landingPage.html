@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
     <title>LandingPage</title>
@@ -15,35 +15,38 @@
 
     <h1 class="card-title mt-3 text-center">Foodiegram</h1><p></p>
 
-    <div class="container">
 
-        <div class="card bg-light">
-            <article class="card-body mx-auto" style="max-width: 800px;">
+    <form th:action="@{/pruebas/postLogin}" th:object="${userLog}" method="post">
+        <div class="container">
 
-                <h3 class="card-title mt-3 text-center">Log in</h3><p></p>
+            <div class="card bg-light">
+                <article class="card-body mx-auto" style="max-width: 800px;">
 
-                <div class="form-group input-group">
-                    <input name="" class="form-control" placeholder="Username" type="text"/><p></p>
-                </div>
+                    <h3 class="card-title mt-3 text-center">Log in</h3><p></p>
 
-                <div class="form-group input-group">
-                    <input name="" class="form-control" placeholder="Password" type="text"/><p></p>
-                </div>
+                    <div class="form-group input-group">
+                        <input type="text" class="form-control" placeholder="Username" th:field="*{name}"/><p></p>
+                    </div>
 
-                <div class="form-group text-center">
-                    <button type="submit" class="btn btn-primary btn-block"> log-in </button>
-                </div>
+                    <div class="form-group input-group">
+                        <input type="password" class="form-control" placeholder="Password" th:field="*{passwd}"/><p></p>
+                    </div>
 
-            </article>
-        </div><p></p><p></p>
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-primary btn-block"> log-in </button>
+                    </div>
 
-        <div class="card bg-light">
-            <article class="card-body mx-auto" style="max-width: 400px;">
-                <h5 class="card-title mt-3 text-center">Don't you have an account?
-                    <h5 class="card-title mt-3 text-center"> <a th:href="@{/register}"> Register </a></h5>
-                </h5>
-            </article>
+                </article>
+            </div><p></p><p></p>
         </div>
+    </form>
+
+    <div class="card bg-light">
+        <article class="card-body mx-auto" style="max-width: 400px;">
+            <h5 class="card-title mt-3 text-center">Don't you have an account?
+                <h5 class="card-title mt-3 text-center"> <a th:href="@{/pruebas/register}"> Register </a></h5>
+            </h5>
+        </article>
     </div>
 </body>
 </html>
