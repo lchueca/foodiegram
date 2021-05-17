@@ -26,7 +26,7 @@ public class RefreshTokenGenerator {
 
 
 
-    @Value("${jwt.secret}")
+    @Value("${jwt.refresh.secret}")
     private String secretKey;
 
 
@@ -43,17 +43,17 @@ public class RefreshTokenGenerator {
                 .setExpiration(new Date(System.currentTimeMillis() + minutes))
                 .signWith(SignatureAlgorithm.HS512, secretKey.getBytes()).compact();
 
-        Refreshtoken tokens =repoRefresh.findByUserid(user.getId());
+        Refreshtoken dbToken = repoRefresh.findByUserid(user.getId());
 
-        if (tokens != null)
-            tokens.setExpiredate(new Date(System.currentTimeMillis() + minutes));
+        if (dbToken != null)
+            dbToken.setExpiredate(new Date(System.currentTimeMillis() + minutes));
 
 
         else
-            tokens = new Refreshtoken(user.getId(), new Date(System.currentTimeMillis() + minutes));
+            dbToken = new Refreshtoken(user.getId(), new Date(System.currentTimeMillis() + minutes));
 
 
-        repoRefresh.save(tokens);
+        repoRefresh.save(dbToken);
 
         return token;
     }

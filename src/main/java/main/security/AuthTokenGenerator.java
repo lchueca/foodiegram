@@ -33,7 +33,7 @@ public class AuthTokenGenerator {
     @Autowired
     private RepoRole repoRole;
 
-    @Value("${jwt.secret}")
+    @Value("${jwt.auth.secret}")
     private String secretKey;
 
 
@@ -43,27 +43,27 @@ public class AuthTokenGenerator {
         return buildToken(user.getId(), minutes);
     }
 
-    public String buildToken(Integer userIdD, int minutes) {
+    public String buildToken(Integer userID, int minutes) {
 
 
-        List<RoleEnum> roles = repoRole.findByIduser(userIdD).stream().map((Role::getRole)).collect(Collectors.toList());
+        List<RoleEnum> roles = repoRole.findByIduser(userID).stream().map((Role::getRole)).collect(Collectors.toList());
 
         minutes *= 60000;
 
-        Jwtoken tokens = repoJwtoke.findByUserid(userIdD);
+        Jwtoken dbToken = repoJwtoke.findByUserid(userID);
 
-        if(tokens!= null)
-            tokens.setExpiredate(new Date(System.currentTimeMillis() + minutes));
+        if(dbToken!= null)
+            dbToken.setExpiredate(new Date(System.currentTimeMillis() + minutes));
 
 
         else
-            tokens = new Jwtoken(userIdD, new Date(System.currentTimeMillis() + minutes));
+            dbToken = new Jwtoken(userID, new Date(System.currentTimeMillis() + minutes));
 
 
-        repoJwtoke.save(tokens);
+        repoJwtoke.save(dbToken);
 
         return  Jwts.builder()
-                .setSubject(userIdD.toString())
+                .setSubject(userID.toString())
                 .claim("roles", roles)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + minutes))

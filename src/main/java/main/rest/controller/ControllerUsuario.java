@@ -6,6 +6,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import main.application.service.UserService;
 import main.domain.resource.*;
 import main.security.AuthTokenGenerator;
+import main.security.RefreshTokenGenerator;
 import main.security.TokenRefresher;
 import main.security.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,17 +31,20 @@ public class ControllerUsuario {
     @Autowired
     private UserService service;
 
-    @Value("${direccion}")
-    private String direccionWeb;
+    @Value("${domain}")
+    private String domain;
 
     @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private AuthTokenGenerator jwtGenerator;
+    private AuthTokenGenerator authTokenGenerator;
 
     @Autowired
-    private TokenRefresher tokenRefresh;
+    private RefreshTokenGenerator refreshTokenGenerator;
+
+    @Autowired
+    private TokenRefresher tokenRefresher;
 
     @RequestMapping(value = "/{user}", method = RequestMethod.GET)
     public ResponseEntity<?> getUserByName(@PathVariable String user) {
@@ -53,7 +57,7 @@ public class ControllerUsuario {
     @RequestMapping(value = "/{user}/{pubID}", method = RequestMethod.GET)
     public void redirectToPost(HttpServletResponse httpServletResponse, @PathVariable String user, @PathVariable Integer pubID) {
 
-        httpServletResponse.setHeader("Location", direccionWeb + "/posts/" + pubID);
+        httpServletResponse.setHeader("Location", "http://" + domain + "/posts/" + pubID);
         httpServletResponse.setStatus(302);
     }
 
@@ -114,15 +118,15 @@ public class ControllerUsuario {
             UsernamePasswordAuthenticationToken userData = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
             authenticationManager.authenticate(userData);
             // Generamos el token de autentificacion
-            String authToken = jwtGenerator.buildToken(user.getUsername(), 15);
+            String authToken = authTokenGenerator.buildToken(user.getUsername(), 15);
 
             // Generamos el refresh token
-            String refreshToken = jwtGenerator.buildToken(user.getUsername(), 300);
+            String refreshToken = refreshTokenGenerator.buildToken(user.getUsername(), 300);
             Cookie cookie = new Cookie("refreshToken", refreshToken);
-            cookie.setDomain("localhost");
+            cookie.setDomain(domain);
             cookie.setHttpOnly(true);
             cookie.setMaxAge(18000);
-            //cookie.setPath("/users/refresh");
+            cookie.setPath("/users/refresh");
 
 
             response.addCookie(cookie);
@@ -143,11 +147,11 @@ public class ControllerUsuario {
         }
     }
 
-    @RequestMapping(value="/refresh")
+    @RequestMapping(value="/refresh", method=RequestMethod.GET)
     public ResponseEntity<?> refresh(@CookieValue("refreshToken") String refreshToken) {
 
         try {
-            String token = tokenRefresh.refresh(refreshToken);
+            String token = tokenRefresher.refresh(refreshToken);
 
             return ResponseEntity.ok(String.format("{\"status\": \"200\", \"token\": \"%s\"}", token));
         }

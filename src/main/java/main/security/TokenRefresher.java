@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class TokenRefresher {
 
-    @Value("${jwt.secret}")
+    @Value("${jwt.refresh.secret}")
     private String secretKey;
 
     @Autowired
