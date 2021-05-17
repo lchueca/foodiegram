@@ -15,10 +15,12 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -106,13 +108,22 @@ public class ControllerUsuario {
     }
 
     @RequestMapping(value="/login", method=RequestMethod.POST)
-    public ResponseEntity<String> login(@Valid @ModelAttribute("employee") UserForm user) {
+    public ResponseEntity<String> login(@Valid @ModelAttribute("employee") UserForm user, HttpServletResponse response) {
 
         try {
             UsernamePasswordAuthenticationToken userData = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
-            Authentication authenticate = authenticationManager.authenticate(userData);
-            String jwToken = jwtGenerator.buildToken(user.getUsername(), user.getPassword());
-            return ResponseEntity.ok(String.format("{\"status\": \"200\", \"token\": \"%s\"}", jwToken));
+            authenticationManager.authenticate(userData);
+            // Generamos el token de autentificacion
+            String authToken = jwtGenerator.buildToken(user.getUsername(), 15);
+            // Generamos el refresh token
+            String refreshToken = jwtGenerator.buildToken(user.getUsername(), 300);
+            Cookie cookie = new Cookie("refreshToken", refreshToken);
+            cookie.setDomain(direccionWeb);
+            cookie.setMaxAge(18000);
+            cookie.setPath("/users/refresh");
+
+            response.addCookie(cookie);
+            return ResponseEntity.ok(String.format("{\"status\": \"200\", \"token\": \"%s\"}", authToken));
         }
 
         catch (NullPointerException e) {
