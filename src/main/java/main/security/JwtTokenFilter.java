@@ -70,8 +70,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
 
     private void setUpSpringAuthentication(Claims claims) {
-        // para cuando hagamos con admins y cosas chidas
-        //List<String> authorities = (List) claims.get("authorities");
 
         List<String> roles1 = (List<String>) claims.get("roles");
         List<RoleEnum> roles2 = roles1.stream().map(rol -> RoleEnum.valueOf(rol)).collect(Collectors.toList());;

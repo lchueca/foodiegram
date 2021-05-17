@@ -1,10 +1,12 @@
 package main.rest.controller;
 
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import main.application.service.UserService;
 import main.domain.resource.*;
-import main.persistence.entity.RoleEnum;
-import main.security.JWTokenGenerator;
+import main.security.AuthTokenGenerator;
+import main.security.TokenRefresher;
 import main.security.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,16 +16,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.List;
 
 @org.springframework.web.bind.annotation.RestController
@@ -40,9 +37,12 @@ public class ControllerUsuario {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private JWTokenGenerator jwtGenerator;
+    private AuthTokenGenerator jwtGenerator;
 
-       @RequestMapping(value = "/{user}", method = RequestMethod.GET)
+    @Autowired
+    private TokenRefresher tokenRefresh;
+
+    @RequestMapping(value = "/{user}", method = RequestMethod.GET)
     public ResponseEntity<?> getUserByName(@PathVariable String user) {
 
         UsuarioResource usuario = service.getUserByName(user);
@@ -108,21 +108,25 @@ public class ControllerUsuario {
     }
 
     @RequestMapping(value="/login", method=RequestMethod.POST)
-    public ResponseEntity<String> login(@Valid @ModelAttribute("employee") UserForm user, HttpServletResponse response) {
+    public ResponseEntity<?> login(@Valid @ModelAttribute("employee") UserForm user, HttpServletResponse response) {
 
         try {
             UsernamePasswordAuthenticationToken userData = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
             authenticationManager.authenticate(userData);
             // Generamos el token de autentificacion
             String authToken = jwtGenerator.buildToken(user.getUsername(), 15);
+
             // Generamos el refresh token
             String refreshToken = jwtGenerator.buildToken(user.getUsername(), 300);
             Cookie cookie = new Cookie("refreshToken", refreshToken);
-            cookie.setDomain(direccionWeb);
+            cookie.setDomain("localhost");
+            cookie.setHttpOnly(true);
             cookie.setMaxAge(18000);
-            cookie.setPath("/users/refresh");
+            //cookie.setPath("/users/refresh");
+
 
             response.addCookie(cookie);
+
             return ResponseEntity.ok(String.format("{\"status\": \"200\", \"token\": \"%s\"}", authToken));
         }
 
@@ -138,6 +142,28 @@ public class ControllerUsuario {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is disabled.");
         }
     }
+
+    @RequestMapping(value="/refresh")
+    public ResponseEntity<?> refresh(@CookieValue("refreshToken") String refreshToken) {
+
+        try {
+            String token = tokenRefresh.refresh(refreshToken);
+
+            return ResponseEntity.ok(String.format("{\"status\": \"200\", \"token\": \"%s\"}", token));
+        }
+
+        catch (ExpiredJwtException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token has expired.");
+        }
+
+        catch (MalformedJwtException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Malformed token.");
+        }
+
+
+
+    }
+
 
 
 }

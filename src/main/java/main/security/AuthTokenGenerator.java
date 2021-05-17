@@ -22,16 +22,16 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
-public class JWTokenGenerator {
+public class AuthTokenGenerator {
 
     @Autowired
-    RepoJwtoken repoJwtoke;
+    private RepoJwtoken repoJwtoke;
 
     @Autowired
-    RepoUsuario repoUser;
+    private RepoUsuario repoUser;
 
     @Autowired
-    RepoRole repoRole;
+    private RepoRole repoRole;
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -40,31 +40,40 @@ public class JWTokenGenerator {
     public String buildToken(String username, int minutes) {
 
         Usuario user = repoUser.findByName(username);
-        List<RoleEnum> roles = repoRole.findByIduser(user.getId()).stream().map((Role::getRole)).collect(Collectors.toList());
+        return buildToken(user.getId(), minutes);
+    }
+
+    public String buildToken(Integer userIdD, int minutes) {
+
+
+        List<RoleEnum> roles = repoRole.findByIduser(userIdD).stream().map((Role::getRole)).collect(Collectors.toList());
 
         minutes *= 60000;
 
-        String token = Jwts.builder()
-        .setSubject(user.getId().toString()).claim("roles", roles)
-        .setIssuedAt(new Date(System.currentTimeMillis()))
-        .setExpiration(new Date(System.currentTimeMillis() + minutes))
-        .signWith(SignatureAlgorithm.HS512, secretKey.getBytes()).compact();
-
-        Jwtoken tokens = repoJwtoke.findByUserid(user.getId());
+        Jwtoken tokens = repoJwtoke.findByUserid(userIdD);
 
         if(tokens!= null)
             tokens.setExpiredate(new Date(System.currentTimeMillis() + minutes));
 
 
         else
-           tokens = new Jwtoken(user.getId(), new Date(System.currentTimeMillis() + minutes));
+            tokens = new Jwtoken(userIdD, new Date(System.currentTimeMillis() + minutes));
 
 
         repoJwtoke.save(tokens);
 
-        return "Bearer " + token;
+        return  Jwts.builder()
+                .setSubject(userIdD.toString())
+                .claim("roles", roles)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + minutes))
+                .signWith(SignatureAlgorithm.HS512, secretKey.getBytes()).compact();
 
     }
+
+
+
+
 
 }
 
