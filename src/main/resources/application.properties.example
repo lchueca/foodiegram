@@ -1,4 +1,4 @@
-direccion = http://localhost:8080
+domain = localhost
 
 spring.http.multipart.max-file-size = 20MB
 spring.http.multipart.max-request-size = 20MB
@@ -25,4 +25,5 @@ spring.mail.password=
 spring.mail.properties.mail.smtp.auth=true;
 spring.mail.properties.mail.smtp.starttls.enable=true
 
-jwt.secret = MamiChanXFungus
+jwt.auth.secret = MamiChanXFungus
+jwt.refresh.secret = FungusXcr7
