@@ -112,7 +112,7 @@ public class ControllerUsuario {
     }
 
     @RequestMapping(value="/login", method=RequestMethod.POST)
-    public ResponseEntity<?> login(@Valid @ModelAttribute("employee") UserForm user, HttpServletResponse response) {
+    public ResponseEntity<?> login(@Valid @ModelAttribute("UserForm") UserForm user, HttpServletResponse response) {
 
         try {
             UsernamePasswordAuthenticationToken userData = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
