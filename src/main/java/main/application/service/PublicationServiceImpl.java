@@ -118,7 +118,7 @@ public class PublicationServiceImpl implements PublicationService {
         publi = repoPubli.save(publi);
 
         try {
-            File folder = new File(apacheRootFolder + "/" + userID);
+            File folder = new File(apacheRootFolder + "/users/" + userID);
             folder.mkdirs();
 
             String name = folder.getAbsolutePath() + "/" + publi.getId() + "." + matcher.group(1);
@@ -127,7 +127,7 @@ public class PublicationServiceImpl implements PublicationService {
             stream.close();
 
             // Si se ha conseguido guardar la imagen, se le asocia a la publicacion una direccion en la BD.
-            String address = String.format("%s/%s/%s.%s", apacheAddress, userID, publi.getId(), matcher.group(1));
+            String address = String.format("%s/users/%s/%s.%s", apacheAddress, userID, publi.getId(), matcher.group(1));
             publi.setImage(address);
             repoPubli.save(publi);
         }

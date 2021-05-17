@@ -32,7 +32,6 @@ public class ControllerPublicacion {
 
 
         try {
-           //PublicacionResource publi = service.upload((Integer) request.getAttribute("tokenId"), text, loc, image);
             Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
             PublicacionResource publi = service.upload(userID, text, loc, image);
             return publi != null ? ResponseEntity.ok(publi) : ResponseEntity.notFound().build();
