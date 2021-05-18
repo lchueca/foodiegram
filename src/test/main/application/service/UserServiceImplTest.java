@@ -10,21 +10,16 @@ import java.util.regex.Pattern;
 import java.util.Properties;
 
 import lombok.var;
-import main.domain.converter.PublicacionConverter;
-import main.domain.converter.UsuarioConverter;
-import main.domain.converter.PreviewPublicacionConverter;
+import main.domain.converter.*;
+import main.domain.converter.MensajeConverter;
 
-import main.domain.resource.UsuarioResource;
-import main.domain.resource.PreviewPublicacion;
-import main.domain.resource.PublicacionResource;
-import main.domain.resource.ValoracionResource;
+import main.domain.resource.*;
 
-import main.persistence.entity.Usuario;
+import main.persistence.entity.*;
+import main.persistence.repository.RepoMensaje;
 import main.persistence.repository.RepoUsuario;
-import main.persistence.entity.Publicacion;
-
-
-
+import main.persistence.repository.RepoValoracion;
+import main.persistence.repository.RepoVerifytoken;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -123,57 +118,90 @@ class UserServiceImplTest {
 
     }
 
-    @Test
-    void getRatings() {
-        //Con un usuario existente, comprobamos que se devuelve una lista de ratings
-        userService = new UserServiceImpl();
-        String nombre = "Grogu";
-        List<ValoracionResource> rating =  userService.getRatings(nombre);
-        Assertions.assertNotNull(rating);
+    @Mock
+    RepoValoracion repoValMock;
+    ValoracionConverter valConverterMock;
+    List<Valoracion> valoracionMock;
+    List<ValoracionResource> valoracionResoMock;
 
-        //Le envio un usuario que no existe y tiene que devolver null;
-        userService = new UserServiceImpl();
-        String nombreNull = "Grogu";
-        List<ValoracionResource> ratingNull =  userService.getRatings(nombreNull);
-        Assertions.assertNull(ratingNull);
+    @Test
+    void getRatings() { //X
+
+        assertNotNull(repoUsuarioMock);
+        Usuario usuario = null;
+
+        //DEVUELVE NULL
+        when(repoUsuarioMock.findByName("Aslan")).thenReturn(usuario);
+        assertNull(usuario);
+
+        //Devuelve la lista de ratings
+        when(valoracionMock.stream().map(valConverterMock::convert).collect(Collectors.toList())).thenReturn(valoracionResoMock);
+        assertNotNull(valoracionResoMock);
+
     }
+    @Mock
+    UsuarioResource usuarioMock;
+
 
     @Test
     void register() {
-        //Con un usuario existente, comprobamos que se devuelve una lista de ratings
-        userService = new UserServiceImpl();
-        String nombre = "Grogu";
-        String contraseña = "MandoBestDad123";
-        String email = "babyYodarules@gmail.es";
 
-        UsuarioResource i =  userService.register(nombre, contraseña, email);
-        Assertions.assertEquals("Grogu", i.getName());
+        Usuario usuario = Mockito.mock(Usuario.class);
 
+        // Nombre de usuario
+        when(usuario.getName().length()).thenThrow(new IllegalArgumentException("The name is to long, please insert a name BELOW 20 characters"));
 
-        //Le envio un usuario cuyo nombre no es valido y tiene que devolver la excepcion;
+        Throwable exception = assertThrows(IllegalArgumentException.class, () -> usuario.getName().length());
 
-        userService = new UserServiceImpl();
-        String nombreNull = "Grogu El Individuo Mas Adorable Del Mundo";
-        String mensaje = "The name is to long, please insert a name BELOW 20 characters";
+        assertNotNull(exception.getMessage());
 
-        /*
-        var expectedException =
-            assertThrows(
-                    UserServiceImpl -> {
-                        throw new IllegalArgumentException(mensaje);
-                    }
-            );
+        //Contraseña
+        when(usuario.getPasswd().length()).thenThrow(new IllegalArgumentException("The PASSWORD is to long, please insert a password BELOW 20 characters"));
 
-        assertEquals(mensaje, expectedException.getMessage());
-        */
+        Throwable exception1 = assertThrows(IllegalArgumentException.class, () -> usuario.getPasswd().length());
 
+        assertNotNull(exception1.getMessage());
+
+        //Email inadecuado
+
+        when(usuario.getEmail().contains("@")).thenThrow(new IllegalArgumentException("The email introduces is NOT valid, please insert a valid e-mail"));
+
+        Throwable exception2 = assertThrows(IllegalArgumentException.class, () -> usuario.getEmail().contains("@"));
+
+        assertNotNull(exception2.getMessage());
+
+        // Email repe
+
+        when(repoUsuarioMock.findByEmail(usuario.getEmail())).thenThrow(new IllegalArgumentException("That e-mail is already registered"));
+
+        Throwable exception3 = assertThrows(IllegalArgumentException.class, () -> repoUsuarioMock.findByEmail(usuario.getEmail()));
+
+        assertNotNull(exception3.getMessage());
+
+        //Registro correcto
+        when(converterUserMock.convert(usuario)).thenReturn(usuarioMock);
+        assertNotNull(usuarioMock);
     }
 
-    @Test
-    void verify() {
-    }
+    @Mock
+    List<MensajeResource> mensajeResoMock;
+    MensajeConverter mensajeConvMock;
+    List<Mensaje> mensajesMock;
 
     @Test
     void getMensajes() {
+
+        assertNotNull(repoUsuarioMock);
+        Usuario usuario = null;
+
+        //DEVUELVE UNA LISTA
+        when(mensajesMock.stream().map(mensajeConvMock::convert).collect(Collectors.toList())).thenReturn(mensajeResoMock);
+        assertNotNull(mensajeResoMock);
+
+
+        //DEVUELVE NULL
+        mensajeResoMock = null;
+        when(mensajesMock.stream().map(mensajeConvMock::convert).collect(Collectors.toList())).thenReturn(mensajeResoMock);
+        assertNull(mensajeResoMock);
     }
 }
