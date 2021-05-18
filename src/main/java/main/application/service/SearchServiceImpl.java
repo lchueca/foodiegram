@@ -10,13 +10,11 @@ import main.persistence.entity.ColabJOINUser;
 import main.persistence.entity.PubliJOINUser;
 import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoColabJOINUser;
-import main.persistence.repository.RepoNumValPubli;
 import main.persistence.repository.RepoPubliJOINUser;
 import main.persistence.repository.RepoUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.stream.Collectors;
 
