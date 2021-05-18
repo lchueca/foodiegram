@@ -31,6 +31,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         http.authorizeRequests().antMatchers(HttpMethod.POST, "*").hasAnyRole("USER", "COL", "MOD", "ADMIN")
+
+                .regexMatchers("\\/events\\/[a-z]+$").hasAnyRole("USER", "COL", "MOD", "ADMIN")
+                .antMatchers("/events").hasAnyRole("COL", "MOD", "ADMIN")
+                .regexMatchers("\\/events\\/\\d+$").hasAnyRole("COL", "MOD", "ADMIN")
+
+
+
                 .antMatchers("/mod/**").hasAnyRole("ADMIN", "MOD")
                 .antMatchers("/admin/**").hasRole("ADMIN");
 
