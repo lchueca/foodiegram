@@ -16,7 +16,7 @@
     <h1 class="card-title mt-3 text-center">Foodiegram</h1><p></p>
 
 
-    <form th:action="@{/pruebas/postLogin}" th:object="${userLog}" method="post">
+    <form th:action="@{/users/postLogin}" th:object="${userLog}" method="post">
         <div class="container">
 
             <div class="card bg-light">
@@ -44,7 +44,7 @@
     <div class="card bg-light">
         <article class="card-body mx-auto" style="max-width: 400px;">
             <h5 class="card-title mt-3 text-center">Don't you have an account?
-                <h5 class="card-title mt-3 text-center"> <a th:href="@{/pruebas/register}"> Register </a></h5>
+                <h5 class="card-title mt-3 text-center"> <a th:href="@{/users/register}"> Register </a></h5>
             </h5>
         </article>
     </div>

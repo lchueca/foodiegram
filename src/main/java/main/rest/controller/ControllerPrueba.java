@@ -45,7 +45,7 @@ public class ControllerPrueba {
         ModelAndView modelAndView = new ModelAndView("userPage");
         return modelAndView;
     }
-
+    /*
     //registro de usuario
     @GetMapping("/register")
     ModelAndView register(Model model){
@@ -74,9 +74,10 @@ public class ControllerPrueba {
         return modelAndView;
     }
 
+
     @PostMapping("/postLogin")
     public void userLogAtributes(@Valid @ModelAttribute("userLog") UserForm user){
         System.out.println(user.getUsername() + ": " + user.getPassword());
     }
-
+    */
 }

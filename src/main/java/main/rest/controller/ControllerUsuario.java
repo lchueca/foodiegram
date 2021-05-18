@@ -5,6 +5,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import main.application.service.UserService;
 import main.domain.resource.*;
+import main.persistence.entity.Usuario;
 import main.security.AuthTokenGenerator;
 import main.security.RefreshTokenGenerator;
 import main.security.TokenRefresher;
@@ -17,7 +18,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -78,9 +81,19 @@ public class ControllerUsuario {
         return valoraciones != null ? ResponseEntity.ok(valoraciones) : ResponseEntity.notFound().build();
 
     }
+    //--REGISTER--//
 
-    @RequestMapping(value = "register", method = RequestMethod.POST)
-    public ResponseEntity<?> registerUser(@Valid @ModelAttribute("employee") UserForm user) {
+    @GetMapping("/register")
+    ModelAndView register(Model model){
+        ModelAndView modelAndView = new ModelAndView("registerForm");
+
+        model.addAttribute("newUser", new UserForm());
+        return modelAndView;
+
+    }
+
+    @PostMapping("/postRegister")
+    public ResponseEntity<?> registerUser(@Valid @ModelAttribute("newUser") UserForm user) {
 
         try {
             UsuarioResource newUser = service.register(user.getUsername(), user.getPassword(), user.getEmail());
@@ -110,9 +123,20 @@ public class ControllerUsuario {
 
 
     }
+    //--LOG IN--//
 
-    @RequestMapping(value="/login", method=RequestMethod.POST)
-    public ResponseEntity<?> login(@Valid @ModelAttribute("employee") UserForm user, HttpServletResponse response) {
+    @GetMapping()
+    public ModelAndView landingPage(Model model){
+
+        ModelAndView modelAndView = new ModelAndView("landingPage");
+
+        model.addAttribute("userLog", new UserForm());
+
+        return modelAndView;
+    }
+
+    @PostMapping("/postLogin")
+    public ResponseEntity<?> login(@Valid @ModelAttribute("userLog") UserForm user, HttpServletResponse response) {
 
         try {
             UsernamePasswordAuthenticationToken userData = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
