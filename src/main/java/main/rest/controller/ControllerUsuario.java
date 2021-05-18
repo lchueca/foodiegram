@@ -1,10 +1,13 @@
 package main.rest.controller;
 
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import main.application.service.UserService;
 import main.domain.resource.*;
-import main.persistence.entity.RoleEnum;
-import main.security.JWTokenGenerator;
+import main.security.AuthTokenGenerator;
+import main.security.RefreshTokenGenerator;
+import main.security.TokenRefresher;
 import main.security.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,14 +17,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.List;
 
 @org.springframework.web.bind.annotation.RestController
@@ -31,16 +31,22 @@ public class ControllerUsuario {
     @Autowired
     private UserService service;
 
-    @Value("${direccion}")
-    private String direccionWeb;
+    @Value("${domain}")
+    private String domain;
 
     @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private JWTokenGenerator jwtGenerator;
+    private AuthTokenGenerator authTokenGenerator;
 
-       @RequestMapping(value = "/{user}", method = RequestMethod.GET)
+    @Autowired
+    private RefreshTokenGenerator refreshTokenGenerator;
+
+    @Autowired
+    private TokenRefresher tokenRefresher;
+
+    @RequestMapping(value = "/{user}", method = RequestMethod.GET)
     public ResponseEntity<?> getUserByName(@PathVariable String user) {
 
         UsuarioResource usuario = service.getUserByName(user);
@@ -51,7 +57,7 @@ public class ControllerUsuario {
     @RequestMapping(value = "/{user}/{pubID}", method = RequestMethod.GET)
     public void redirectToPost(HttpServletResponse httpServletResponse, @PathVariable String user, @PathVariable Integer pubID) {
 
-        httpServletResponse.setHeader("Location", direccionWeb + "/posts/" + pubID);
+        httpServletResponse.setHeader("Location", "http://" + domain + "/posts/" + pubID);
         httpServletResponse.setStatus(302);
     }
 
@@ -106,13 +112,26 @@ public class ControllerUsuario {
     }
 
     @RequestMapping(value="/login", method=RequestMethod.POST)
-    public ResponseEntity<String> login(@Valid @ModelAttribute("employee") UserForm user) {
+    public ResponseEntity<?> login(@Valid @ModelAttribute("employee") UserForm user, HttpServletResponse response) {
 
         try {
             UsernamePasswordAuthenticationToken userData = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
-            Authentication authenticate = authenticationManager.authenticate(userData);
-            String jwToken = jwtGenerator.buildToken(user.getUsername(), user.getPassword());
-            return ResponseEntity.ok(String.format("{\"status\": \"200\", \"token\": \"%s\"}", jwToken));
+            authenticationManager.authenticate(userData);
+            // Generamos el token de autentificacion
+            String authToken = authTokenGenerator.buildToken(user.getUsername(), 15);
+
+            // Generamos el refresh token
+            String refreshToken = refreshTokenGenerator.buildToken(user.getUsername(), 300);
+            Cookie cookie = new Cookie("refreshToken", refreshToken);
+            cookie.setDomain(domain);
+            cookie.setHttpOnly(true);
+            cookie.setMaxAge(18000);
+            cookie.setPath("/users/refresh");
+
+
+            response.addCookie(cookie);
+
+            return ResponseEntity.ok(String.format("{\"status\": \"200\", \"token\": \"%s\"}", authToken));
         }
 
         catch (NullPointerException e) {
@@ -127,6 +146,28 @@ public class ControllerUsuario {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is disabled.");
         }
     }
+
+    @RequestMapping(value="/refresh", method=RequestMethod.GET)
+    public ResponseEntity<?> refresh(@CookieValue("refreshToken") String refreshToken) {
+
+        try {
+            String token = tokenRefresher.refresh(refreshToken);
+
+            return ResponseEntity.ok(String.format("{\"status\": \"200\", \"token\": \"%s\"}", token));
+        }
+
+        catch (ExpiredJwtException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token has expired.");
+        }
+
+        catch (MalformedJwtException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Malformed token.");
+        }
+
+
+
+    }
+
 
 
 }

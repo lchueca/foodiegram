@@ -31,7 +31,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     RepoJwtoken repoTokens;
 
-    @Value("${jwt.secret}")
+    @Value("${jwt.auth.secret}")
     private String secretKey;
 
     @Override

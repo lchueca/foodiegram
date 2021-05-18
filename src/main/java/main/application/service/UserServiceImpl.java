@@ -52,8 +52,8 @@ public class UserServiceImpl implements UserService {
     @Value("${apache.address}")
     private String apacheAddress;
 
-    @Value("${direccion}")
-    private String direccionWeb;
+    @Value("${domain}")
+    private String domain;
 
     private final Random random = new Random();
 
@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService {
 
 
             // Se envia el email de confirmacion
-            String mensaje="Enlace de verificación: " + direccionWeb + "/users/verify/" + token;
+            String mensaje="Enlace de verificación: " + "http://" + domain + ":8080/users/verify/" + token;
             String topic="Confirmación de correo electrónico en foodiegram.";
             sendEmailService.sendEmails(email, mensaje, topic);
 
