@@ -29,6 +29,7 @@ import java.util.List;
 @org.springframework.web.bind.annotation.RestController
 @RequestMapping("/mod")
 public class ControllerModerador {
+
     @Autowired
     private UserService service;
 
@@ -36,16 +37,12 @@ public class ControllerModerador {
     private String direccionWeb;
 
     @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
     private PublicationService pubService;
 
     @Autowired
     private ComentarioService comService;
 
-    @Autowired
-    private JWTokenGenerator jwtGenerator;
+
     @RequestMapping(value="/deletePub",method=RequestMethod.DELETE)
     public ResponseEntity<?> deletePub(@RequestPart ("pubID")String pubID) {
         try{

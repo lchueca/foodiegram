@@ -28,25 +28,13 @@ import java.util.Date;
 import java.util.List;
 @org.springframework.web.bind.annotation.RestController
 @RequestMapping("/admin")
-public class ControllerAdmin extends ControllerModerador {
+public class ControllerAdmin {
 
     @Autowired
     private UserService service;
 
     @Value("${direccion}")
     private String direccionWeb;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private PublicationService pubService;
-
-    @Autowired
-    private ComentarioService comService;
-
-    @Autowired
-    private JWTokenGenerator jwtGenerator;
 
 
     @RequestMapping(value="/ban",method=RequestMethod.POST)
@@ -80,7 +68,7 @@ public class ControllerAdmin extends ControllerModerador {
     @RequestMapping(value="/banlist",method = RequestMethod.GET)
     public ResponseEntity<?> getBannedUser() {
 
-        List<UsuarioResource> bulist = service.getBannedUserList();
+        List<Usuario_baneadoResource> bulist = service.getBannedUserList();
         return bulist !=  null ? ResponseEntity.ok(bulist) : ResponseEntity.notFound().build();
 
     }
