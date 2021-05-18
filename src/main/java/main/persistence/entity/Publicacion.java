@@ -2,9 +2,6 @@ package main.persistence.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import main.persistence.repository.RepoUsuario;
-import main.security.UserForm;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.naming.NoPermissionException;

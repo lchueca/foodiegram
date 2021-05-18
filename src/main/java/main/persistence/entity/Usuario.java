@@ -1,8 +1,6 @@
 package main.persistence.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -18,6 +16,8 @@ public class Usuario {
     private String email;
     private String image;
     private boolean enabled;
+    @Enumerated(EnumType.STRING)
+    private RoleEnum role;
 
 
     public Usuario(String name, String passwd, String image, String email) {
@@ -26,6 +26,7 @@ public class Usuario {
         this.image = image;
         this.email=email;
         this.enabled=false;
+        this.role = null;
 
     }
 

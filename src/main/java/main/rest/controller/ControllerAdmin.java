@@ -1,30 +1,16 @@
 package main.rest.controller;
-import main.application.service.ComentarioService;
-import main.application.service.PublicationService;
+
 import main.application.service.UserService;
-import main.domain.resource.*;
-import main.security.JWTokenGenerator;
-import main.security.UserForm;
+import main.domain.resource.UsuarioResource;
+import main.domain.resource.Usuario_baneadoResource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestPart;
 
-import javax.naming.NoPermissionException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.io.IOException;
-import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 @org.springframework.web.bind.annotation.RestController
 @RequestMapping("/admin")
@@ -33,9 +19,10 @@ public class ControllerAdmin {
     @Autowired
     private UserService service;
 
-    @Value("${direccion}")
-    private String direccionWeb;
-
+    @GetMapping
+    public String xD(){
+        return  "hola";
+    }
 
     @RequestMapping(value="/ban",method=RequestMethod.POST)
     public ResponseEntity<?> banUser(@RequestPart("user") String user,@RequestPart("severity") String severe) {

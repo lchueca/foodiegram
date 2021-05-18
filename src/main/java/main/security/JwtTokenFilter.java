@@ -3,11 +3,8 @@ package main.security;
 
 import io.jsonwebtoken.*;
 import main.persistence.entity.Jwtoken;
-import main.persistence.entity.Role;
 import main.persistence.entity.RoleEnum;
-import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoJwtoken;
-import main.persistence.repository.RepoUsuario;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,9 +15,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class JwtTokenFilter extends OncePerRequestFilter {
@@ -71,10 +67,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private void setUpSpringAuthentication(Claims claims) {
 
-        List<String> roles1 = (List<String>) claims.get("roles");
-        List<RoleEnum> roles2 = roles1.stream().map(rol -> RoleEnum.valueOf(rol)).collect(Collectors.toList());;
+        List<RoleEnum> roles = new ArrayList<>();
+        roles.add(RoleEnum.valueOf(claims.get("rol").toString()));
 
-        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(claims.getSubject(), null, roles2);
+        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(claims.getSubject(), null,roles );
 
         SecurityContextHolder.getContext().setAuthentication(auth);
 

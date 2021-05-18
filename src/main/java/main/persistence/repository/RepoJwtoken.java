@@ -1,7 +1,7 @@
 package main.persistence.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import main.persistence.entity.Jwtoken;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository

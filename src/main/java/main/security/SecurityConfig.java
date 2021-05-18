@@ -1,25 +1,15 @@
 package main.security;
 
-import main.persistence.entity.RoleEnum;
-import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoJwtoken;
-import main.persistence.repository.RepoUsuario;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -40,7 +30,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
          http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
 
 
-        http.authorizeRequests().antMatchers(HttpMethod.POST, "*").hasRole("USER")
+        http.authorizeRequests().antMatchers(HttpMethod.POST, "*").hasAnyRole("USER", "COL", "MOD", "ADMIN")
+                .antMatchers("/mod/**").hasAnyRole("ADMIN", "MOD")
                 .antMatchers("/admin/**").hasRole("ADMIN");
 
         http.addFilterAfter(new JwtTokenFilter(repoTokens, secretKey), UsernamePasswordAuthenticationFilter.class);

@@ -3,7 +3,6 @@ package main.application.service;
 import main.domain.converter.EventoConverter;
 import main.domain.resource.EventoResource;
 import main.persistence.entity.Evento;
-import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoEvento;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

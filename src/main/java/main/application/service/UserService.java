@@ -1,12 +1,10 @@
 package main.application.service;
 
-import main.domain.resource.*;
-import main.persistence.entity.Usuario_baneado;
-import org.springframework.web.multipart.MultipartFile;
+import main.domain.resource.PreviewPublicacion;
+import main.domain.resource.UsuarioResource;
+import main.domain.resource.Usuario_baneadoResource;
+import main.domain.resource.ValoracionResource;
 
-
-import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 public interface UserService  {

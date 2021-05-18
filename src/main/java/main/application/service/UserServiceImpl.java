@@ -1,22 +1,22 @@
 package main.application.service;
 
 import main.domain.converter.*;
-import main.domain.resource.*;
+import main.domain.resource.PreviewPublicacion;
+import main.domain.resource.UsuarioResource;
+import main.domain.resource.Usuario_baneadoResource;
+import main.domain.resource.ValoracionResource;
 import main.persistence.entity.*;
 import main.persistence.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,9 +44,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private RepoValoracion repoVal;
-
-    @Autowired
-    private RepoRole repoRole;
 
 
     @Value("${domain}")
@@ -149,19 +146,20 @@ public class UserServiceImpl implements UserService {
         //
         Verifytoken verToken = repoToken.findByToken(token);
 
-        if (verToken==null) {
+        if (verToken==null)
             return null;
-        }           //11     antes   ahora 12:
+
         if(verToken.getExpiredate().before(new Date())) {
             repoToken.delete(verToken);
             return null;
         }
         Usuario newUser = repoUsuario.findByEmail(verToken.getEmail());
         newUser.setEnabled(true);
+        newUser.setRole(RoleEnum.ROLE_USER);
         repoUsuario.save(newUser);
         repoToken.delete(verToken);
 
-        repoRole.save(new Role(newUser.getId(),RoleEnum.ROLE_USER));
+
         return converterUser.convert(newUser);
     }
 
