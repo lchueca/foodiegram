@@ -13,8 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
-import java.util.Random;
+import java.sql.Timestamp;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -25,6 +25,7 @@ public class UserServiceImpl implements UserService {
     private PreviewPublicacionConverter converterPreview = new PreviewPublicacionConverter();
     private ValoracionConverter converterVal = new ValoracionConverter();
     private UsuarioConverter converterUser = new UsuarioConverter();
+    private Usuario_baneadoConverter converterBannedUser= new Usuario_baneadoConverter();
     private final MensajeConverter converterMens = new MensajeConverter();
 
 
@@ -33,7 +34,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private RepoVerifytoken repoToken;
-
+    @Autowired
+    private RepoUsuario_baneado repoUsuario_baneado;
     @Autowired
     private SendEmailService sendEmailService;
 
@@ -46,11 +48,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RepoRole repoRole;
 
-    @Value("${apache.rootFolder}")
-    private String apacheRootFolder;
-
-    @Value("${apache.address}")
-    private String apacheAddress;
 
     @Value("${domain}")
     private String domain;
@@ -145,14 +142,20 @@ public class UserServiceImpl implements UserService {
 
         }
     }
+
+    @Override
     public UsuarioResource verify(Integer token) {//token  de entrada
        //token de entrada comparar token con la id del user
         //
         Verifytoken verToken = repoToken.findByToken(token);
 
-        if (verToken==null)
+        if (verToken==null) {
             return null;
-
+        }           //11     antes   ahora 12:
+        if(verToken.getExpiredate().before(new Date())) {
+            repoToken.delete(verToken);
+            return null;
+        }
         Usuario newUser = repoUsuario.findByEmail(verToken.getEmail());
         newUser.setEnabled(true);
         repoUsuario.save(newUser);
@@ -162,5 +165,135 @@ public class UserServiceImpl implements UserService {
         return converterUser.convert(newUser);
     }
 
+    @Override
+    public Usuario_baneadoResource banUser(String user,String severity) throws IllegalArgumentException{
+        //nombre es unico
+        Usuario newUser=repoUsuario.findByName(user);
+        newUser.setEnabled(false);
+        int maxPenalty=5; //maximo
+        int Severity; //local
+
+        try {
+             Severity = Integer.parseInt(severity);
+        }
+        catch(Exception e){
+            throw new IllegalArgumentException("the type introduced in severity must be a number between 1-5");
+        }
+
+        Date date;
+        if(Severity>maxPenalty||Severity<=0)
+            return null;
+
+
+        date=this.calculateDate(Severity);
+        Usuario_baneado bannedUser=new Usuario_baneado(newUser.getId(),date);
+
+        repoUsuario_baneado.save(bannedUser);
+        repoUsuario.save(newUser);
+
+
+        return converterBannedUser.convert(bannedUser);
+    }
+
+
+    @Override
+    public Usuario_baneadoResource unbanUser(String user) throws IllegalArgumentException{
+        Usuario newUser;
+        Integer id;
+
+        try {
+            newUser = repoUsuario.findByName(user);
+            newUser.setEnabled(true);
+            id = newUser.getId();
+        }
+
+        catch(Exception e){
+            throw new IllegalArgumentException("Usuario no existe");
+        }
+
+        Usuario_baneado bannedUser=repoUsuario_baneado.findById(id);
+        repoUsuario_baneado.delete(bannedUser);
+        newUser.setEnabled(true);
+
+        return null;
+
+    }
+
+
+    @Override
+    public UsuarioResource deleteUser(String user){
+
+        Usuario newUser=repoUsuario.findByName(user);
+        repoUsuario.delete(newUser);
+        return null;
+    }
+
+    @Override
+    public List<Usuario_baneadoResource> getBannedUserList(){
+        List<Usuario_baneado> listabaneado = repoUsuario_baneado.findAll();
+
+        return listabaneado.stream().map(converterBannedUser::convert).collect(Collectors.toList());
+    }
+
+
+    @Override
+    public UsuarioResource sendWarning(String user,Integer type){
+
+        Usuario newUser=repoUsuario.findByName(user);
+        String email= newUser.getEmail();
+        Date actualDate=new Date();
+        String mensaje=getWarningMessage(type)+", fecha de la operacion: "+actualDate;
+        String topic="AVISO: COMETISTES UNA INFRACCION EN FOODIEGRAM";
+        sendEmailService.sendEmails(email, mensaje, topic);
+        return null;
+    }
+
+
+    private String getWarningMessage(Integer num) {
+        String message="";
+
+        switch(num){
+            case 1:  //imagenes no apropiados
+                message="Has subido fotos que incumplen con la normativa de foodiegram";
+                message=message+", Este es tu primer aviso,al siguiente baneo";
+                break;
+            case 2://lenguaje ofensivo en comentarios
+                message="Has empleado lenguaje inapropiado a la hora de comentar en la plataforma";
+                message=message+", Este es tu primer aviso,al siguiente baneo";
+                break;
+            case 3://baneo + aviso de infraccion
+                message="Has sido baneado,habiendo incumplido con las normativas de la plataforma mas de una vez";
+
+        }
+
+        return message;
+    }
+
+    private Date calculateDate(Integer severity) {
+
+        Calendar cal = Calendar.getInstance();
+        System.out.println(cal.getTime().getTime());
+        cal.setTime(new Timestamp(cal.getTime().getTime()));
+        switch(severity){
+            case 1:
+                cal.add(Calendar.HOUR,24); //1 day
+                break;
+            case 2:
+                cal.add(Calendar.HOUR,168); //1 week
+                break;
+            case 3:
+                cal.add(Calendar.MONTH,1); //1 month
+                break;
+            case 4:
+                cal.add(Calendar.MONTH,6); //6 month
+                break;
+            case 5:
+                cal.add(Calendar.YEAR,50); //permanent
+                break;
+
+        }
+
+        return new Date(cal.getTime().getTime());
+    }
 
 }
