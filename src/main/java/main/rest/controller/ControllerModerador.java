@@ -27,9 +27,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 @org.springframework.web.bind.annotation.RestController
-@RequestMapping("/admin")
-public class ControllerAdmin extends ControllerModerador {
-
+@RequestMapping("/mod")
+public class ControllerModerador {
     @Autowired
     private UserService service;
 
@@ -47,44 +46,34 @@ public class ControllerAdmin extends ControllerModerador {
 
     @Autowired
     private JWTokenGenerator jwtGenerator;
-
-
-    @RequestMapping(value="/ban",method=RequestMethod.POST)
-    public ResponseEntity<?> banUser(@RequestPart("user") String user,@RequestPart("severity") String severe) {
+    @RequestMapping(value="/deletePub",method=RequestMethod.DELETE)
+    public ResponseEntity<?> deletePub(@RequestPart ("pubID")String pubID) {
         try{
 
-            Usuario_baneadoResource bannedUser=service.banUser(user,severe);
-            return ResponseEntity.ok(bannedUser);
-        }catch (IllegalArgumentException e) {
+            PublicacionResource deletedPost=pubService.deletePost(Integer.parseInt(pubID));
+            return ResponseEntity.ok(deletedPost);
+        }catch (IllegalArgumentException | NoPermissionException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-    @RequestMapping(value="/unban",method=RequestMethod.POST)
-    public ResponseEntity<?> unbanUser(@RequestPart("user") String user) {
+    @RequestMapping(value="/deleteComment",method=RequestMethod.DELETE)
+    public ResponseEntity<?> deleteComment(@RequestPart ("comID")String comID) {
         try{
-            Usuario_baneadoResource bannedUser=service.unbanUser(user);
-            return ResponseEntity.ok(bannedUser);
-        }catch (IllegalArgumentException e) {
+
+            ComentarioResource deletedCom=comService.deleteComentario(Integer.parseInt(comID));
+            return ResponseEntity.ok(deletedCom);
+        }catch (IllegalArgumentException | NoPermissionException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-    @RequestMapping(value="/deleteUser",method=RequestMethod.DELETE)
-    public ResponseEntity<?> deleteUser(@RequestPart("user") String user) {
-        try{
-            UsuarioResource bannedUser=service.deleteUser(user);
-            return ResponseEntity.ok(bannedUser);
-        }catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+
+    @RequestMapping(value="/sendWarning",method=RequestMethod.POST)
+    public ResponseEntity<?> sendWarning(@RequestPart ("user")String user,@RequestPart ("type")String type) {
+    try{
+        UsuarioResource warning=service.sendWarning(user,Integer.parseInt(type));
+        return ResponseEntity.ok(warning);
+    }catch (IllegalArgumentException  e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
-    @RequestMapping(value="/banlist",method = RequestMethod.GET)
-    public ResponseEntity<?> getBannedUser() {
-
-        List<UsuarioResource> bulist = service.getBannedUserList();
-        return bulist !=  null ? ResponseEntity.ok(bulist) : ResponseEntity.notFound().build();
-
     }
-
-
-
 }

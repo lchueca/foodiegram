@@ -10,16 +10,16 @@ public class Usuario_baneado {
     @Id
 
     private int id;
-    private Date date;
+    private Date fecha;
             protected Usuario_baneado() {}
     public Usuario_baneado(int id,Date date){
         this.id=id;
-        this.date=date;
+        this.fecha=date;
     }
 
     public Date getDate(){
 
-        return date;
+        return fecha;
     }
     public Integer getId(){
 

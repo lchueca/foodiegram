@@ -185,14 +185,12 @@ public class UserServiceImpl implements UserService {
         if(Severity>maxPenalty||Severity<=0) {
             return null;
         }
-        if(newUser.isEnabled()){
-            throw new IllegalArgumentException("the account is not enabled");
-        }
+
         date=this.calculateDate(Severity);
         Usuario_baneado bannedUser=new Usuario_baneado(newUser.getId(),date);
 
         repoUsuario_baneado.save(bannedUser);
-
+        repoUsuario.save(newUser);
 
 
         return converterBannedUser.convert(bannedUser);
@@ -227,10 +225,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Usuario_baneadoResource unbanUser(String user) throws IllegalArgumentException{
-        Usuario newUser=repoUsuario.findByName(user);
-        newUser.setEnabled(true);
-        Integer id=newUser.getId();
+        Usuario newUser;
+        Integer id;
+        try {
+            newUser = repoUsuario.findByName(user);
+            newUser.setEnabled(true);
+            id = newUser.getId();
+        }catch(Exception e){
+            throw new IllegalArgumentException("Usuario no existe");
 
+        }
         Usuario_baneado bannedUser=repoUsuario_baneado.findById(id);
         repoUsuario_baneado.delete(bannedUser);
         newUser.setEnabled(true);
@@ -254,6 +258,36 @@ public class UserServiceImpl implements UserService {
             lista.add(repoUsuario.findById(listabaneado.get(i).getId()));
         }
         return lista.stream().map(converterUser::convert).collect(Collectors.toList());
+    }
+    @Override
+    public UsuarioResource sendWarning(String user,Integer type){
+
+        Usuario newUser=repoUsuario.findByName(user);
+        String email= newUser.getEmail();
+        Date actualDate=new Date();
+        String mensaje=getWarningMessage(type)+", fecha de la operacion: "+actualDate;
+        String topic="AVISO: COMETISTES UNA INFRACCION EN FOODIEGRAM";
+        sendEmailService.sendEmails(email, mensaje, topic);
+        return null;
+    }
+    public String getWarningMessage(Integer num){
+        String message="";
+
+        switch(num){
+            case 1:  //imagenes no apropiados
+                message="Has subido fotos que incumplen con la normativa de foodiegram";
+                message=message+", Este es tu primer aviso,al siguiente baneo";
+                break;
+            case 2://lenguaje ofensivo en comentarios
+                message="Has empleado lenguaje inapropiado a la hora de comentar en la plataforma";
+                message=message+", Este es tu primer aviso,al siguiente baneo";
+                break;
+            case 3://baneo + aviso de infraccion
+                message="Has sido baneado,habiendo incumplido con las normativas de la plataforma mas de una vez";
+
+        }
+
+        return message;
     }
 //user/ban
 }

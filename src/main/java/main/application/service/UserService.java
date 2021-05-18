@@ -38,5 +38,5 @@ public interface UserService  {
     UsuarioResource deleteUser(String user);
     //devuelve la lista de usuarios baneados
     List<UsuarioResource> getBannedUserList();
-
+    UsuarioResource sendWarning(String user,Integer type);
 }
