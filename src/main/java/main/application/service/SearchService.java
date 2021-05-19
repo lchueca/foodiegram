@@ -9,6 +9,8 @@ import java.util.List;
 public interface SearchService {
 
     List<PreviewUsuario> getUserList(String username);
+    List<PreviewUsuario> getUserListByPubli();
+    List<PreviewUsuario> getUserListByVal();
     List<PreviewColabJOINUser> getColabListByName(String colabname);
     List<PreviewColabJOINUser> getColabListByOrigin(String origin);
     List<PreviewColabJOINUser> getColabListByType(String type);

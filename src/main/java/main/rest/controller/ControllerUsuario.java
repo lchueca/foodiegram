@@ -4,8 +4,9 @@ package main.rest.controller;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import main.application.service.UserService;
-import main.domain.resource.*;
-import main.persistence.entity.Usuario;
+import main.domain.resource.PreviewPublicacion;
+import main.domain.resource.UsuarioResource;
+import main.domain.resource.ValoracionResource;
 import main.security.AuthTokenGenerator;
 import main.security.RefreshTokenGenerator;
 import main.security.TokenRefresher;
@@ -18,9 +19,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -82,8 +81,8 @@ public class ControllerUsuario {
 
     }
 
-    @PostMapping("/postRegister")
-    public ResponseEntity<?> registerUser(@Valid @ModelAttribute("newUser") UserForm user) {
+    @RequestMapping(value = "register", method = RequestMethod.POST)
+    public ResponseEntity<?> registerUser(@Valid @ModelAttribute("employee") UserForm user) {
 
         try {
             UsuarioResource newUser = service.register(user.getUsername(), user.getPassword(), user.getEmail());
@@ -114,8 +113,8 @@ public class ControllerUsuario {
 
     }
 
-    @PostMapping("/postLogin")
-    public ResponseEntity<?> login(@Valid @ModelAttribute("userLog") UserForm user, HttpServletResponse response) {
+    @RequestMapping(value="/login", method=RequestMethod.POST)
+    public ResponseEntity<?> login(@Valid @ModelAttribute("UserForm") UserForm user, HttpServletResponse response) {
 
         try {
             UsernamePasswordAuthenticationToken userData = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());

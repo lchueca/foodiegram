@@ -4,7 +4,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
-import main.persistence.entity.Jwtoken;
 import main.persistence.entity.Refreshtoken;
 import main.persistence.repository.RepoRefreshtoken;
 import org.springframework.beans.factory.annotation.Autowired;

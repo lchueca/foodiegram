@@ -2,18 +2,15 @@ package main.security;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import main.persistence.entity.*;
-import main.persistence.repository.RepoJwtoken;
+import main.persistence.entity.Refreshtoken;
+import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoRefreshtoken;
-import main.persistence.repository.RepoRole;
 import main.persistence.repository.RepoUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class RefreshTokenGenerator {

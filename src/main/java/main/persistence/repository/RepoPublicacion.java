@@ -9,10 +9,5 @@ import java.util.List;
 @Repository
 public interface RepoPublicacion extends JpaRepository<Publicacion, Integer> {
 
-
-    public List<Publicacion> findByIduser(Integer id);
-
-
-
-
+     List<Publicacion> findByIduser(Integer id);
 }

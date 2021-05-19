@@ -1,7 +1,6 @@
 package main.application.service;
 
 import main.domain.resource.MensajeResource;
-import org.springframework.dao.DataIntegrityViolationException;
 
 import javax.naming.NoPermissionException;
 import java.util.List;
