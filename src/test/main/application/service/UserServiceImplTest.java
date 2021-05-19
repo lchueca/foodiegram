@@ -32,8 +32,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 class UserServiceImplTest {
 
-    @Autowired
-    UserServiceImpl userService;
 
     @Mock
     RepoUsuario repoUsuarioMock;
