@@ -81,16 +81,6 @@ public class ControllerUsuario {
         return valoraciones != null ? ResponseEntity.ok(valoraciones) : ResponseEntity.notFound().build();
 
     }
-    //--REGISTER--//
-
-    @GetMapping("/register")
-    ModelAndView register(Model model){
-        ModelAndView modelAndView = new ModelAndView("registerForm");
-
-        model.addAttribute("newUser", new UserForm());
-        return modelAndView;
-
-    }
 
     @PostMapping("/postRegister")
     public ResponseEntity<?> registerUser(@Valid @ModelAttribute("newUser") UserForm user) {
@@ -122,17 +112,6 @@ public class ControllerUsuario {
         }
 
 
-    }
-    //--LOG IN--//
-
-    @GetMapping()
-    public ModelAndView landingPage(Model model){
-
-        ModelAndView modelAndView = new ModelAndView("landingPage");
-
-        model.addAttribute("userLog", new UserForm());
-
-        return modelAndView;
     }
 
     @PostMapping("/postLogin")
