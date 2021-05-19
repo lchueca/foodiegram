@@ -2,6 +2,7 @@ package main.rest.controller;
 
 import main.application.service.SearchService;
 import main.domain.resource.PreviewColabJOINUser;
+import main.domain.resource.PreviewPubliJOINUser;
 import main.domain.resource.PreviewUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +24,30 @@ public class SearchRestController {
     // busca a usuarios cuyo name contenga el string "username" y devuelve una lista
     // con los nombres de usuario y su foto de perfil
     // si no encuentra devuelve una lista vacia
-    @RequestMapping(value = "/users/{username}", method = RequestMethod.GET)
+    @RequestMapping(value = "/users/name/{username}", method = RequestMethod.GET)
     public ResponseEntity<List<PreviewUsuario>> getUserList(@PathVariable String username) {
 
         List<PreviewUsuario> userList = service.getUserList(username);
+        return userList != null ? ResponseEntity.ok(userList) : ResponseEntity.notFound().build();
+    }
+
+    // busca a usuarios por mayor numero de publicaciones y devuelve una lista (max 15)
+    // con los nombres de usuario y su foto de perfil
+    // si no encuentra devuelve una lista vacia
+    @RequestMapping(value = "/users/ppubli", method = RequestMethod.GET)
+    public ResponseEntity<List<PreviewUsuario>> getUserListByPubli() {
+
+        List<PreviewUsuario> userList = service.getUserListByPubli();
+        return userList != null ? ResponseEntity.ok(userList) : ResponseEntity.notFound().build();
+    }
+
+    // busca a usuarios por mayor numero de valoracionres recibidas y devuelve una lista (max 15)
+    // con los nombres de usuario y su foto de perfil
+    // si no encuentra devuelve una lista vacia
+    @RequestMapping(value = "/users/pval", method = RequestMethod.GET)
+    public ResponseEntity<List<PreviewUsuario>> getUserListByVal() {
+
+        List<PreviewUsuario> userList = service.getUserListByVal();
         return userList != null ? ResponseEntity.ok(userList) : ResponseEntity.notFound().build();
     }
 
@@ -63,5 +84,15 @@ public class SearchRestController {
     }
 
     // BUSQUEDA DE PUBLICACIONES
+    //
+    // busca las publicaciones que contengan un hashtag coincidente con "tag"y devuelve
+    // una lista con los datos de las publicaciones (menos los ids) y el nombre del usuario que hizo
+    // la publicacion
+    // si no encuentra devuelve una lista vacia
+    @RequestMapping(value = "/publi/{tag}", method = RequestMethod.GET)
+    public ResponseEntity<List<PreviewPubliJOINUser>> getPubliListByTag(@PathVariable String tag) {
 
+        List<PreviewPubliJOINUser> publiList = service.getPubliListByTag("#" + tag);
+        return publiList != null ? ResponseEntity.ok(publiList) : ResponseEntity.notFound().build();
+    }
 }

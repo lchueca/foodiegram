@@ -1,6 +1,5 @@
 package main.domain.resource;
 
-import java.util.Objects;
 import lombok.Data;
 
 // Se usa para sacar solo de la DB el ID y la imagen de la publicacion.

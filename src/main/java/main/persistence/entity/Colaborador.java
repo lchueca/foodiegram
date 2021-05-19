@@ -1,11 +1,16 @@
 package main.persistence.entity;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
+@Data
+@NoArgsConstructor
 public class Colaborador {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -24,30 +29,5 @@ public class Colaborador {
         this.money = money;
     }
 
-    protected Colaborador() {}
 
-
-    public Integer getId() {
-        return id;
-    }
-
-    public String getOrigin() {
-        return origin;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getLocalization() {
-        return localization;
-    }
-
-    public Boolean getVip() {
-        return vip;
-    }
-
-    public Integer getMoney() {
-        return money;
-    }
 }

@@ -2,10 +2,7 @@ package main.persistence.entity;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Data
@@ -19,6 +16,9 @@ public class Usuario {
     private String email;
     private String image;
     private boolean enabled;
+    @Enumerated(EnumType.STRING)
+    private RoleEnum role;
+
 
     public Usuario(String name, String passwd, String image, String email) {
         this.name = name;
@@ -26,6 +26,8 @@ public class Usuario {
         this.image = image;
         this.email=email;
         this.enabled=false;
+        this.role = null;
+
     }
 
     protected Usuario() {}

@@ -10,18 +10,17 @@ import main.domain.resource.UsuarioResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
-
 import java.io.IOException;
 import java.util.List;
 
 @org.springframework.web.bind.annotation.RestController
-@RequestMapping("/manage_account/{id}")
+@RequestMapping("/manage_account")
 public class ControllerManageAccount {
 
     @Autowired
@@ -40,25 +39,28 @@ public class ControllerManageAccount {
 
     //añade un amigo pasando un id de la persona que añade amigo y el nombre de la persona que quiere añadir
     @RequestMapping(method = RequestMethod.PUT)
-    public ResponseEntity<?> add(@PathVariable Integer id, @RequestPart(value = "name", required = true) String name){
+    public ResponseEntity<?> add(@RequestPart(value = "name", required = true) String name){
 
-        AmigoResource friend = manageFriends.addFriend(id, name);
+        Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+        AmigoResource friend = manageFriends.addFriend(userID, name);
         return friend != null ? ResponseEntity.ok(friend) : ResponseEntity.notFound().build();
     }
 
     //elimina un amigo pasando un id de la persona que elimina amigo y el nombre de la persona que quiere eliminar
     @RequestMapping(method = RequestMethod.DELETE)
-    public ResponseEntity<?> remove(@PathVariable Integer id, @RequestPart(value = "name", required = true) String name){
+    public ResponseEntity<?> remove(@RequestPart(value = "name", required = true) String name){
 
-        AmigoResource friend = manageFriends.removeFriend(id, name);
+        Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+        AmigoResource friend = manageFriends.removeFriend(userID, name);
         return friend != null ? ResponseEntity.ok(friend) : ResponseEntity.notFound().build();
     }
 
     //permite ver las imagenes del usuario con nombre name si el amigo del usuario con id
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<PreviewPublicacion>> viewImagesofFriend(@PathVariable Integer id, @RequestPart(value = "name", required = true) String name){
+    public ResponseEntity<List<PreviewPublicacion>> viewImagesofFriend(@RequestPart(value = "name", required = true) String name){
 
-        List<PreviewPublicacion> publicacionesAmigo = manageFriends.viewPostOfFriend(id, name);
+        Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+        List<PreviewPublicacion> publicacionesAmigo = manageFriends.viewPostOfFriend(userID, name);
         return publicacionesAmigo != null ? ResponseEntity.ok(publicacionesAmigo) : ResponseEntity.notFound().build();
     }
     //-------------------------------------------------------------------------------------------------------------------------
@@ -67,31 +69,38 @@ public class ControllerManageAccount {
 
     //permite cambiar el nombre de la persona con id si este nombre no esta cogido por otro usuario
     @RequestMapping(value = "/newName", method = RequestMethod.POST)
-    public ResponseEntity<?> changeName(@PathVariable Integer id, @RequestPart(value = "newName", required = true) String newName){
-        UsuarioResource user = manageInfo.changeName(id, newName);
+    public ResponseEntity<?> changeName(@RequestPart(value = "newName", required = true) String newName) {
+
+        Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+        UsuarioResource user = manageInfo.changeName(userID, newName);
         return user!= null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
     }
 
     //permite cambiar la contraseña del usuario con id
     @RequestMapping(value ="/newPasswd", method = RequestMethod.POST)
-    public ResponseEntity<?> changePasswd(@PathVariable Integer id, @RequestPart(value = "newPasswd", required = true) String newPasswd){
-        UsuarioResource user = manageInfo.changePasswd(id, newPasswd);
+    public ResponseEntity<?> changePasswd(@RequestPart(value = "newPasswd", required = true) String newPasswd) {
+
+        Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+        UsuarioResource user = manageInfo.changePasswd(userID, newPasswd);
         return user!= null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
     }
 
     //permite cambiar el email del usuario con id
     @RequestMapping(value = "/newEmail", method = RequestMethod.POST)
-    public ResponseEntity<?> changeEmail(@PathVariable Integer id, @RequestPart(value = "newEmail", required = true) String newEmail){
-        UsuarioResource user = manageInfo.changeEmail(id, newEmail);
+    public ResponseEntity<?> changeEmail(@RequestPart(value = "newEmail", required = true) String newEmail) {
+
+        Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+        UsuarioResource user = manageInfo.changeEmail(userID, newEmail);
         return user!= null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
     }
 
     //permite cambiar la foto de perfil del usuario con id
     @RequestMapping(value = "/newPic", method = RequestMethod.POST)
-    public ResponseEntity<?> changeProfilePic(@PathVariable Integer id, @RequestPart("image") MultipartFile image) {
+    public ResponseEntity<?> changeProfilePic(@RequestPart("image") MultipartFile image) {
 
         try {
-            UsuarioResource user = manageInfo.changeProfilePicture(id, image);
+            Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+            UsuarioResource user = manageInfo.changeProfilePicture(userID, image);
             return user!= null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
         }
 
@@ -110,8 +119,10 @@ public class ControllerManageAccount {
 
     //permite darte de baja de la aplicación
     @RequestMapping(value  = "/unsubscribe",method = RequestMethod.DELETE)
-    public ResponseEntity<?> unsubscribe(@PathVariable Integer id){
-        UsuarioResource user = unsubscribeService.unsubscribe(id);
+    public ResponseEntity<?> unsubscribe() {
+
+        Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+        UsuarioResource user = unsubscribeService.unsubscribe(userID);
         return user!= null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
     }
 
@@ -121,8 +132,10 @@ public class ControllerManageAccount {
 
     //permite ver tus publicaciones
     @RequestMapping(value = "/viewImage", method = RequestMethod.GET)
-    public ResponseEntity<List<PreviewPublicacion>> viewMyImages(@PathVariable Integer id){
-        List<PreviewPublicacion> _listPost = viewImagesService.viewPost(id);
+    public ResponseEntity<List<PreviewPublicacion>> viewMyImages() {
+
+        Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+        List<PreviewPublicacion> _listPost = viewImagesService.viewPost(userID);
         return _listPost != null ? ResponseEntity.ok(_listPost) : ResponseEntity.notFound().build();
     }
     //-------------------------------------------------------------------------------------------------------------------------
