@@ -140,9 +140,6 @@ public class PublicationServiceImpl implements PublicationService {
         return converterPubli.convert(publi);
     }
 
-
-
-
     @Override
     public List<ValoracionResource> getRatings(Integer pubID) {
 

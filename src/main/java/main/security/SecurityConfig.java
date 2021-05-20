@@ -60,7 +60,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .regexMatchers(HttpMethod.GET, "\\/posts\\/\\w+\\/comments$")
 
                 // Controller search
-                .antMatchers("/search/**");
+                .antMatchers("/search/**")
+
+                // Controller event
+                .antMatchers("/event/**");
     }
 
     @Bean
