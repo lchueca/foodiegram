@@ -174,4 +174,26 @@ public class ControllerPrueba {
     ModelAndView personalPage(Model model){
        return new ModelAndView("userPage");
     }
+
+    //---------------------------------------UPLOAD POST---------------------------------------//
+
+    @GetMapping("/upload")
+    ModelAndView uploadPost(Model model){
+        model.addAttribute("postSrc", new String());
+        return new ModelAndView("uploadPost");
+    }
+
+    @PostMapping("/postUpload")
+    ModelAndView postUpload(){
+        return new ModelAndView("userPage");
+    }
+
+    //---------------------------------------MANAGE ACCOUNT---------------------------------------//
+    @GetMapping("/manageAccount")
+    ModelAndView manageAccount(Model model){
+        model.addAttribute("postSrc", new String());
+        return new ModelAndView("manageAccount");
+    }
+
+
 }

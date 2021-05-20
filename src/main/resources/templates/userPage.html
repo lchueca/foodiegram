@@ -15,16 +15,19 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-dark static-top mb-5 shadow">
     <div class="container">
 
-        <a class="navbar-brand text-white" href="#">Foodiegram</a>
+        <a class="navbar-brand text-white" th:href="@{/pruebas}">Foodiegram</a>
 
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
-                <a class="text-white" th:text="${userName}"/>
-                <!--
+
                 <li class="nav-item">
-                    <a class="nav-link text-white" th:href="#" >Search</a>
+                    <a class="nav-link text-white" th:href="@{/pruebas/manageAccount}" th:text="${userName}"></a>
                 </li>
 
+                <li class="nav-item">
+                    <a class="nav-link text-white" th:href="@{/pruebas/upload}">upload</a>
+                </li>
+                <!--
                 <li class="nav-item">
                     <a class="nav-link text-white" th:href="#">Friends</a>
                 </li>
@@ -41,7 +44,7 @@
 
 <!-- Page Content -->
 <div class="container">
-    <img class="image-responsive" src="https://danbooru.donmai.us/data/sample/11/6a/__ptilopsis_and_ptilopsis_arknights_drawn_by_shimasato__sample-116aa7d1c0d7ebf97ea1a8d73acabba8.jpg" alt="AN ERROR TOOK PLACE LOADING THE PHOTO"/>
+    <img class="image-responsive" src="https://static.guiainfantil.com/media/9611/c/como-decorar-la-comida-de-los-ninos-lg.jpg" alt="AN ERROR TOOK PLACE LOADING THE PHOTO"/>
     <img srcset="${postList}" alt="AN ERROR TOOK PLACE LOADING THE PHOTO"/>
 </div>
 </body>
