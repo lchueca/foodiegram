@@ -1,6 +1,9 @@
 package main.rest.controller;
 
+import main.application.service.PublicationService;
 import main.application.service.UserService;
+import main.domain.resource.PreviewPublicacion;
+import main.domain.resource.PublicacionResource;
 import main.domain.resource.UsuarioResource;
 import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoUsuario;
@@ -29,10 +32,13 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping(value ="/pruebas")
 public class ControllerPrueba {
+
 
     @Autowired
     RepoUsuario repoUsuario;
@@ -57,6 +63,24 @@ public class ControllerPrueba {
 
     private Model model;
 
+    //devuelve un id de usuario dado un nombre
+    public int getUserByName(String userName) {
+
+        UsuarioResource usuario = service.getUserByName(userName);
+        return usuario.getId();
+    }
+
+    //Devuelve la lista de publicaciones de un usuario dado su nombre
+    public List<String> getPosts(String user) {
+
+        List<PreviewPublicacion> publicaciones = service.getPosts(user);
+        List<String> listPosts = new ArrayList<>();
+        for(PreviewPublicacion p : publicaciones){
+            listPosts.add(p.getImage());
+        }
+
+        return listPosts;
+    }
 
     //---------------------------------------LOG IN---------------------------------------//
 
@@ -71,7 +95,7 @@ public class ControllerPrueba {
     }
 
     @PostMapping("/postLogin")
-    public ModelAndView login(@Valid @ModelAttribute("userLog") UserForm user, HttpServletResponse response) {
+    public ModelAndView login(@Valid @ModelAttribute("userLog") UserForm user, HttpServletResponse response, Model model) {
 
         try {
             UsernamePasswordAuthenticationToken userData = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
@@ -89,8 +113,11 @@ public class ControllerPrueba {
 
 
             response.addCookie(cookie);
-            //añadir al model, id del usuario, lista de publicaciones....
-            return new ModelAndView("userPage");
+
+           Usuario usuario = repoUsuario.findById(getUserByName(user.getUsername()));
+           model.addAttribute("userName", usuario.getName());
+           model.addAttribute("postList", getPosts(user.getUsername()));
+           return new ModelAndView("userPage");
         }
 
         catch (NullPointerException e) {
@@ -121,10 +148,11 @@ public class ControllerPrueba {
     }
 
     @PostMapping("/postRegister")
-    public ModelAndView registerUser(@Valid @ModelAttribute("newUser") UserForm user) {
+    public ModelAndView registerUser(@Valid @ModelAttribute("newUser") UserForm user, Model model) {
 
         try {
             UsuarioResource newUser = service.register(user.getUsername(), user.getPassword(), user.getEmail());
+            model.addAttribute("userLog", new UserForm());
             return new ModelAndView("landingPage");
         }
 
@@ -143,7 +171,7 @@ public class ControllerPrueba {
     //---------------------------------------PERSONAL PAGE---------------------------------------//
 
     @GetMapping("/personalpage")
-    ModelAndView personalPage(Model mode){
+    ModelAndView personalPage(Model model){
        return new ModelAndView("userPage");
     }
 }

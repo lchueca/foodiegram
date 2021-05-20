@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8"/>
-    <title>Title</title>
+    <title>PersonalPage</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous"/>
     <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
     <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
@@ -12,35 +11,38 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <body>
-  <!-- Navigation -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-dark static-top mb-5 shadow">
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light bg-dark static-top mb-5 shadow">
     <div class="container">
 
-      <a class="navbar-brand text-white" href="#">Foodiegram</a>
+        <a class="navbar-brand text-white" href="#">Foodiegram</a>
 
-      <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
-            <a class="nav-link text-white" th:href="#" >Search</a>
-          </li>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <a class="text-white" th:text="${userName}"/>
+                <!--
+                <li class="nav-item">
+                    <a class="nav-link text-white" th:href="#" >Search</a>
+                </li>
 
-          <li class="nav-item">
-            <a class="nav-link text-white" th:href="#">Friends</a>
-          </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" th:href="#">Friends</a>
+                </li>
 
-          <li class="nav-item">
-            <a class="nav-link text-white" th:href="#">Settings</a>
-          </li>
-        </ul>
-      </div>
+                <li class="nav-item">
+                    <a class="nav-link text-white" th:href="#">Settings</a>
+                </li>
+                -->
+            </ul>
+        </div>
 
     </div>
-  </nav>
+</nav>
 
-  <!-- Page Content -->
-  <div class="container">
-    <img class="image-responsive" src="burguer.jpg" alt="AN ERROR TOOK PLACE LOADING THE PHOTO"/>
-    <!--<img srcset="" alt="AN ERROR TOOK PLACE LOADING THE PHOTO">-->
-  </div>
+<!-- Page Content -->
+<div class="container">
+    <img class="image-responsive" src="https://danbooru.donmai.us/data/sample/11/6a/__ptilopsis_and_ptilopsis_arknights_drawn_by_shimasato__sample-116aa7d1c0d7ebf97ea1a8d73acabba8.jpg" alt="AN ERROR TOOK PLACE LOADING THE PHOTO"/>
+    <img srcset="${postList}" alt="AN ERROR TOOK PLACE LOADING THE PHOTO"/>
+</div>
 </body>
 </html>
