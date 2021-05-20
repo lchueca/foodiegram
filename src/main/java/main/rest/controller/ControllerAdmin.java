@@ -22,10 +22,7 @@ public class ControllerAdmin {
     @Autowired
     private UserService service;
 
-    @GetMapping
-    public String xD(){
-        return  "hola";
-    }
+  
 
     @RequestMapping(value="/ban",method=RequestMethod.POST)
     public ResponseEntity<?> banUser(@RequestPart("user") String user,@RequestPart("severity") String severe) {
