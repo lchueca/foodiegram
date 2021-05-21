@@ -5,6 +5,7 @@ import main.application.service.UserService;
 import main.domain.resource.PreviewPublicacion;
 import main.domain.resource.PublicacionResource;
 import main.domain.resource.UsuarioResource;
+import main.persistence.entity.Publicacion;
 import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoUsuario;
 import main.security.AuthTokenGenerator;
@@ -23,15 +24,18 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +43,8 @@ import java.util.List;
 @RequestMapping(value ="/pruebas")
 public class ControllerPrueba {
 
+    @Autowired
+    private PublicationService postService;
 
     @Autowired
     RepoUsuario repoUsuario;
@@ -179,12 +185,28 @@ public class ControllerPrueba {
 
     @GetMapping("/upload")
     ModelAndView uploadPost(Model model){
-        model.addAttribute("postSrc", new String());
+        model.addAttribute("newPost", new Publicacion());
         return new ModelAndView("uploadPost");
     }
 
     @PostMapping("/postUpload")
-    ModelAndView postUpload(){
+    ModelAndView postUpload(@Valid @ModelAttribute("newPost") Publicacion post, Model model){
+        /*
+        try {
+            Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+            PublicacionResource publi = postService.upload(post.getId(), post.getText(), post.getLocalization(), new MultipartFile(post.getImage()));
+            return new ModelAndView("userPage");
+        }
+
+        catch (IOException e) {
+            model.addAttribute("problem", e.getMessage());
+            return new ModelAndView("problems");
+        }
+
+        catch (IllegalArgumentException e) {
+            model.addAttribute("problem", e.getMessage());
+            return new ModelAndView("problems");
+        }*/
         return new ModelAndView("userPage");
     }
 

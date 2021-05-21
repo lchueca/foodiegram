@@ -44,8 +44,17 @@
 
 <!-- Page Content -->
 <div class="container">
+    <table>
+        <tbody>
+        <tr th:if="${postList.empty}">
+            <td colspan="2"> Upload Posts! </td>
+        </tr>
+        <tr th:each="image : ${postList}">
+            <img class="image-responsive" src="${image}" alt="AN ERROR TOOK PLACE LOADING THE PHOTO"/>
+        </tr>
+        </tbody>
+    </table>
     <img class="image-responsive" src="https://static.guiainfantil.com/media/9611/c/como-decorar-la-comida-de-los-ninos-lg.jpg" alt="AN ERROR TOOK PLACE LOADING THE PHOTO"/>
-    <img srcset="${postList}" alt="AN ERROR TOOK PLACE LOADING THE PHOTO"/>
 </div>
 </body>
 </html>
