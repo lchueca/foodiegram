@@ -7,7 +7,6 @@ import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoMensaje;
 import main.persistence.repository.RepoUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import javax.naming.NoPermissionException;

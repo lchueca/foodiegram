@@ -59,14 +59,13 @@ public class PublicationServiceImpl implements PublicationService {
     private String apacheRootFolder;
 
 
-
     @Override
     public PublicacionResource getPost(Integer pubID) {
         return converterPubli.convert(repoPubli.findOne(pubID));
     }
 
     @Override
-    public PublicacionResource editPost(Integer pubID, String text, String loc) throws IllegalArgumentException,NoPermissionException {
+    public PublicacionResource editPost(Integer pubID, String text, String loc) throws IllegalArgumentException, NoPermissionException {
 
         if (text == null && loc == null)
             throw new IllegalArgumentException("Text or loc should be not null");
@@ -74,15 +73,15 @@ public class PublicationServiceImpl implements PublicationService {
 
         Publicacion publi = repoPubli.findOne(pubID);
 
-         if (publi != null) {
+        if (publi != null) {
 
-             if (text != null)
-                 publi.setText(text);
+            if (text != null)
+                publi.setText(text);
 
-             if (loc != null)
-                 publi.setLocalization(loc);
+            if (loc != null)
+                publi.setLocalization(loc);
 
-             repoPubli.save(publi);
+            repoPubli.save(publi);
 
         }
 
@@ -99,11 +98,11 @@ public class PublicationServiceImpl implements PublicationService {
             repoPubli.delete(publi);
 
 
-
         return converterPubli.convert(publi);
 
 
     }
+
     @Override
     public PublicacionResource upload(Integer userID, String text, String loc, MultipartFile image) throws IOException, IllegalArgumentException {
 
@@ -130,9 +129,7 @@ public class PublicationServiceImpl implements PublicationService {
             String address = String.format("%s/users/%s/%s.%s", apacheAddress, userID, publi.getId(), matcher.group(1));
             publi.setImage(address);
             repoPubli.save(publi);
-        }
-
-        catch (IOException e) {
+        } catch (IOException e) {
             repoPubli.delete(publi);
             throw e;
         }
@@ -155,13 +152,12 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     @Override
-    public ValoracionResource setRating(Integer pubID, Integer userID  , Float score) throws IllegalArgumentException {
+    public ValoracionResource setRating(Integer pubID, Integer userID, Float score) throws IllegalArgumentException {
 
         Usuario usuario = repoUsuario.findOne(userID);
 
 
-
-        if(score<0 || score>5)
+        if (score < 0 || score > 5)
             throw new IllegalArgumentException("Punt must be a integer between 0 and 5");
 
         else {
@@ -174,19 +170,19 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     @Override
-    public ValoracionResource getRating(Integer pubID, String user)  {
+    public ValoracionResource getRating(Integer pubID, String user) {
 
         Usuario usuario = repoUsuario.findByName(user);
 
         if (usuario == null)
-            return  null;
+            return null;
 
-       return converterVal.convert(repoVal.findOne(new IDvaloracion(pubID,usuario.getId())));
+        return converterVal.convert(repoVal.findOne(new IDvaloracion(pubID, usuario.getId())));
 
     }
 
     @Override
-    public ValoracionResource deleteRating(Integer pubID, Integer userid)  {
+    public ValoracionResource deleteRating(Integer pubID, Integer userid) {
 
         Usuario usuario = repoUsuario.findOne(userid);
 
@@ -227,3 +223,4 @@ public class PublicationServiceImpl implements PublicationService {
 
     }
 }
+

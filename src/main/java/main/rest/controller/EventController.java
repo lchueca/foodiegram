@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 @org.springframework.web.bind.annotation.RestController
-@RequestMapping("/event")
+@RequestMapping("/events")
 public class EventController {
 
     @Autowired
@@ -21,6 +21,18 @@ public class EventController {
     // ORGANIZAR EVENTO
     //
     // crea un evento con los datos correspondientes
+
+    @RequestMapping(value="/join", method=RequestMethod.GET)
+    public String joinEvent() {
+        return "TODO";
+    }
+
+    @RequestMapping(value="/leave", method=RequestMethod.GET)
+    public String leaveEvent() {
+        return "TODO";
+    }
+
+
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> createEvent(@RequestPart("id") String idcolab, @RequestPart("text") String text,
                                          @RequestPart(value = "image", required = false) MultipartFile image,
@@ -52,7 +64,7 @@ public class EventController {
     // ELIMINAR EVENTO
     //
     // elimina el evento con el valor de id completamente
-    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public boolean deleteEvent(@PathVariable String id) {
 
         return service.delete(Integer.parseInt(id));
