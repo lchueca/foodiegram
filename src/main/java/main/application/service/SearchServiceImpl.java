@@ -35,6 +35,7 @@ public class SearchServiceImpl implements SearchService {
     // BUSQUEDA DE USUARIOS
     //
     // devuelve una lista de usuarios cuyo nombre contenga username
+    @Override
     public List<PreviewUsuario> getUserList(String username) {
 
         List<Usuario> userList = repoUser.findBynameContainingIgnoreCase(username);
@@ -58,6 +59,7 @@ public class SearchServiceImpl implements SearchService {
     // BUSQUEDA DE LOCALES
     //
     // devuelve una lista de colaboradores cuyo nombre contenga colabname
+    @Override
     public List<PreviewColabJOINUser> getColabListByName(String colabname) {
 
         List<ColabJOINUser> colabJuser = repoColabJUser.findByUsername(colabname);
@@ -65,6 +67,7 @@ public class SearchServiceImpl implements SearchService {
     }
 
     // devuelve una lista de colaboradores cuyo origin contenga origin
+    @Override
     public List<PreviewColabJOINUser> getColabListByOrigin(String origin) {
 
         List<ColabJOINUser> colabJuser = repoColabJUser.findByOrigin(origin);
@@ -72,6 +75,7 @@ public class SearchServiceImpl implements SearchService {
     }
 
     // devuelve una lista de colaboradores cuyo type contenga type
+    @Override
     public List<PreviewColabJOINUser> getColabListByType(String type) {
 
         List<ColabJOINUser> colabJuser = repoColabJUser.findByType(type);
@@ -81,6 +85,7 @@ public class SearchServiceImpl implements SearchService {
     // BUSQUEDA DE PUBLICACIONES
     //
     // devuelve una lista de publicaciones cuyo texto contenga un hastag coincidente con tag
+    @Override
     public List<PreviewPubliJOINUser> getPubliListByTag(String tag) {
 
         List<PubliJOINUser> publiJuser = repoPubliJUser.findByTag(tag);

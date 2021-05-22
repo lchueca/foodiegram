@@ -2,13 +2,12 @@ package main.persistence.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import main.persistence.repository.RepoUsuario;
-import main.security.UserForm;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.naming.NoPermissionException;
 import javax.persistence.*;
+import java.util.Collection;
 
 @Entity
 @NoArgsConstructor
@@ -48,8 +47,9 @@ public class Publicacion {
     private void preventUnauthorizedRemove() throws NoPermissionException {
 
         Integer deleterId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
 
-        if (!deleterId.equals(iduser))
+        if (!deleterId.equals(iduser) && !authorities.contains(RoleEnum.ROLE_MOD) && !authorities.contains(RoleEnum.ROLE_ADMIN))
             throw new NoPermissionException("You're not allowed to do that");
     }
 
