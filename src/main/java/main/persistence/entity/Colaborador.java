@@ -4,8 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+
 import javax.persistence.Id;
 
 @Entity
@@ -13,7 +12,6 @@ import javax.persistence.Id;
 @NoArgsConstructor
 public class Colaborador {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
     private String origin;
     private String type;
@@ -21,13 +19,16 @@ public class Colaborador {
     private Boolean vip;
     private Integer money;
 
-    public Colaborador(String origin, String type, String localization, Boolean vip, Integer money) {
+    public Colaborador(Integer id,String origin, String type, String localization) {
+        this.id = id;
         this.origin = origin;
         this.type = type;
         this.localization = localization;
-        this.vip = vip;
-        this.money = money;
+        vip=false;
+        money=0;
+
     }
+
 
 
 }

@@ -65,6 +65,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // Controller patrocinio
                 .antMatchers("/sponsor/**");
+
+
     }
 
     @Bean
