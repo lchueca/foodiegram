@@ -3,6 +3,7 @@ package main.domain.resource;
 import lombok.Data;
 
 import javax.annotation.Resource;
+import java.sql.Date;
 
 @Resource
 @Data
@@ -12,7 +13,9 @@ public class PublicacionResource {
     private Integer iduser;
     private String text;
     private String image;
-    private String localization;
+    private String ciudad;
+    private String pais;
+    private Date fecha;
     private String media;
     private Integer numerototalval;
 

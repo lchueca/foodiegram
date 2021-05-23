@@ -20,7 +20,7 @@ PublicationService {
     // Para cambiar el texto lo la localizacion de una publicacion.
     // Devuelve la misma publicacion tras haberse aplicado el cambio.
     // Lanza excepcion si tanto text como loc son nulos.
-    PublicacionResource editPost(Integer pubID, String text, String loc) throws IllegalArgumentException,NoPermissionException;
+    PublicacionResource editPost(Integer pubID, String text) throws IllegalArgumentException,NoPermissionException;
 
     // Elimina una publicaicon.
     // Devuelve la publicacion eliminada, o null si no existe.
@@ -29,7 +29,7 @@ PublicationService {
     // Sube una publicacion. Devuelve la propia publicacion si ha habido exito, null si el usuario no existe.
     // Lanza excepcion si el usuario no existe, o si no se puede guardar la imagen.
     // Con este vais a tener problemas haciendo pruebas, yo pasaria de él.
-    PublicacionResource upload(Integer user, String text, String loc, MultipartFile image) throws IOException, IllegalArgumentException;
+    PublicacionResource upload(Integer user, String text, MultipartFile image, Double lat, Double lon) throws IOException, IllegalArgumentException;
 
 
     // VALORACIONES

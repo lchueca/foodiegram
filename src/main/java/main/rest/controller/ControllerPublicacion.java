@@ -28,12 +28,15 @@ public class ControllerPublicacion {
 
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> upload(@RequestPart("text") String text, @RequestPart("loc") String loc, @RequestPart("image") MultipartFile image) {
+    public ResponseEntity<?> upload(@RequestPart("text") String text, @RequestPart(value = "lat", required = false) String latitud, @RequestPart(value="lon", required = false) String longuitud, @RequestPart("image") MultipartFile image) {
 
 
         try {
+            Double lat = latitud != null ? Double.parseDouble(latitud) : null;
+            Double lon = longuitud != null ? Double.parseDouble(longuitud) : null;
+
             Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
-            PublicacionResource publi = service.upload(userID, text, loc, image);
+            PublicacionResource publi = service.upload(userID, text, image, lat,  lon);
             return publi != null ? ResponseEntity.ok(publi) : ResponseEntity.notFound().build();
         }
 
@@ -57,10 +60,10 @@ public class ControllerPublicacion {
     }
 
     @RequestMapping(value="/{pubID}", method = RequestMethod.PUT)
-    ResponseEntity<?> edit(@PathVariable Integer pubID, @RequestPart(value = "text", required = false) String text, @RequestPart(value = "loc", required = false) String loc) {
+    ResponseEntity<?> edit(@PathVariable Integer pubID, @RequestPart(value = "text", required = false) String text) {
 
         try {
-            PublicacionResource publi = service.editPost(pubID, text, loc);
+            PublicacionResource publi = service.editPost(pubID, text);
             return publi != null ? ResponseEntity.ok(publi) : ResponseEntity.notFound().build();
         }
 
