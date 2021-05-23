@@ -8,16 +8,14 @@ import main.domain.resource.UsuarioResource;
 import main.persistence.entity.Publicacion;
 import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoUsuario;
-import main.security.AuthTokenGenerator;
-import main.security.RefreshTokenGenerator;
-import main.security.TokenRefresher;
-import main.security.UserForm;
+import main.security.*;
 import org.apache.catalina.Store;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -35,6 +33,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +67,7 @@ public class ControllerPrueba {
     private TokenRefresher tokenRefresher;
 
     private Model model;
+    private int userId;
 
     //devuelve un id de usuario dado un nombre
     public int getUserByName(String userName) {
@@ -121,7 +121,7 @@ public class ControllerPrueba {
             response.addCookie(cookie);
 
            Usuario usuario = repoUsuario.findById(getUserByName(user.getUsername()));
-           model.addAttribute("userName", usuario.getName());
+           userId = repoUsuario.findByName(user.getUsername()).getId();
            model.addAttribute("postList", getPosts(user.getUsername()));
            return new ModelAndView("userPage");
         }
@@ -185,29 +185,27 @@ public class ControllerPrueba {
 
     @GetMapping("/upload")
     ModelAndView uploadPost(Model model){
-        model.addAttribute("newPost", new Publicacion());
+        model.addAttribute("newPost", new PostForm());
         return new ModelAndView("uploadPost");
     }
 
     @PostMapping("/postUpload")
-    ModelAndView postUpload(@Valid @ModelAttribute("newPost") Publicacion post, Model model){
-        /*
+    ModelAndView postUpload(@Valid @ModelAttribute("newPost") PostForm post,  Model model) {
+
         try {
-            Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
-            PublicacionResource publi = postService.upload(post.getId(), post.getText(), post.getLocalization(), new MultipartFile(post.getImage()));
+            MultipartFile multipartFile = new MockMultipartFile(post.getImage().toString(), new FileInputStream(post.getImage()));
+            PublicacionResource publi = postService.upload(userId, post.getText(), null, multipartFile);
             return new ModelAndView("userPage");
-        }
 
-        catch (IOException e) {
+        } catch (IOException e) {
+            model.addAttribute("problem", e.getMessage());
+            return new ModelAndView("problems");
+
+        } catch (IllegalArgumentException e) {
             model.addAttribute("problem", e.getMessage());
             return new ModelAndView("problems");
         }
 
-        catch (IllegalArgumentException e) {
-            model.addAttribute("problem", e.getMessage());
-            return new ModelAndView("problems");
-        }*/
-        return new ModelAndView("userPage");
     }
 
     //---------------------------------------MANAGE ACCOUNT---------------------------------------//
