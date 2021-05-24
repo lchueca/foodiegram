@@ -1,5 +1,6 @@
 package main.application.service;
 
+import com.google.gson.Gson;
 import main.domain.converter.ComentarioConverter;
 import main.domain.converter.PublicacionConverter;
 import main.domain.converter.ValoracionConverter;
@@ -17,6 +18,7 @@ import main.persistence.repository.RepoUsuario;
 import main.persistence.repository.RepoValoracion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +27,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -52,12 +55,14 @@ public class PublicationServiceImpl implements PublicationService {
     @Autowired
     private RepoUsuario repoUsuario;
 
+    @Autowired
+    private RestService restService;
+
     @Value("${apache.address}")
     private String apacheAddress;
 
     @Value("${apache.rootFolder}")
     private String apacheRootFolder;
-
 
     @Override
     public PublicacionResource getPost(Integer pubID) {
@@ -65,9 +70,9 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     @Override
-    public PublicacionResource editPost(Integer pubID, String text, String loc) throws IllegalArgumentException, NoPermissionException {
+    public PublicacionResource editPost(Integer pubID, String text) throws IllegalArgumentException, NoPermissionException {
 
-        if (text == null && loc == null)
+        if (text == null)
             throw new IllegalArgumentException("Text or loc should be not null");
 
 
@@ -75,11 +80,8 @@ public class PublicationServiceImpl implements PublicationService {
 
         if (publi != null) {
 
-            if (text != null)
-                publi.setText(text);
+            publi.setText(text);
 
-            if (loc != null)
-                publi.setLocalization(loc);
 
             repoPubli.save(publi);
 
@@ -104,7 +106,21 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     @Override
-    public PublicacionResource upload(Integer userID, String text, String loc, MultipartFile image) throws IOException, IllegalArgumentException {
+    public PublicacionResource upload(Integer userID, String text, MultipartFile image, Double lat, Double lon) throws IOException, IllegalArgumentException {
+        String country = null;
+        String city = null;
+
+        if (lat != null && lon != null) {
+            Map<String, Object> geoData = getCity(lat, lon);
+            try {
+                country = geoData.get("country").toString();
+                city = geoData.get("region").toString();
+            }
+
+            catch (NullPointerException ignored) {
+
+            }
+        }
 
 
         Matcher matcher = imagePattern.matcher(image.getOriginalFilename());
@@ -113,7 +129,7 @@ public class PublicationServiceImpl implements PublicationService {
             throw new IllegalArgumentException("Only jpeg and png images are supported.");
 
         // Se crea una publicacion sin imagen
-        Publicacion publi = new Publicacion(text, userID, loc);
+        Publicacion publi = new Publicacion(text, userID, country, city);
         publi = repoPubli.save(publi);
 
         try {
@@ -136,7 +152,6 @@ public class PublicationServiceImpl implements PublicationService {
 
         return converterPubli.convert(publi);
     }
-
 
     @Override
     public List<ValoracionResource> getRatings(Integer pubID) {
@@ -222,6 +237,18 @@ public class PublicationServiceImpl implements PublicationService {
         repoComen.save(comment);
         return converterCom.convert(comment);
 
+    }
+
+    private Map<String, Object> getCity(Double lat, Double lon) {
+        String latitude = lat.toString().replace(",", ".");
+        String longitude = lon.toString().replace(",", ".");
+
+        String query = String.format(
+                "http://api.positionstack.com/v1/reverse?access_key=%s&query=%s,%s&limit=1",
+                "7d674e3c9eafdf7c3e6027f5a39fe866", latitude, longitude);
+
+        List<Map<String, Object>> data = (List<Map<String, Object>>) restService.getJSON(query).get("data");
+        return data.get(0);
     }
 }
 

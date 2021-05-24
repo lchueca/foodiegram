@@ -59,15 +59,15 @@ public class EventServiceImpl implements EventService {
                 throw new IllegalArgumentException("Only jpeg and png images are supported.");
 
             try {
-                File folder = new File(apacheRootFolder + "/events");
+                File folder = new File(apacheRootFolder + "/events/" + idcolab);
                 folder.mkdirs();
 
-                String name = folder.getAbsolutePath() + "/" + idcolab + "/" + date + "." + matcher.group(1);
+                String name = folder.getAbsolutePath() + "/" + date + "." + matcher.group(1);
                 FileOutputStream stream = new FileOutputStream(name);
                 stream.write(image.getBytes());
                 stream.close();
 
-                String address = String.format("%s/%s/%s.%s", apacheAddress, idcolab, date, matcher.group(1));
+                String address = String.format("%s/events/%s/%s.%s", apacheAddress, idcolab, date, matcher.group(1));
                 evnt.setImage(address);
                 repoEvent.save(evnt);
             } catch (IOException e) {
@@ -96,15 +96,15 @@ public class EventServiceImpl implements EventService {
                 throw new IllegalArgumentException("Only jpeg and png images are supported.");
 
             try {
-                File folder = new File(apacheRootFolder + "/events");
+                File folder = new File(apacheRootFolder + "/events/" + evnt.getIdcolab());
                 folder.mkdirs();
 
-                String name = folder.getAbsolutePath() + "/" + evnt.getIdcolab() + "/" + date + "." + matcher.group(1);
+                String name = folder.getAbsolutePath() + "/" + date + "." + matcher.group(1);
                 FileOutputStream stream = new FileOutputStream(name);
                 stream.write(image.getBytes());
                 stream.close();
 
-                String address = String.format("%s/%s/%s.%s", apacheAddress, evnt.getIdcolab(), date, matcher.group(1));
+                String address = String.format("%s/events/%s/%s.%s", apacheAddress, evnt.getIdcolab(), date, matcher.group(1));
                 evnt.setImage(address);
             } catch (IOException e) {
                 throw e;
