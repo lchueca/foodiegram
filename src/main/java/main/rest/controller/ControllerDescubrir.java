@@ -24,8 +24,9 @@ public class ControllerDescubrir {
     @Autowired
     private DiscoverService service;
 
+
     @RequestMapping(value="/posts/",method = RequestMethod.GET)
-    public ResponseEntity<?> discoverPosts(@RequestParam(required = false) String findBy,
+    public ResponseEntity<?> discoverPosts(@RequestParam(required = false, defaultValue = "friends") String findBy,
                                            @RequestParam(required = false, defaultValue = "month") String period){
 
         try {
@@ -57,7 +58,7 @@ public class ControllerDescubrir {
             return pub != null ? ResponseEntity.ok(pub) : ResponseEntity.notFound().build();
         }
 
-        catch(Exception e){
+        catch(IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 

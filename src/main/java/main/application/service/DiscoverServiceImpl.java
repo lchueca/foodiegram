@@ -48,11 +48,11 @@ public class DiscoverServiceImpl implements DiscoverService {
         Integer quantity = 1;
 
         if (!period.equals("month") && !period.equals("day") && !period.equals("week") && !period.equals("year") && !period.equals("allTime"))
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Invalid period string.");
 
         if (period.equals("allTime")) {
-            quantity = -1;
-            period = "month";
+            quantity = 99;
+            period = "year";
         }
 
         List<Publicacion> publi = repoPublicacion.discoverBestRated(quantity, period);
@@ -71,8 +71,8 @@ public class DiscoverServiceImpl implements DiscoverService {
             throw new IllegalArgumentException();
 
         if (period.equals("allTime")) {
-            quantity = -1;
-            period = "month";
+            quantity = 99;
+            period = "year";
         }
 
         List<Publicacion> publi = repoPublicacion.discoverMostRated(quantity, period);
