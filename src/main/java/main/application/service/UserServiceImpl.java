@@ -34,8 +34,10 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private RepoVerifytoken repoToken;
+
     @Autowired
     private RepoUsuario_baneado repoUsuario_baneado;
+
     @Autowired
     private SendEmailService sendEmailService;
 

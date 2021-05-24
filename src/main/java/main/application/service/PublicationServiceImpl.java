@@ -33,7 +33,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
-public class PublicationServiceImpl implements PublicationService {
+public class
+PublicationServiceImpl implements PublicationService {
 
     private final PublicacionConverter converterPubli = new PublicacionConverter();
 
@@ -41,7 +42,7 @@ public class PublicationServiceImpl implements PublicationService {
 
     private final ComentarioConverter converterCom = new ComentarioConverter();
 
-    private final Pattern imagePattern = Pattern.compile("\\w+.(png|jpg)$");
+    private final Pattern imagePattern = Pattern.compile(".+\\.(png|jpg|jpeg)$");
 
     @Autowired
     private RepoPublicacion repoPubli;
