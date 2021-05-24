@@ -29,42 +29,44 @@
                      <div class="form-group input-group">
                        <input type="text" class="form-control" placeholder="Caption" th:field="*{text}"/><p></p>
                      </div>
-
-                     <div class="form-group">
-                        <p id="latitud" class="form-control"  th:field="*{latitud}"></p>
-                     </div>
-
-                     <div class="form-group">
-                         <p id="longitud"  class="form-control"  th:field="*{longitud}"></p>
-                     </div>
-
-                    <div class="form-group text-center">
-                        <button type="submit" class="btn btn-primary btn-block"> Submit </button>
+                    <!--
+                    <div class="form-group">
+                       <input type="text" class="form-control" placeholder="Latitud"  th:field="*{latitud}"/><p></p>
                     </div>
-                </div>
-            </form>
-        </div>
-    </div>
 
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Longitud"  th:field="*{longitud}"/><p></p>
+                    </div>
+                     -->
+                   <div class="form-group text-center">
+                       <button type="submit" class="btn btn-primary btn-block"> Submit </button>
+                   </div>
+               </div>
+           </form>
+       </div>
+   </div>
+
+   <!--
 <script>
 
-    var latitud = document.getElementById("latitud");
-    var longitud = document.getElementById("longitud");
+   var latitud = document.getElementById("latitud");
+   var longitud = document.getElementById("longitud");
 
-    function geoLocFunction(position) {
-        document.getElementById("latitud").value = position.coords.latitude
-        document.getElementById("longitud").value = position.coords.longitude
-    }
+   function geoLocFunction(position) {
+       document.getElementById("latitud").value = position.coords.latitude
+       document.getElementById("longitud").value = position.coords.longitude
+   }
 
-    function showError(error) {
-        ciudad.innerHTML = "error"
-        pais.innerHTML = "error"
-    }
+   function showError(error) {
+       ciudad.innerHTML = "error"
+       pais.innerHTML = "error"
+   }
 
-    navigator.geolocation.getCurrentPosition(geoLocFunction, showError);
+   navigator.geolocation.getCurrentPosition(geoLocFunction, showError);
 
 
 
 </script>
+-->
 </body>
 </html>
