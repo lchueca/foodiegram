@@ -12,6 +12,9 @@ public class PostForm {
 
     private MultipartFile image;
     private String text;
+    private String latitud;
+    private String longitud;
+
 
     public PostForm(){
 

@@ -30,12 +30,12 @@
                        <input type="text" class="form-control" placeholder="Caption" th:field="*{text}"/><p></p>
                      </div>
 
-                     <div class="form-group input-group">
-                        <p id="latitud"></p>
+                     <div class="form-group">
+                        <p id="latitud" class="form-control"  th:field="*{latitud}"></p>
                      </div>
 
-                     <div class="form-group input-group">
-                         <p id="longitud"></p>
+                     <div class="form-group">
+                         <p id="longitud"  class="form-control"  th:field="*{longitud}"></p>
                      </div>
 
                     <div class="form-group text-center">
@@ -52,9 +52,8 @@
     var longitud = document.getElementById("longitud");
 
     function geoLocFunction(position) {
-        console.log("heeey")
-        latitud.innerHTML = position.coords.latitude
-        longitud.innerHTML = position.coords.longitude
+        document.getElementById("latitud").value = position.coords.latitude
+        document.getElementById("longitud").value = position.coords.longitude
     }
 
     function showError(error) {
