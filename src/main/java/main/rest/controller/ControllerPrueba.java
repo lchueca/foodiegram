@@ -122,8 +122,7 @@ public class ControllerPrueba {
 
            Usuario usuario = repoUsuario.findById(getUserByName(user.getUsername()));
            userId = repoUsuario.findByName(user.getUsername()).getId();
-           List<String> prueba = getPosts(user.getUsername());
-           model.addAttribute("postList", prueba);
+           model.addAttribute("postList", getPosts(user.getUsername()));
            return new ModelAndView("userPage");
         }
 
@@ -194,7 +193,7 @@ public class ControllerPrueba {
     ModelAndView postUpload(@Valid @ModelAttribute("newPost") PostForm post,  Model model) {
 
         try {
-            PublicacionResource publi = postService.upload(1, post.getText(), post.getImage(), Double.parseDouble(post.getLatitud()), Double.parseDouble(post.getLongitud()));
+            PublicacionResource publi = postService.upload(2, post.getText(), post.getImage(), null, null);
             return new ModelAndView("userPage");
 
         } catch (IOException e) {
@@ -209,11 +208,26 @@ public class ControllerPrueba {
     }
 
     //---------------------------------------MANAGE ACCOUNT---------------------------------------//
+
     @GetMapping("/manageAccount")
     ModelAndView manageAccount(Model model){
         model.addAttribute("postSrc", new String());
         return new ModelAndView("manageAccount");
     }
 
+    //---------------------------------------FRIENDS---------------------------------------//
 
+    @GetMapping("/friends")
+    ModelAndView friends(Model model){
+        model.addAttribute("friends", "friends will be friends");
+        return new ModelAndView("friends");
+    }
+
+    //---------------------------------------SEARCH---------------------------------------//
+
+    @GetMapping("/search")
+    ModelAndView search(Model model){
+        model.addAttribute("search", "search");
+        return new ModelAndView("search");
+    }
 }

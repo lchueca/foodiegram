@@ -29,6 +29,10 @@
                      <div class="form-group input-group">
                        <input type="text" class="form-control" placeholder="Caption" th:field="*{text}"/><p></p>
                      </div>
+                    <!--
+                    <div class="form-group">
+                       <input type="text" class="form-control" placeholder="Latitud"  th:field="*{latitud}"/><p></p>
+                    </div>
 
                     <div class="form-group input-group">
                         <input id="Latitud" type="text" class="form-control" placeholder="Latitud" th:field="*{latitud}"/><p></p>
@@ -41,10 +45,14 @@
                     <div class="form-group text-center">
                         <button type="submit" class="btn btn-primary btn-block"> Submit </button>
                     </div>
-                </div>
-            </form>
-        </div>
-    </div>
+                     -->
+                   <div class="form-group text-center">
+                       <button type="submit" class="btn btn-primary btn-block"> Submit </button>
+                   </div>
+               </div>
+           </form>
+       </div>
+   </div>
 
 <script th:inline="javascript">
 
@@ -60,15 +68,16 @@
         y.readOnly = true
     }
 
-    function showError(error) {
-        ciudad.innerHTML = "error"
-        pais.innerHTML = "error"
-    }
+   function showError(error) {
+       ciudad.innerHTML = "error"
+       pais.innerHTML = "error"
+   }
 
-    navigator.geolocation.getCurrentPosition(geoLocFunction, showError);
+   navigator.geolocation.getCurrentPosition(geoLocFunction, showError);
 
 
 
 </script>
+-->
 </body>
 </html>
