@@ -30,13 +30,13 @@
                        <input type="text" class="form-control" placeholder="Caption" th:field="*{text}"/><p></p>
                      </div>
 
-                     <div class="form-group">
-                        <p id="latitud" class="form-control"  th:field="*{latitud}"></p>
-                     </div>
+                    <div class="form-group input-group">
+                        <input id="Latitud" type="text" class="form-control" placeholder="Latitud" th:field="*{latitud}"/><p></p>
+                    </div>
 
-                     <div class="form-group">
-                         <p id="longitud"  class="form-control"  th:field="*{longitud}"></p>
-                     </div>
+                    <div class="form-group input-group">
+                        <input id="Longitud" type="text" class="form-control" placeholder="Longitud" th:field="*{longitud}"/><p></p>
+                    </div>
 
                     <div class="form-group text-center">
                         <button type="submit" class="btn btn-primary btn-block"> Submit </button>
@@ -46,14 +46,18 @@
         </div>
     </div>
 
-<script>
+<script th:inline="javascript">
 
-    var latitud = document.getElementById("latitud");
     var longitud = document.getElementById("longitud");
 
     function geoLocFunction(position) {
-        document.getElementById("latitud").value = position.coords.latitude
-        document.getElementById("longitud").value = position.coords.longitude
+        var x = document.getElementById("Latitud")
+        x.value = position.coords.latitude
+        x.readOnly = true
+
+        var y = document.getElementById("Longitud")
+        y.value = position.coords.longitude
+        y.readOnly = true
     }
 
     function showError(error) {
