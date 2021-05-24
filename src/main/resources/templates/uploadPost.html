@@ -30,6 +30,14 @@
                        <input type="text" class="form-control" placeholder="Caption" th:field="*{text}"/><p></p>
                      </div>
 
+                     <div class="form-group input-group">
+                        <p id="latitud"></p>
+                     </div>
+
+                     <div class="form-group input-group">
+                         <p id="longitud"></p>
+                     </div>
+
                     <div class="form-group text-center">
                         <button type="submit" class="btn btn-primary btn-block"> Submit </button>
                     </div>
@@ -37,5 +45,27 @@
             </form>
         </div>
     </div>
+
+<script>
+
+    var latitud = document.getElementById("latitud");
+    var longitud = document.getElementById("longitud");
+
+    function geoLocFunction(position) {
+        console.log("heeey")
+        latitud.innerHTML = position.coords.latitude
+        longitud.innerHTML = position.coords.longitude
+    }
+
+    function showError(error) {
+        ciudad.innerHTML = "error"
+        pais.innerHTML = "error"
+    }
+
+    navigator.geolocation.getCurrentPosition(geoLocFunction, showError);
+
+
+
+</script>
 </body>
 </html>
