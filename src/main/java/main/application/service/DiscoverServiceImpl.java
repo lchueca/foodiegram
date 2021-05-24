@@ -1,5 +1,6 @@
 package main.application.service;
 
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import main.domain.converter.PreviewPublicacionConverter;
 import main.domain.converter.PublicacionConverter;
 import main.domain.converter.UsuarioConverter;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class DiscoverServiceImpl  implements DiscoverService {
+public class DiscoverServiceImpl implements DiscoverService {
 
     @Autowired
     private RepoPublicacion repoPublicacion;
@@ -42,9 +43,39 @@ public class DiscoverServiceImpl  implements DiscoverService {
     }
 
 
-    public List<PreviewPublicacion> discoverByPopularity(){
+    public List<PreviewPublicacion> discoverBestRated(String period) throws IllegalArgumentException{
 
-        List<Publicacion> publi=repoPublicacion.findByPopularity();
+        Integer quantity = 1;
+
+        if (!period.equals("month") && !period.equals("day") && !period.equals("week") && !period.equals("year") && !period.equals("allTime"))
+            throw new IllegalArgumentException();
+
+        if (period.equals("allTime")) {
+            quantity = -1;
+            period = "month";
+        }
+
+        List<Publicacion> publi = repoPublicacion.discoverBestRated(quantity, period);
+
+        if(publi==null)
+            return  null;
+
+        return publi.stream().map(previewConverter::convert).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PreviewPublicacion> discoverMostRated(String period) {
+        Integer quantity = 1;
+
+        if (!period.equals("month") && !period.equals("day") && !period.equals("week") && !period.equals("year") && !period.equals("allTime"))
+            throw new IllegalArgumentException();
+
+        if (period.equals("allTime")) {
+            quantity = -1;
+            period = "month";
+        }
+
+        List<Publicacion> publi = repoPublicacion.discoverMostRated(quantity, period);
 
         if(publi==null)
             return  null;
@@ -58,5 +89,11 @@ public class DiscoverServiceImpl  implements DiscoverService {
 
         return list.stream().map(usuarioConverter::convert).collect(Collectors.toList());
     }
+
+    @Override
+    public List<PreviewPublicacion> popularSameCity(Double lat, Double lon) {
+        return null;
+    }
+
 
 }

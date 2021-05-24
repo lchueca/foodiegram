@@ -12,10 +12,19 @@ public interface RepoPublicacion extends JpaRepository<Publicacion, Integer> {
 
      List<Publicacion> findByIduser(Integer id);
 
+     @Query (value="SELECT * FROM publicacion " +
+             "ORDER BY publicacion.media DESC " +
+             "LIMIT 0,50 " +
+             "where publicacion.fecha > date_sub(NOW(), interval ?1 ?2)"
+             ,nativeQuery = true)
+     List<Publicacion> discoverBestRated(Integer quantity, String interval);
+
      @Query (value="SELECT * FROM publicacion "+
-             "ORDER BY publicacion.media DESC "+
-            "LIMIT 0,50",nativeQuery = true)
-     List<Publicacion> findByPopularity();
+             "ORDER BY publicacion.numerototalval DESC "+
+             "LIMIT 0,50 "+
+             "where publicacion.fecha > date_sub(NOW(), interval ?1 ?2)"
+             ,nativeQuery = true)
+     List<Publicacion> discoverMostRated(Integer quantity, String interval);
 
      @Query(value="SELECT publicacion.* " +
              "FROM publicacion JOIN amigo ON amigo.iduser2 = publicacion.iduser " +
