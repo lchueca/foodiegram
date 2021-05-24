@@ -193,8 +193,7 @@ public class ControllerPrueba {
     ModelAndView postUpload(@Valid @ModelAttribute("newPost") PostForm post,  Model model) {
 
         try {
-            MultipartFile multipartFile = new MockMultipartFile(post.getImage().toString(), new FileInputStream(post.getImage()));
-            PublicacionResource publi = postService.upload(userId, post.getText(), null, multipartFile);
+            PublicacionResource publi = postService.upload(userId, post.getText(), null, post.getImage());
             return new ModelAndView("userPage");
 
         } catch (IOException e) {

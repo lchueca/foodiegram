@@ -2,6 +2,7 @@ package main.security;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 
@@ -9,7 +10,7 @@ import java.io.File;
 @AllArgsConstructor
 public class PostForm {
 
-    private File image;
+    private MultipartFile image;
     private String text;
 
     public PostForm(){

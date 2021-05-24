@@ -20,7 +20,7 @@
 
             <hr/>
 
-            <form th:action="@{/pruebas/postUpload}" th:object="${newPost}" method="post">
+            <form th:action="@{/pruebas/postUpload}" th:object="${newPost}" method="post" enctype="multipart/form-data">
                 <div class="container">
                     <div class="form-group input-group">
                         <input type="file" class="form-control" placeholder="Post" th:field="*{image}"/><p></p>
