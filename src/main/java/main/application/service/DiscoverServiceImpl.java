@@ -9,7 +9,6 @@ import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoPublicacion;
 import main.persistence.repository.RepoUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,6 +36,17 @@ public class DiscoverServiceImpl  implements DiscoverService {
 
         return publi.stream().map(publicacionConverter::convert).collect(Collectors.toList());
 
+    }
+
+
+    public List<PublicacionResource> discoverByPopularity(){
+
+        List<Publicacion> publi=repoPublicacion.findByPopularity();
+
+        if(publi==null)
+            return  null;
+
+        return publi.stream().map(publicacionConverter::convert).collect(Collectors.toList());
     }
 
     @Override

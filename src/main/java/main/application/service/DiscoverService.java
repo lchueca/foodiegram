@@ -9,4 +9,5 @@ public interface DiscoverService {
 
     List<PublicacionResource> discoverByAmigo(Integer userid);
     List<UsuarioResource> findFollowedByFriends(Integer userid);
+   public  List<PublicacionResource> discoverByPopularity();
 }

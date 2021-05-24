@@ -39,6 +39,19 @@ public class ControllerDescubrir {
 
     }
 
+    @RequestMapping(value="/byPopularity",method = RequestMethod.GET)
+    public ResponseEntity<?> discoverByPopularity(){
+
+        try{
+
+            List<PublicacionResource> pub = service.discoverByPopularity();
+            return pub != null ? ResponseEntity.ok(pub) : ResponseEntity.notFound().build();
+        }
+        catch(Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
+    }
 
 }
 
