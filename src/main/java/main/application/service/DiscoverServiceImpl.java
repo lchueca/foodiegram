@@ -1,7 +1,9 @@
 package main.application.service;
 
+import main.domain.converter.PreviewPublicacionConverter;
 import main.domain.converter.PublicacionConverter;
 import main.domain.converter.UsuarioConverter;
+import main.domain.resource.PreviewPublicacion;
 import main.domain.resource.PublicacionResource;
 import main.domain.resource.UsuarioResource;
 import main.persistence.entity.Publicacion;
@@ -25,28 +27,29 @@ public class DiscoverServiceImpl  implements DiscoverService {
 
     private PublicacionConverter publicacionConverter= new PublicacionConverter();
     private UsuarioConverter usuarioConverter = new UsuarioConverter();
+    private PreviewPublicacionConverter previewConverter = new PreviewPublicacionConverter();
 
 
-    public List<PublicacionResource> discoverByAmigo(Integer userid){
+    public List<PreviewPublicacion> discoverByAmigo(Integer userid){
 
         List<Publicacion> publi=repoPublicacion.findbyFriend(userid);
 
         if(publi==null)
             return  null;
 
-        return publi.stream().map(publicacionConverter::convert).collect(Collectors.toList());
+        return publi.stream().map(previewConverter::convert).collect(Collectors.toList());
 
     }
 
 
-    public List<PublicacionResource> discoverByPopularity(){
+    public List<PreviewPublicacion> discoverByPopularity(){
 
         List<Publicacion> publi=repoPublicacion.findByPopularity();
 
         if(publi==null)
             return  null;
 
-        return publi.stream().map(publicacionConverter::convert).collect(Collectors.toList());
+        return publi.stream().map(previewConverter::convert).collect(Collectors.toList());
     }
 
     @Override

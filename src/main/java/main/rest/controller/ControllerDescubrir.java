@@ -4,7 +4,9 @@ package main.rest.controller;
 import main.application.service.DiscoverService;
 import main.application.service.MensajeService;
 import main.domain.resource.MensajeResource;
+import main.domain.resource.PreviewPublicacion;
 import main.domain.resource.PublicacionResource;
+import main.domain.resource.UsuarioResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,12 +27,12 @@ public class ControllerDescubrir {
     @Autowired
     private DiscoverService service;
 
-    @RequestMapping(value="/byFriends",method = RequestMethod.GET)
+    @RequestMapping(value="/posts/byFriends",method = RequestMethod.GET)
     public ResponseEntity<?> discoverByFriends(){
 
         try{
             Integer userid=Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
-            List<PublicacionResource> pub = service.discoverByAmigo(userid);
+            List<PreviewPublicacion> pub = service.discoverByAmigo(userid);
             return pub != null ? ResponseEntity.ok(pub) : ResponseEntity.notFound().build();
         }
         catch(Exception e){
@@ -39,12 +41,12 @@ public class ControllerDescubrir {
 
     }
 
-    @RequestMapping(value="/byPopularity",method = RequestMethod.GET)
+    @RequestMapping(value="/posts/byPopularity",method = RequestMethod.GET)
     public ResponseEntity<?> discoverByPopularity(){
 
         try{
 
-            List<PublicacionResource> pub = service.discoverByPopularity();
+            List<PreviewPublicacion> pub = service.discoverByPopularity();
             return pub != null ? ResponseEntity.ok(pub) : ResponseEntity.notFound().build();
         }
         catch(Exception e){
@@ -52,6 +54,22 @@ public class ControllerDescubrir {
         }
 
     }
+
+    @RequestMapping(value="/users/xd",method = RequestMethod.GET)
+    public ResponseEntity<?> findFollowedByFriends(){
+
+        try{
+            Integer userid=Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+            List<UsuarioResource> users = service.findFollowedByFriends(userid);
+            return users != null ? ResponseEntity.ok(users) : ResponseEntity.notFound().build();
+        }
+        catch(Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
+    }
+
+
 
 }
 

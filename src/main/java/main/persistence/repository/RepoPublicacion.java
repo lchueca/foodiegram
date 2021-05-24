@@ -17,7 +17,7 @@ public interface RepoPublicacion extends JpaRepository<Publicacion, Integer> {
             "LIMIT 0,50",nativeQuery = true)
      List<Publicacion> findByPopularity();
 
-     @Query(value="SELECT publicacion.id, publicacion.iduser,publicacion.text,publicacion.image,publicacion.fecha,publicacion.ciudad,publicacion.pais,publicacion.media, publicacion.numerototalval " +
+     @Query(value="SELECT publicacion.* " +
              "FROM publicacion JOIN amigo ON amigo.iduser2 = publicacion.iduser " +
              "WHERE  amigo.iduser1=?1 "+
              "ORDER BY publicacion.fecha DESC",nativeQuery = true)
