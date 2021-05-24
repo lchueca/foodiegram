@@ -5,7 +5,6 @@ import main.domain.resource.PublicacionResource;
 import main.persistence.entity.Publicacion;
 import main.persistence.repository.RepoPublicacion;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +15,7 @@ public class DiscoverServiceImpl  implements DiscoverService{
 
     @Autowired
     private RepoPublicacion repoPublicacion;
+
 
     private PublicacionConverter publicacionConverter= new PublicacionConverter();
 
@@ -29,6 +29,17 @@ public class DiscoverServiceImpl  implements DiscoverService{
 
         return publi.stream().map(publicacionConverter::convert).collect(Collectors.toList());
 
+    }
+
+
+    public List<PublicacionResource> discoverByPopularity(){
+
+        List<Publicacion> publi=repoPublicacion.findByPopularity();
+
+        if(publi==null)
+            return  null;
+
+        return publi.stream().map(publicacionConverter::convert).collect(Collectors.toList());
     }
 
 }

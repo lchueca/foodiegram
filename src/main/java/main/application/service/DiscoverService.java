@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface DiscoverService {
 
-    List<PublicacionResource> discoverByAmigo(Integer userid);
+   public  List<PublicacionResource> discoverByAmigo(Integer userid);
+   public  List<PublicacionResource> discoverByPopularity();
 }
