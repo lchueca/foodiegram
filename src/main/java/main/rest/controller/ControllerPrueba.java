@@ -193,7 +193,7 @@ public class ControllerPrueba {
     ModelAndView postUpload(@Valid @ModelAttribute("newPost") PostForm post,  Model model) {
 
         try {
-            PublicacionResource publi = postService.upload(2, post.getText(), post.getImage(), null, null);
+            PublicacionResource publi = postService.upload(2, post.getText(), post.getImage(), Double.parseDouble(post.getLatitud()), Double.parseDouble(post.getLongitud()));
             return new ModelAndView("userPage");
 
         } catch (IOException e) {
