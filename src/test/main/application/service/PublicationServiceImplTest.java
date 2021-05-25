@@ -9,7 +9,9 @@ import main.persistence.entity.Valoracion;
 import main.persistence.repository.RepoPublicacion;
 import main.persistence.repository.RepoValoracion;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.when;
 
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(MockitoExtension.class)
 class PublicationServiceImplTest {
 
     @Mock
@@ -41,6 +44,27 @@ class PublicationServiceImplTest {
         String textN = "This belongs in a museum";
         String locN = null;
 
+
+        //Poner un assert throws directamente
+        /*
+        *@Test
+            void testExpectedException() {
+
+              //First argument - specifies the expected exception.
+              //Here it expects that code block will throw NumberFormatException
+              //Second argument - is used to pass an executable code block or lambda expression
+              Assertions.assertThrows(NumberFormatException.class, () -> {
+                Integer.parseInt("One");
+           });
+
+        }
+        *
+        *
+        *
+        *
+        *
+        *
+        * */
         when(textN == null || locN == null).thenThrow(new IllegalArgumentException("Text or loc should be not null"));
         //Throwable exception = assertThrows(IllegalArgumentException.class, () -> ;
         //assertNotNull(exception.getMessage());

@@ -1,37 +1,42 @@
 package main.application.service;
 
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.regex.Pattern;
 import java.util.Properties;
+import java.util.regex.Matcher;
 
-import lombok.var;
+
 import main.domain.converter.*;
 import main.domain.converter.MensajeConverter;
-
 import main.domain.resource.*;
-
 import main.persistence.entity.*;
-import main.persistence.repository.RepoMensaje;
-import main.persistence.repository.RepoUsuario;
-import main.persistence.repository.RepoValoracion;
-import main.persistence.repository.RepoVerifytoken;
+import main.persistence.repository.*;
 
-import org.junit.jupiter.api.Assertions;
+
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.multipart.MultipartFile;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-
+@ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
+    /**
+     * TEST GET USER BY NAME
+     */
 
     @Mock
     RepoUsuario repoUsuarioMock;
@@ -39,82 +44,131 @@ class UserServiceImplTest {
 
 
     @Test
-    void getUserByName() { //TEST X
-
-        assertNotNull(repoUsuarioMock);
+    void getUserByNameTestGood() { //X
 
         //DEVUELVE UN TIPO USUARIO
         //Creamos un tipo usuario y solo rellenamos lo que nos interesa
         UsuarioResource usuario = new UsuarioResource();
         usuario.setName("Grogu");
 
-
         when(converterUserMock.convert(repoUsuarioMock.findByName("Grogu"))).thenReturn(usuario);
         assertEquals("Grogu", usuario.getName());
 
+    }
+
+    @Test
+    void getUserByNameTestAMedias(){ //X
+
+        UsuarioResource usuario = new UsuarioResource();
+        usuario.setName("Grogu");
 
         when(converterUserMock.convert(repoUsuarioMock.findByName("Gro"))).thenReturn(usuario);
         assertEquals("Grogu", usuario.getName());
 
+    }
+
+    @Test
+    void getUserByNameTestNull(){ //X
+
+        UsuarioResource usuario = new UsuarioResource();
+        usuario.setName("Grogu");
 
         //DEVUELVE UN NULL
         usuario = null;
         when(converterUserMock.convert(repoUsuarioMock.findByName("Aslan"))).thenReturn(usuario);
         assertNull(usuario);
-
     }
 
+
+
+    /**
+    * TEST GET POSTS
+    */
 
     @Mock
     List<Publicacion> ListPubliMock;
     PreviewPublicacionConverter converterPreviewMock;
     List<PreviewPublicacion> ListPrePubliMock;
+    RepoPublicacion repoPubliMock;
 
     @Test
-    void getPosts() { //Test X
+    void getPostsTestGood() { //X
 
-        assertNotNull(ListPubliMock);
+        Usuario usuarioMock = Mockito.mock(Usuario.class);
 
         //DEVUELVE UNA LISTA
+        when(usuarioMock == null).thenReturn(false);
+        when(repoPubliMock.findByIduser(usuarioMock.getId())).thenReturn(ListPubliMock);
         when(ListPubliMock.stream().map(converterPreviewMock::convert).collect(Collectors.toList())).thenReturn(ListPrePubliMock);
         assertNotNull(ListPrePubliMock);
 
-
-        //DEVUELVE NULL
-        ListPrePubliMock = null;
-        when(ListPubliMock.stream().map(converterPreviewMock::convert).collect(Collectors.toList())).thenReturn(ListPrePubliMock);
-        assertNull(ListPrePubliMock);
-
     }
 
+
+
+    /**
+     * TEST UPLOAD
+     */
+
     @Mock
-    //repoUsuarioMock (Arriba)
-    PublicacionResource publiResoMock;
-    Pattern imagePAtMock;
-    MultipartFile imageMock;
-    PublicacionConverter converterPubliMock;
     Publicacion publiMock;
+    PublicacionResource publiResoMock;
+    PublicacionConverter converterPubliMock;
+    Pattern imagePatMock;
+    MultipartFile imageMock;
+    Matcher matchMock;
 
     @Test
-    void upload() { //Test X
-        assertNotNull(repoUsuarioMock);
-        Usuario usuario = null;
+    void uploadTestGood() { //Test X
 
-        //DEVUELVE NULL
-        when(repoUsuarioMock.findByName("Aslan")).thenReturn(usuario);
-        assertNull(usuario);
+        Usuario usuarioMock = Mockito.mock(Usuario.class);
+        String apacheMock = Mockito.mock(String.class);
+        String nameMock = Mockito.mock(String.class);
+        String addressMock = Mockito.mock(String.class);
+        File fileMock = Mockito.mock(File.class);
+        FileOutputStream streamMock = Mockito.mock(FileOutputStream.class);
 
-        //EXCEPCION NO SE PUEDE GUARDAR LA IMAGEN
-        Properties properties = Mockito.mock(Properties.class);
-        when(imagePAtMock.matcher(imageMock.getOriginalFilename())).thenThrow(new IllegalArgumentException("Only jpeg and png images are supported."));
-        Throwable exception = assertThrows(IllegalArgumentException.class, () -> properties.get("Only jpeg and png images are supported."));
-        assertEquals("Only jpeg and png images are supported.",exception.getMessage());
+        //DEVUELVE UNA PUBLICACION (Xayah)
+        when(usuarioMock == null).thenReturn(false);
+        when(imagePatMock.matcher(imageMock.getOriginalFilename())).thenReturn(matchMock);
+        when(!matchMock.matches()).thenReturn(false);
+        when(new Publicacion("Un baile conmigo termina con sangre", usuarioMock.getId(), "Jonia")).thenReturn(publiMock);
+        when(repoPubliMock.save(publiMock)).thenReturn(publiMock);
 
-        //DEVUELVE UNA PUBLICACION
+        try {
+            when(new File(apacheMock + "/" + usuarioMock.getId())).thenReturn(fileMock);
+            when(fileMock.getAbsolutePath() + "/" + publiMock.getId() + "." + matchMock.group(1)).thenReturn(nameMock);
+            when(new FileOutputStream(nameMock)).thenReturn(streamMock);
+            when(String.format("%s/%s/%s.%s", apacheMock, usuarioMock.getId(), publiMock.getId(), matchMock.group(1))).thenReturn(addressMock);
+
+        } catch (FileNotFoundException e) {
+
+        }
+
         when(converterPubliMock.convert(publiMock)).thenReturn(publiResoMock);
         assertNotNull(publiResoMock);
 
     }
+
+    @Test
+    void uploadTestException(){ //X
+
+        //EXCEPCION NO SE PUEDE GUARDAR LA IMAGEN
+        Properties properties = Mockito.mock(Properties.class);
+        Usuario usuarioMock = Mockito.mock(Usuario.class);
+
+        when(usuarioMock == null).thenReturn(false);
+        when(imagePatMock.matcher(imageMock.getOriginalFilename())).thenThrow(new IllegalArgumentException("Only jpeg and png images are supported."));
+        Throwable exception = assertThrows(IllegalArgumentException.class, () -> properties.get("Only jpeg and png images are supported."));
+        assertEquals("Only jpeg and png images are supported.",exception.getMessage());
+
+    }
+
+
+
+    /**
+     * TEST GET RATINGS
+     */
 
     @Mock
     RepoValoracion repoValMock;
@@ -122,84 +176,130 @@ class UserServiceImplTest {
     List<Valoracion> valoracionMock;
     List<ValoracionResource> valoracionResoMock;
 
+
     @Test
-    void getRatings() { //X
+    void getRatingsTestGood() { //X
 
-        assertNotNull(repoUsuarioMock);
-        Usuario usuario = null;
+        Usuario usuarioMock = Mockito.mock(Usuario.class);
 
-        //DEVUELVE NULL
-        when(repoUsuarioMock.findByName("Aslan")).thenReturn(usuario);
-        assertNull(usuario);
-
-        //Devuelve la lista de ratings
+        when(repoUsuarioMock.findByName("Xayah")).thenReturn(usuarioMock);
+        when(usuarioMock==null).thenReturn(false);
+        when(repoValMock.findByIduser(usuarioMock.getId())).thenReturn(valoracionMock);
         when(valoracionMock.stream().map(valConverterMock::convert).collect(Collectors.toList())).thenReturn(valoracionResoMock);
         assertNotNull(valoracionResoMock);
 
     }
-    @Mock
-    UsuarioResource usuarioMock;
 
+
+
+    /**
+     * TEST REGISTER
+     */
+
+    @Mock
+    UsuarioResource usuarioResourceMock;
 
     @Test
-    void register() {
+    void registerTestNombreUSuario() { //X
 
-        Usuario usuario = Mockito.mock(Usuario.class);
+        Usuario usuarioMock = Mockito.mock(Usuario.class);
 
         // Nombre de usuario
-        when(usuario.getName().length()).thenThrow(new IllegalArgumentException("The name is to long, please insert a name BELOW 20 characters"));
-
-        Throwable exception = assertThrows(IllegalArgumentException.class, () -> usuario.getName().length());
-
+        when(usuarioMock.getName().length() >= 20).thenThrow(new IllegalArgumentException("The name is to long, please insert a name BELOW 20 characters"));
+        Throwable exception = assertThrows(IllegalArgumentException.class, () -> usuarioMock.getName().length());
         assertNotNull(exception.getMessage());
 
-        //Contraseña
-        when(usuario.getPasswd().length()).thenThrow(new IllegalArgumentException("The PASSWORD is to long, please insert a password BELOW 20 characters"));
+    }
 
-        Throwable exception1 = assertThrows(IllegalArgumentException.class, () -> usuario.getPasswd().length());
+    @Test
+    void registerTestPassword(){ //X
 
+        Usuario usuarioMock = Mockito.mock(Usuario.class);
+        when(usuarioMock.getName().length() >= 20).thenReturn(false);
+        when(usuarioMock.getPasswd().length()).thenThrow(new IllegalArgumentException("The PASSWORD is to long, please insert a password BELOW 20 characters"));
+        Throwable exception1 = assertThrows(IllegalArgumentException.class, () -> usuarioMock.getPasswd().length());
         assertNotNull(exception1.getMessage());
 
-        //Email inadecuado
+    }
 
-        when(usuario.getEmail().contains("@")).thenThrow(new IllegalArgumentException("The email introduces is NOT valid, please insert a valid e-mail"));
+    @Test
+    void registerTestMalEmail(){ //X
 
-        Throwable exception2 = assertThrows(IllegalArgumentException.class, () -> usuario.getEmail().contains("@"));
-
+        Usuario usuarioMock = Mockito.mock(Usuario.class);
+        when(usuarioMock.getName().length() >= 20).thenReturn(false);
+        when(usuarioMock.getPasswd().length()>=256).thenReturn(false);
+        when(!usuarioMock.getEmail().contains("@")).thenThrow(new IllegalArgumentException("The email introduces is NOT valid, please insert a valid e-mail"));
+        Throwable exception2 = assertThrows(IllegalArgumentException.class, () -> usuarioMock.getEmail().contains("@"));
         assertNotNull(exception2.getMessage());
 
-        // Email repe
+    }
 
-        when(repoUsuarioMock.findByEmail(usuario.getEmail())).thenThrow(new IllegalArgumentException("That e-mail is already registered"));
+    @Test
+    void registerTestEmailRepe(){ //X
 
-        Throwable exception3 = assertThrows(IllegalArgumentException.class, () -> repoUsuarioMock.findByEmail(usuario.getEmail()));
+        Usuario usuarioMock = Mockito.mock(Usuario.class);
 
+        when(usuarioMock.getName().length() >= 20).thenReturn(false);
+        when(usuarioMock.getPasswd().length()>=256).thenReturn(false);
+        when(!usuarioMock.getEmail().contains("@")).thenReturn(false);
+        when(repoUsuarioMock.findByEmail(usuarioMock.getEmail()) != null).thenThrow(new IllegalArgumentException("That e-mail is already registered"));
+        Throwable exception3 = assertThrows(IllegalArgumentException.class, () -> repoUsuarioMock.findByEmail(usuarioMock.getEmail()));
         assertNotNull(exception3.getMessage());
 
-        //Registro correcto
-        when(converterUserMock.convert(usuario)).thenReturn(usuarioMock);
-        assertNotNull(usuarioMock);
     }
+
+    @Test
+    void registerTestTodoGood(){ //X
+
+        Usuario usuarioMock = Mockito.mock(Usuario.class);
+        Usuario newUserMock = Mockito.mock(Usuario.class);
+        int tokenMock = Mockito.mock(int.class);
+        Random randomMock = Mockito.mock(Random.class);
+        RepoVerifytoken repoTokenMock = Mockito.mock(RepoVerifytoken.class);
+        BCryptPasswordEncoder encoderMock = Mockito.mock(BCryptPasswordEncoder.class);
+        Verifytoken verifytokenMock = Mockito.mock(Verifytoken.class);
+        String stringMock = Mockito.mock(String.class);
+
+
+        when(usuarioMock.getName().length() >= 20).thenReturn(false);
+        when(usuarioMock.getPasswd().length()>=256).thenReturn(false);
+        when(!usuarioMock.getEmail().contains("@")).thenReturn(false);
+        when(repoUsuarioMock.findByEmail(usuarioMock.getEmail()) != null).thenReturn(false);
+        when(randomMock.nextInt(100000000)).thenReturn(tokenMock);
+        when(repoTokenMock.findByToken(tokenMock) != null).thenReturn(false);
+        when(new BCryptPasswordEncoder()).thenReturn(encoderMock);
+        when(new Usuario("Xayah", encoderMock.encode("Rakan"),null, "TortolitosRunaterra@gmail.com")).thenReturn(newUserMock);
+        when(new Verifytoken("TortolitosRunaterra@gmail.com", tokenMock)).thenReturn(verifytokenMock);
+        when("Enlace de verificación: " + stringMock + "/users/verify/" + tokenMock).thenReturn(stringMock);
+        when("Confirmación de correo electrónico en foodiegram.").thenReturn(stringMock);
+
+        when(converterUserMock.convert(usuarioMock)).thenReturn(usuarioResourceMock);
+        assertNotNull(usuarioMock);
+
+    }
+
+
+
+    /**
+     * TEST GET MENSAJES
+     */
 
     @Mock
     List<MensajeResource> mensajeResoMock;
     MensajeConverter mensajeConvMock;
     List<Mensaje> mensajesMock;
+    RepoMensaje repoMensMock;
 
     @Test
-    void getMensajes() {
+    void getMensajesTestGood() { //X
 
-        assertNotNull(repoUsuarioMock);
-        Usuario usuario = null;
-
-        //DEVUELVE UNA LISTA
+        Usuario usuarioMock = Mockito.mock(Usuario.class);
+        when(repoUsuarioMock.findByName("Xayah")).thenReturn(usuarioMock);
+        when(usuarioMock == null).thenReturn(false);
+        when(repoMensMock.findByIduser1OrIduser2(usuarioMock.getId(), usuarioMock.getId())).thenReturn(mensajesMock);
         when(mensajesMock.stream().map(mensajeConvMock::convert).collect(Collectors.toList())).thenReturn(mensajeResoMock);
         assertNotNull(mensajeResoMock);
 
-
-        //DEVUELVE NULL
-        mensajeResoMock = null;
-        when(mensajesMock.stream().map(mensajeConvMock::convert).collect(Collectors.toList())).thenReturn(mensajeResoMock);
-        assertNull(mensajeResoMock);
     }
+
 }

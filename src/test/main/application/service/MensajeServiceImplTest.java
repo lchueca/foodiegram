@@ -1,19 +1,24 @@
 package main.application.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+
+
 import main.domain.converter.MensajeConverter;
 import main.domain.resource.MensajeResource;
 import main.persistence.entity.Mensaje;
 import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoMensaje;
 
+
 import main.persistence.repository.RepoUsuario;
 import org.junit.jupiter.api.Test;;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 
+@ExtendWith(MockitoExtension.class)
 class MensajeServiceImplTest {
 
     @Mock
@@ -41,7 +46,7 @@ class MensajeServiceImplTest {
     Mensaje mensMock;
 
     @Test
-    void deleteMensaje() { //REVISAR
+    void deleteMensaje() { //
 
 
         //DEVUELVE MENSAJE
