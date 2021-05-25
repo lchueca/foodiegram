@@ -25,7 +25,7 @@ public class ControllerDescubrir {
     private DiscoverService service;
 
 
-    @RequestMapping(value="/posts/",method = RequestMethod.GET)
+    @RequestMapping(value="/posts",method = RequestMethod.GET)
     public ResponseEntity<?> discoverPosts(@RequestParam(required = false, defaultValue = "friends") String findBy,
                                            @RequestParam(required = false, defaultValue = "month") String period){
 
@@ -52,8 +52,6 @@ public class ControllerDescubrir {
 
             }
 
-
-            ;
 
             return pub != null ? ResponseEntity.ok(pub) : ResponseEntity.notFound().build();
         }
