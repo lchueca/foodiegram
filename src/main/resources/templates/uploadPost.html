@@ -44,12 +44,76 @@
                     </div>
 
                     <div class="form-group input-group">
-                        <input hidden="hidden" id="Longitud" type="text" class="form-control" placeholder="Longitud" th:field="*{longitud}"/><p></p>
+                        <input hidden="hidden" id="Longitud" type="text" class="form-control" placeholder="Longitud" th:field="*{longitud}"/>
                     </div>
+
+
+                    <div id="map" class="map container text-center" ></div>
+                    <script type="text/javascript">
+
+                        const iconFeature = new ol.Feature({
+                            geometry: new ol.geom.Point(ol.proj.fromLonLat([0, 0])),
+                            name: 'Localizacion',
+                         });
+
+                        const map = new ol.Map({
+                            target: 'map',
+                            layers: [
+                                new ol.layer.Tile({source: new ol.source.OSM(),}),
+
+                                new ol.layer.Vector({source: new ol.source.Vector({
+                                                        features: [iconFeature]}),
+                                                        style: new ol.style.Style({
+                                                            image: new ol.style.Icon({
+                                                                anchor: [0.5, 1],
+                                                                src: 'https://icons.iconarchive.com/icons/paomedia/small-n-flat/32/map-marker-icon.png'
+                                                            })
+                                                        })
+                                                    })
+                                    ],
+
+                            view: new ol.View({
+                                center: ol.proj.fromLonLat([0, 0]),
+                                zoom: 0
+                            })
+                        });
+
+                        map.on("click", (event) => {
+                            var coords = ol.proj.transform(event.coordinate, 'EPSG:3857', 'EPSG:4326');
+                            iconFeature.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([coords[0], coords[1]])));
+
+                            document.getElementById("Latitud").value = coords[1];
+                            document.getElementById("Longitud").value = coords[0];
+
+                        })
+
+                        function geoLocFunction(position) {
+
+                            var lat = position.coords.latitude;
+                            var lon = position.coords.longitude;
+
+                            document.getElementById("Latitud").value = lat;
+                            document.getElementById("Longitud").value = lon;
+
+                            iconFeature.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([lon, lat])));
+                            map.getView().setCenter(ol.proj.fromLonLat([lon, lat]));
+                            map.getView().setZoom(5);
+
+                        }
+
+                        function showError(error) {
+                            console.log("Could not get user location.")
+                        }
+
+                        navigator.geolocation.getCurrentPosition(geoLocFunction, showError);
+                    </script>
+
+                    <p></p>
 
                    <div class="form-group text-center">
                        <button type="submit" class="btn btn-primary btn-block"> Submit </button>
                    </div>
+
                </div>
            </form>
 
@@ -57,66 +121,7 @@
    </div>
 
 
-    <div id="map" class="map container col-sm-4 row-sm-3 text-center" ></div>
-    <script type="text/javascript">
 
-        const iconFeature = new ol.Feature({
-            geometry: new ol.geom.Point(ol.proj.fromLonLat([0, 0])),
-            name: 'Localizacion',
-         });
-
-        const map = new ol.Map({
-            target: 'map',
-            layers: [
-                new ol.layer.Tile({source: new ol.source.OSM(),}),
-
-                new ol.layer.Vector({source: new ol.source.Vector({
-                                        features: [iconFeature]}),
-                                        style: new ol.style.Style({
-                                            image: new ol.style.Icon({
-                                                anchor: [0.5, 1],
-                                                src: 'https://icons.iconarchive.com/icons/paomedia/small-n-flat/32/map-marker-icon.png'
-                                            })
-                                        })
-                                    })
-                    ],
-
-            view: new ol.View({
-                center: ol.proj.fromLonLat([0, 0]),
-                zoom: 0
-            })
-        });
-
-        map.on("click", (event) => {
-            var coords = ol.proj.transform(event.coordinate, 'EPSG:3857', 'EPSG:4326');
-            iconFeature.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([coords[0], coords[1]])));
-
-            document.getElementById("Latitud").value = coords[1];
-            document.getElementById("Longitud").value = coords[0];
-
-        })
-
-        function geoLocFunction(position) {
-
-            var lat = position.coords.latitude;
-            var lon = position.coords.longitude;
-
-            document.getElementById("Latitud").value = lat;
-            document.getElementById("Longitud").value = lon;
-
-            iconFeature.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([lon, lat])));
-            map.getView().setCenter(ol.proj.fromLonLat([lon, lat]));
-            map.getView().setZoom(5);
-
-        }
-
-        function showError(error) {
-            console.log("Could not get user location.")
-        }
-
-        navigator.geolocation.getCurrentPosition(geoLocFunction, showError);
-
-    </script>
 
 
 
