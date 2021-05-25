@@ -82,7 +82,7 @@ public class ControllerUsuario {
     }
 
     @RequestMapping(value = "register", method = RequestMethod.POST)
-    public ResponseEntity<?> registerUser(@Valid @ModelAttribute("employee") UserForm user) {
+    public ResponseEntity<?> registerUser(UserForm user) {
 
         try {
             UsuarioResource newUser = service.register(user.getUsername(), user.getPassword(), user.getEmail());
@@ -114,7 +114,7 @@ public class ControllerUsuario {
     }
 
     @RequestMapping(value="/login", method=RequestMethod.POST)
-    public ResponseEntity<?> login(@Valid @ModelAttribute("UserForm") UserForm user, HttpServletResponse response) {
+    public ResponseEntity<?> login(UserForm user, HttpServletResponse response) {
 
         try {
             UsernamePasswordAuthenticationToken userData = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
