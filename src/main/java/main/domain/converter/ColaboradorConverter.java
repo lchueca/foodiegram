@@ -19,7 +19,9 @@ public class ColaboradorConverter implements Converter<Colaborador,ColaboradorRe
         response.setIdUser(source.getId());
         response.setOrigin(source.getOrigin());
         response.setType(source.getType());
-        response.setLocaliztion(source.getLocalization());
+        response.setPais(source.getPais());
+        response.setCiudad(source.getCiudad());
+        response.setCalle(source.getCalle());
         response.setVip(source.getVip());
         response.setMoney(source.getMoney());
 

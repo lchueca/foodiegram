@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface DiscoverService {
 
-    List<PreviewPublicacion> discoverByAmigo(Integer userid);
+    List<PreviewPublicacion> discoverByAmigo();
     List<PreviewPublicacion> discoverBestRated(String period) throws IllegalArgumentException;
     List<PreviewPublicacion> discoverMostRated(String period) throws IllegalArgumentException;
 

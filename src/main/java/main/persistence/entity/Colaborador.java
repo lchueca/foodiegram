@@ -15,15 +15,19 @@ public class Colaborador {
     private Integer id;
     private String origin;
     private String type;
-    private String localization;
+    private String pais;
+    private String ciudad;
+    private String calle;
     private Boolean vip;
     private Integer money;
 
-    public Colaborador(Integer id,String origin, String type, String localization) {
+    public Colaborador(Integer id,String origin, String type, String pais,String ciudad,String calle) {
         this.id = id;
         this.origin = origin;
         this.type = type;
-        this.localization = localization;
+        this.calle=calle;
+        this.ciudad=ciudad;
+        this.pais=pais;
         vip=false;
         money=0;
 

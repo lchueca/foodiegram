@@ -6,35 +6,24 @@ import main.application.service.manageAccountService.ManageFriends;
 import main.domain.resource.PreviewPublicacion;
 import main.domain.resource.PublicacionResource;
 import main.domain.resource.UsuarioResource;
-import main.persistence.entity.Publicacion;
 import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoUsuario;
+import main.rest.forms.PostForm;
+import main.rest.forms.UserForm;
 import main.security.*;
-import org.apache.catalina.Store;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -161,7 +150,7 @@ public class ControllerPrueba {
     public ModelAndView registerUser(@Valid @ModelAttribute("newUser") UserForm user, Model model) {
 
         try {
-            UsuarioResource newUser = service.register(user.getUsername(), user.getPassword(), user.getEmail());
+            UsuarioResource newUser = service.register(user);
             model.addAttribute("userLog", new UserForm());
             return new ModelAndView("landingPage");
         }
@@ -197,7 +186,7 @@ public class ControllerPrueba {
     ModelAndView postUpload(@Valid @ModelAttribute("newPost") PostForm post,  Model model) {
 
         try {
-            PublicacionResource publi = postService.upload(1, post.getText(), post.getImage(), Double.parseDouble(post.getLatitud()), Double.parseDouble(post.getLongitud()));
+            PublicacionResource publi = postService.upload(1, post);
             return new ModelAndView("userPage");
 
         } catch (IOException e) {

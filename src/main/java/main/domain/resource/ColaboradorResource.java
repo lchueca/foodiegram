@@ -12,7 +12,9 @@ public class ColaboradorResource {
     private  Integer idUser;
     private  String origin;
     private  String type;
-    private String localiztion;
+    private String pais;
+    private String ciudad;
+    private String calle;
     private boolean vip;
     private Integer money;
 

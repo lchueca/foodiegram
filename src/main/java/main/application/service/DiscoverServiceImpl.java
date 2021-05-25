@@ -12,6 +12,7 @@ import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoPublicacion;
 import main.persistence.repository.RepoUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,7 +32,9 @@ public class DiscoverServiceImpl implements DiscoverService {
     private PreviewPublicacionConverter previewConverter = new PreviewPublicacionConverter();
 
 
-    public List<PreviewPublicacion> discoverByAmigo(Integer userid){
+    public List<PreviewPublicacion> discoverByAmigo(){
+
+        Integer userid=Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
 
         List<Publicacion> publi=repoPublicacion.findbyFriend(userid);
 

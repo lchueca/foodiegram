@@ -6,6 +6,7 @@ import main.persistence.entity.Mensaje;
 import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoMensaje;
 import main.persistence.repository.RepoUsuario;
+import main.rest.forms.MessageForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,16 +39,15 @@ public class MensajeServiceImpl implements MensajeService{
     }
 
     @Override
-    public MensajeResource setMensaje(Integer user1ID, String username2, String mensaje) throws IllegalArgumentException {
+    public MensajeResource setMensaje(Integer userID, MessageForm mensaje) throws IllegalArgumentException {
 
-
-        Usuario user2 = repoUser.findByName(username2);
+        Usuario user2 = repoUser.findByName(mensaje.getReceiver());
 
         if (user2 == null)
             throw new IllegalArgumentException("That user does not exist.");
 
 
-        Mensaje mens = new Mensaje(user1ID, user2.getId(), mensaje);
+        Mensaje mens = new Mensaje(userID, user2.getId(), mensaje.getText());
         repoMens.save(mens);
         return converterMens.convert(mens);
 
@@ -55,6 +55,7 @@ public class MensajeServiceImpl implements MensajeService{
 
     @Override
     public List<MensajeResource> getMensajes(Integer userID) {
+
 
         Usuario user = repoUser.findOne(userID);
 

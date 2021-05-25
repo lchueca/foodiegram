@@ -30,13 +30,13 @@ public class ControllerDescubrir {
                                            @RequestParam(required = false, defaultValue = "month") String period){
 
         try {
-            Integer userid=Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+
             List<PreviewPublicacion> pub = null;
 
             switch(findBy) {
 
                 case "friends": {
-                    pub = service.discoverByAmigo(userid);
+                    pub = service.discoverByAmigo();
                     break;
                 }
 

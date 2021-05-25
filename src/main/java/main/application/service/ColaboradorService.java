@@ -1,11 +1,12 @@
 package main.application.service;
 
 import main.domain.resource.ColaboradorResource;
+import main.rest.forms.CollaborateForm;
 
 public interface ColaboradorService {
 
 
-    public ColaboradorResource upgradeUser(Integer User,String origin,String type,String localization);
+    public ColaboradorResource upgradeUser(Integer User, CollaborateForm form);
 
 
 

@@ -10,7 +10,7 @@ import main.domain.resource.ValoracionResource;
 import main.security.AuthTokenGenerator;
 import main.security.RefreshTokenGenerator;
 import main.security.TokenRefresher;
-import main.security.UserForm;
+import main.rest.forms.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.util.List;
 
 @org.springframework.web.bind.annotation.RestController
@@ -57,7 +56,7 @@ public class ControllerUsuario {
 
     // Si buscas /users/user/postID se te redirige a /posts/postID
     @RequestMapping(value = "/{user}/{pubID}", method = RequestMethod.GET)
-    public void redirectToPost(HttpServletResponse httpServletResponse, @PathVariable String user, @PathVariable Integer pubID) {
+    public void redirectToPost(HttpServletResponse httpServletResponse, @PathVariable Integer pubID) {
 
         httpServletResponse.setHeader("Location", "http://" + domain + "/posts/" + pubID);
         httpServletResponse.setStatus(302);
@@ -81,11 +80,11 @@ public class ControllerUsuario {
 
     }
 
-    @RequestMapping(value = "register", method = RequestMethod.POST)
-    public ResponseEntity<?> registerUser(@Valid @ModelAttribute("employee") UserForm user) {
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public ResponseEntity<?> registerUser(UserForm user) {
 
         try {
-            UsuarioResource newUser = service.register(user.getUsername(), user.getPassword(), user.getEmail());
+            UsuarioResource newUser = service.register(user);
             return ResponseEntity.ok(newUser);
         }
 
@@ -114,7 +113,7 @@ public class ControllerUsuario {
     }
 
     @RequestMapping(value="/login", method=RequestMethod.POST)
-    public ResponseEntity<?> login(@Valid @ModelAttribute("UserForm") UserForm user, HttpServletResponse response) {
+    public ResponseEntity<?> login(UserForm user, HttpServletResponse response) {
 
         try {
             UsernamePasswordAuthenticationToken userData = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());

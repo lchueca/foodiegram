@@ -7,6 +7,7 @@ import main.domain.resource.Usuario_baneadoResource;
 import main.domain.resource.ValoracionResource;
 import main.persistence.entity.*;
 import main.persistence.repository.*;
+import main.rest.forms.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -92,22 +93,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UsuarioResource register(String user, String passwd, String email) throws IllegalArgumentException {
+    public UsuarioResource register(UserForm user) throws IllegalArgumentException {
 
-        if(user.length()>=20)
+        if(user.getUsername().length()>=20)
             throw new IllegalArgumentException("The name is to long, please insert a name BELOW 20 characters.");
 
-        else if(passwd.length()>=256)
+        else if(user.getPassword().length()>=256)
             throw new IllegalArgumentException("The PASSWORD is to long, please insert a password BELOW 20 characters.");
 
 
-        else if(!email.contains("@"))
+        else if(!user.getEmail().contains("@"))
             throw new IllegalArgumentException("The email introduces is NOT valid, please insert a valid e-mail.");
 
-        else if (repoUsuario.findByEmail(email) != null)
+        else if (repoUsuario.findByEmail(user.getEmail()) != null)
             throw new IllegalArgumentException("That e-mail is already registered.");
 
-        else if (repoUsuario.findByName(user) != null)
+        else if (repoUsuario.findByName(user.getUsername()) != null)
             throw new IllegalArgumentException("That username is already taken.");
 
 
@@ -122,17 +123,17 @@ public class UserServiceImpl implements UserService {
 
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-            Usuario newUser = new Usuario(user, encoder.encode(passwd),null, email);
+            Usuario newUser = new Usuario(user.getUsername(), encoder.encode(user.getPassword()),null, user.getEmail());
             repoUsuario.save(newUser);
 
-            Verifytoken verifyToken=new Verifytoken(email, token);
+            Verifytoken verifyToken=new Verifytoken(user.getEmail(), token);
             repoToken.save(verifyToken);
 
 
             // Se envia el email de confirmacion
             String mensaje="Enlace de verificación: " + "http://" + domain + ":8080/users/verify/" + token;
             String topic="Confirmación de correo electrónico en foodiegram.";
-            sendEmailService.sendEmails(email, mensaje, topic);
+            sendEmailService.sendEmails(user.getEmail(), mensaje, topic);
 
 
 
