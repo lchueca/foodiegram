@@ -115,7 +115,7 @@ PublicationServiceImpl implements PublicationService {
             Map<String, Object> geoData = getCity(lat, lon);
             try {
                 country = geoData.get("country").toString();
-                city = geoData.get("region").toString();
+                city = geoData.get("locality").toString();
             }
 
             catch (NullPointerException ignored) {
