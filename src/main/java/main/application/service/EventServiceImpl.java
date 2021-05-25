@@ -23,7 +23,7 @@ public class EventServiceImpl implements EventService {
 
     private EventoConverter converterEvent = new EventoConverter();
 
-    private final Pattern imagePattern = Pattern.compile("\\w+.(png|jpg)$");
+    private final Pattern imagePattern = Pattern.compile("\\.+.(png|jpg|jpeg)$");
 
     @Autowired
     private RepoEvento repoEvent;

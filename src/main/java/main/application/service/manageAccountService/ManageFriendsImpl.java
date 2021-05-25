@@ -14,6 +14,7 @@ import main.persistence.repository.RepoUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,14 +38,18 @@ public class ManageFriendsImpl implements ManageFriends{
     @Override
     public AmigoResource addFriend(Integer id, String name) {
 
-        Usuario user = repoUser.findByName(name);
+        Usuario user  = repoUser.findByName(name);
 
         if(user == null || user.getId() == id) //comprobamos que el usuario existe
             return null;
         else{
-            Amigo friend = new Amigo(id, user.getId());
-            repoAmigo.save(friend);
-            return friendConverter.convert(friend);
+            List<String> friends = getFriends(id);
+            if(!friends.contains(name)){
+                Amigo friend = new Amigo(id, user.getId());
+                repoAmigo.save(friend);
+                return friendConverter.convert(friend);
+            }
+            return null;
         }
     }
 
@@ -70,6 +75,26 @@ public class ManageFriendsImpl implements ManageFriends{
                 throw new IllegalArgumentException("You have no friend with name: " + name);
             }
 
+        }
+    }
+
+    @Override
+    public List<String> getFriends(Integer id){
+        Usuario user = repoUser.findById(id);
+
+        if(user == null) return null;
+        else{
+            List<Amigo> friends = repoAmigo.findAll();
+            List<String> friendsName = new ArrayList<>();
+            for(Amigo friend : friends){
+                if(user.getId() == friend.getIduser1()){
+                    friendsName.add(repoUser.findById(friend.getIduser2()).getName());
+                }else{
+                    friendsName.add(repoUser.findById(friend.getIduser1()).getName());
+                }
+
+            }
+            return friendsName;
         }
     }
 

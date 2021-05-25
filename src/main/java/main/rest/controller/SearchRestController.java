@@ -34,7 +34,7 @@ public class SearchRestController {
     // busca a usuarios por mayor numero de publicaciones y devuelve una lista (max 15)
     // con los nombres de usuario y su foto de perfil
     // si no encuentra devuelve una lista vacia
-    @RequestMapping(value = "/users/ppubli", method = RequestMethod.GET)
+    @RequestMapping(value = "/users/publi", method = RequestMethod.GET)
     public ResponseEntity<List<PreviewUsuario>> getUserListByPubli() {
 
         List<PreviewUsuario> userList = service.getUserListByPubli();

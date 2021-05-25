@@ -1,4 +1,4 @@
-package main.security;
+package main.rest.forms;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

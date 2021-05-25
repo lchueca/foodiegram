@@ -7,6 +7,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.naming.NoPermissionException;
 import javax.persistence.*;
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.Collection;
 
 @Entity
@@ -20,26 +22,32 @@ public class Publicacion {
     private Integer iduser;
     private String text;
     private String image;
-    private String  localization;
+    private String pais;
+    private String  ciudad;
     private  Float media;
     private Integer numerototalval;
+    private Date fecha;
 
-    public Publicacion(String text, Integer idUser, String image, String localization) {
+    public Publicacion(String text, Integer idUser, String image, String pais, String ciudad) {
         this.text = text;
         this.image = image;
         this.iduser = idUser;
-        this.localization = localization;
+        this.pais = pais;
+        this.ciudad = ciudad;
         this.media=0f;
         this.numerototalval=0;
+        this.fecha = new Date(Calendar.getInstance().getTime().getTime());
     }
 
-    public Publicacion(String text, Integer idUser, String localization) {
+    public Publicacion(String text, Integer idUser,String pais, String ciudad) {
         this.text = text;
         this.image = null;
         this.iduser = idUser;
-        this.localization = localization;
+        this.pais = pais;
+        this.ciudad = ciudad;
         this.media=0f;
         this.numerototalval=0;
+        this.fecha = new Date(Calendar.getInstance().getTime().getTime());
     }
 
     @PreRemove

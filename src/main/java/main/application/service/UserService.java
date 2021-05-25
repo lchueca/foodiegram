@@ -4,6 +4,7 @@ import main.domain.resource.PreviewPublicacion;
 import main.domain.resource.UsuarioResource;
 import main.domain.resource.Usuario_baneadoResource;
 import main.domain.resource.ValoracionResource;
+import main.rest.forms.UserForm;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public interface UserService  {
     // Da de alta un usuario en la BD y le envia un mail de confirmacion.
     // Lanza una excepcion si se le introduce un usuario, contraseña o email no validos.
     // Si se ha podido registrar al usuario, lo devuelve.
-    UsuarioResource register(String user, String passwd, String email) throws IllegalArgumentException;
+    UsuarioResource register(UserForm user) throws IllegalArgumentException;
 
     // Sudad de este.
     UsuarioResource verify(Integer token);

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>UploadPost</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"/>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/css/ol.css" type="text/css"/>
+
+    <style>
+      .map {
+        height: 400px;
+        width: 100%;
+      }
+    </style>
+</head>
+<body>
+    <div class="container col-sm-4 row-sm-3 text-center mt-5"><p></p><p></p>
+
+        <div class="card bg-light">
+
+            <h3 class="text-center">Subir foto</h3>
+
+            <hr/>
+
+            <form th:action="@{/pruebas/postUpload}" th:object="${newPost}" method="post" enctype="multipart/form-data">
+                <div class="container">
+                    <div class="form-group input-group">
+                        <input type="file" class="form-control" placeholder="Post" th:field="*{image}"/><p></p>
+                     </div>
+
+                     <div class="form-group input-group">
+                       <input type="text" class="form-control" placeholder="Caption" th:field="*{text}"/><p></p>
+                     </div>
+
+                    <div class="form-group input-group">
+                        <input hidden="hidden" id="Latitud" type="text" class="form-control" placeholder="Latitud" th:field="*{latitud}"/><p></p>
+                    </div>
+
+                    <div class="form-group input-group">
+                        <input hidden="hidden" id="Longitud" type="text" class="form-control" placeholder="Longitud" th:field="*{longitud}"/>
+                    </div>
+
+
+                    <div id="map" class="map container text-center" ></div>
+                    <script type="text/javascript">
+
+                        const iconFeature = new ol.Feature({
+                            geometry: new ol.geom.Point(ol.proj.fromLonLat([0, 0])),
+                            name: 'Localizacion',
+                         });
+
+                        const map = new ol.Map({
+                            target: 'map',
+                            layers: [
+                                new ol.layer.Tile({source: new ol.source.OSM(),}),
+
+                                new ol.layer.Vector({source: new ol.source.Vector({
+                                                        features: [iconFeature]}),
+                                                        style: new ol.style.Style({
+                                                            image: new ol.style.Icon({
+                                                                anchor: [0.5, 1],
+                                                                src: 'https://icons.iconarchive.com/icons/paomedia/small-n-flat/32/map-marker-icon.png'
+                                                            })
+                                                        })
+                                                    })
+                                    ],
+
+                            view: new ol.View({
+                                center: ol.proj.fromLonLat([0, 0]),
+                                zoom: 0
+                            })
+                        });
+
+                        map.on("click", (event) => {
+                            var coords = ol.proj.transform(event.coordinate, 'EPSG:3857', 'EPSG:4326');
+                            iconFeature.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([coords[0], coords[1]])));
+
+                            document.getElementById("Latitud").value = coords[1];
+                            document.getElementById("Longitud").value = coords[0];
+
+                        })
+
+                        function geoLocFunction(position) {
+
+                            var lat = position.coords.latitude;
+                            var lon = position.coords.longitude;
+
+                            document.getElementById("Latitud").value = lat;
+                            document.getElementById("Longitud").value = lon;
+
+                            iconFeature.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([lon, lat])));
+                            map.getView().setCenter(ol.proj.fromLonLat([lon, lat]));
+                            map.getView().setZoom(5);
+
+                        }
+
+                        function showError(error) {
+                            console.log("Could not get user location.")
+                        }
+
+                        navigator.geolocation.getCurrentPosition(geoLocFunction, showError);
+                    </script>
+
+                    <p></p>
+
+                   <div class="form-group text-center">
+                       <button type="submit" class="btn btn-primary btn-block"> Submit </button>
+                   </div>
+
+               </div>
+           </form>
+
+       </div>
+   </div>
+
+
+
+
+
+
+</body>
+</html>
