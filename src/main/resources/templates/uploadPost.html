@@ -56,88 +56,60 @@
        </div>
    </div>
 
-    <script >
-
-
-    function geoLocFunction(position) {
-        var x = document.getElementById("Latitud")
-        x.value = position.coords.latitude
-        x.readOnly = true
-
-        var y = document.getElementById("Longitud")
-        y.value = position.coords.longitude
-        y.readOnly = true
-    }
-
-   function showError(error) {
-       ciudad.innerHTML = "error"
-       pais.innerHTML = "error"
-   }
-
-   navigator.geolocation.getCurrentPosition(geoLocFunction, showError);
-
-
-
-</script>
 
     <div id="map" class="map container col-sm-4 row-sm-3 text-center" ></div>
     <script type="text/javascript">
 
-            var iconFeature = new ol.Feature({
-                geometry: new ol.geom.Point(ol.proj.fromLonLat([0, 0])),
-                name: 'Localizacion',
-            });
+        var iconFeature = new ol.Feature({
+            geometry: new ol.geom.Point(ol.proj.fromLonLat([0, 0])),
+            name: 'Localizacion',
+        });
 
-            const map = new ol.Map({
-                target: 'map',
-                layers: [new ol.layer.Tile({source: new ol.source.OSM(),}),
+        const map = new ol.Map({
+            target: 'map',
+            layers: [new ol.layer.Tile({source: new ol.source.OSM(),}),
 
-                new ol.layer.Vector({source: new ol.source.Vector({features: [iconFeature]}),
-                                        style: new ol.style.Style({image: new ol.style.Icon({
-                                        src: 'https://icons.iconarchive.com/icons/paomedia/small-n-flat/32/map-marker-icon.png'})}) })],
+            new ol.layer.Vector({source: new ol.source.Vector({features: [iconFeature]}),
+                                    style: new ol.style.Style({image: new ol.style.Icon({
+                                    src: 'https://icons.iconarchive.com/icons/paomedia/small-n-flat/32/map-marker-icon.png'})}) })],
 
-                view: new ol.View({
-                center: ol.proj.fromLonLat([0, 0]),
-                zoom: 0
-                })
-            });
-
-            map.on("click", (event) => {
-                var coords = ol.proj.transform(event.coordinate, 'EPSG:3857', 'EPSG:4326');
-                iconFeature.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([coords[0], coords[1]])));
-
-                document.getElementById("Latitud").value = coords[1];
-                document.getElementById("Longitud").value = coords[0];
-
+            view: new ol.View({
+            center: ol.proj.fromLonLat([0, 0]),
+            zoom: 0
             })
+        });
 
-            function geoLocFunction(position) {
+        map.on("click", (event) => {
+            var coords = ol.proj.transform(event.coordinate, 'EPSG:3857', 'EPSG:4326');
+            iconFeature.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([coords[0], coords[1]])));
 
-                var lat = position.coords.latitude;
-                var lon = position.coords.longitude;
+            document.getElementById("Latitud").value = coords[1];
+            document.getElementById("Longitud").value = coords[0];
 
-                document.getElementById("Latitud").value = lat;
-                document.getElementById("Longitud").value = lon;
+        })
 
-                iconFeature.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([lon, lat])));
-                map.getView().setCenter(ol.proj.fromLonLat([lon, lat]));
-                map.getView().setZoom(5);
+        function geoLocFunction(position) {
 
-            }
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
 
-            function showError(error) {
-                ciudad.innerHTML = "error"
-                pais.innerHTML = "error"
-            }
+            document.getElementById("Latitud").value = lat;
+            document.getElementById("Longitud").value = lon;
 
-            navigator.geolocation.getCurrentPosition(geoLocFunction, showError);
+            iconFeature.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([lon, lat])));
+            map.getView().setCenter(ol.proj.fromLonLat([lon, lat]));
+            map.getView().setZoom(5);
 
+        }
 
+        function showError(error) {
+            ciudad.innerHTML = "error"
+            pais.innerHTML = "error"
+        }
 
+        navigator.geolocation.getCurrentPosition(geoLocFunction, showError);
 
-
-
-</script>
+    </script>
 
 
 
