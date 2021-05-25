@@ -10,9 +10,31 @@
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"/>
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
 </head>
 <body>
-<h1 class="card-title mt-3 text-center" th:text="${friends}"/>
+  <div class="container mt-5">
+    <div class="card bg-light">
+      <article class="card-body mx-auto" style="max-width: 800px;">
+
+        <table class="table  table-striped">
+          <tbody>
+
+            <tr th:if="${friends.empty}">
+              <th scope="col">Add Friends!</th>
+            </tr>
+
+            <tr><th scope="col"><p class="text-center">friends name</p></th></tr>
+
+            <tr th:each="name : ${friends}">
+              <th scope="col"><p class="card-title mt-3 text-center" th:text="${name}"/></th>
+            </tr>
+
+          </tbody>
+        </table>
+
+        <p class="card-title mt-3 text-center"> <a th:href="@{/pruebas/personalpage}"> Add friend </a><a th:href="@{/pruebas/personalpage}"> Remove friend </a></p>
+      </article>
+    </div>
+  </div>
 </body>
 </html>

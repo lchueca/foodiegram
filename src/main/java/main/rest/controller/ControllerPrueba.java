@@ -2,6 +2,7 @@ package main.rest.controller;
 
 import main.application.service.PublicationService;
 import main.application.service.UserService;
+import main.application.service.manageAccountService.ManageFriends;
 import main.domain.resource.PreviewPublicacion;
 import main.domain.resource.PublicacionResource;
 import main.domain.resource.UsuarioResource;
@@ -50,6 +51,9 @@ public class ControllerPrueba {
 
     @Autowired
     private UserService service;
+
+    @Autowired
+    private ManageFriends friendsService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -219,7 +223,8 @@ public class ControllerPrueba {
 
     @GetMapping("/friends")
     ModelAndView friends(Model model){
-        model.addAttribute("friends", "friends will be friends");
+        List<String> friends = friendsService.getFriends(userId);
+        model.addAttribute("friends", friends);
         return new ModelAndView("friends");
     }
 
