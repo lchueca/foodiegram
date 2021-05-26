@@ -12,6 +12,7 @@ import main.persistence.repository.RepoMensaje;
 
 
 import main.persistence.repository.RepoUsuario;
+import main.rest.forms.MessageForm;
 import org.junit.jupiter.api.Test;;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -28,17 +29,19 @@ class MensajeServiceImplTest {
     Integer mensIDMock;
 
     @Test
-    void getMensaje() { //X
+    void getMensajeOK() { //X
 
         //DEVUELVE MensajeResource
         when(MensConvMock.convert((repoMensMock).findOne(mensIDMock))).thenReturn(resoMensMock);
         assertNotNull(resoMensMock);
+    }
 
+    @Test
+    void getMensajeNull(){
         //DEVUELVE NULL
         resoMensMock = null;
         when(MensConvMock.convert((repoMensMock).findOne(mensIDMock))).thenReturn(resoMensMock);
         assertNull(resoMensMock);
-
     }
 
     @Mock
@@ -46,7 +49,7 @@ class MensajeServiceImplTest {
     Mensaje mensMock;
 
     @Test
-    void deleteMensaje() { //
+    void deleteMensajeOK() { //
 
 
         //DEVUELVE MENSAJE
@@ -56,6 +59,10 @@ class MensajeServiceImplTest {
         //when(repoMensMock.delete().thenReturn();
         assertNotNull(resoMensMock);
 
+    }
+
+    @Test
+    void deleteMensajeNull(){
 
         //DEVUELVE NULL
         mensMock=null;
@@ -69,25 +76,25 @@ class MensajeServiceImplTest {
     RepoUsuario repoUsuarioMock;
     Usuario usuarioMock;
     Usuario usuarioMock2;
-    String mensajeMock;
-
+    MessageForm mensajeMock;
     @Test
-    void setMensaje() {
-
+    void setMensajeOK() {
         //DEVUELVE Mensajeresource
-        when(repoUsuarioMock.findByName("Grogu")).thenReturn(usuarioMock);
-        when(repoUsuarioMock.findByName("Mando")).thenReturn(usuarioMock2);
+        when(repoUsuarioMock.findByName(mensajeMock.getReceiver())).thenReturn(usuarioMock);
+        when(repoUsuarioMock.findByName(mensajeMock.getReceiver())).thenReturn(usuarioMock2);
         when(usuarioMock == null || usuarioMock2 == null).thenReturn(false);
-        when(new Mensaje(usuarioMock.getId(),usuarioMock2.getId(),mensajeMock)).thenReturn(mensMock);
+        when(new Mensaje(usuarioMock.getId(),usuarioMock2.getId(),mensajeMock.getText())).thenReturn(mensMock);
         when(repoMensMock.save(mensMock)).thenReturn(null);
         when(MensConvMock.convert(mensMock));
         assertNotNull(mensMock);
 
-
+    }
+    @Test
+    void setMensajeNull(){
         //DEVUELVE NULL
         usuarioMock2 = null;
-        when(repoUsuarioMock.findByName("Grogu")).thenReturn(usuarioMock);
-        when(repoUsuarioMock.findByName("Mando")).thenReturn(usuarioMock2);
+        when(repoUsuarioMock.findByName(mensajeMock.getReceiver())).thenReturn(usuarioMock);
+        when(repoUsuarioMock.findByName(mensajeMock.getReceiver())).thenReturn(usuarioMock2);
         when(usuarioMock == null || usuarioMock2 == null).thenThrow(new IllegalArgumentException("Both users should exist."));
         Throwable exception = assertThrows(IllegalArgumentException.class, () -> usuarioMock2.getId());
         assertNotNull(exception.getMessage());

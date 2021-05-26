@@ -118,6 +118,7 @@ class UserServiceImplTest {
     MultipartFile imageMock;
     Matcher matchMock;
 
+    /*
     @Test
     void uploadTestGood() { //Test X
 
@@ -163,7 +164,7 @@ class UserServiceImplTest {
         assertEquals("Only jpeg and png images are supported.",exception.getMessage());
 
     }
-
+    */
 
 
     /**
