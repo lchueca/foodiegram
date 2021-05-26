@@ -3,11 +3,12 @@ package main.persistence.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.naming.NoPermissionException;
+import javax.persistence.*;
+import java.util.Collection;
 
 @Entity
 @Data
@@ -28,5 +29,17 @@ public class Evento {
         this.text = text;
         this.endtime = endtime;
         this.image = null;
+    }
+
+
+    @PreRemove
+    @PreUpdate
+    private void preventUnauthorizedRemove() throws NoPermissionException {
+
+        Integer deleterId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+
+        if (!deleterId.equals(idcolab) && !authorities.contains(RoleEnum.ROLE_COL))
+            throw new NoPermissionException("You're not allowed to do that");
     }
 }

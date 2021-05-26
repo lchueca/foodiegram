@@ -2,9 +2,11 @@ package main.rest.controller;
 
 import main.application.service.EventService;
 import main.domain.resource.EventoResource;
+import main.rest.forms.EventForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,11 +36,12 @@ public class EventController {
 
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> createEvent(@RequestPart("id") String idcolab, @RequestPart("text") String text,
-                                         @RequestPart(value = "image", required = false) MultipartFile image,
-                                         @RequestPart("date") String date) {
+    public ResponseEntity<?> createEvent(EventForm form) {
         try {
-            EventoResource evnt = service.upload(Integer.parseInt(idcolab), text, image, date);
+
+            Integer collabID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+            form.setIdCollab(collabID);
+            EventoResource evnt = service.upload(form);
             return evnt != null ? ResponseEntity.ok(evnt) : ResponseEntity.notFound().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -49,12 +52,10 @@ public class EventController {
     //
     // modifica los datos del evento con el valor de id
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<?> modifyEvent(@PathVariable String id, @RequestPart(value = "text", required = false) String text,
-                                         @RequestPart(value = "image", required = false) MultipartFile image,
-                                         @RequestPart(value = "date", required = false) String date) {
+    public ResponseEntity<?> modifyEvent(@PathVariable String id, EventForm form) {
 
         try {
-            EventoResource evnt = service.modify(Integer.parseInt(id), text, image, date);
+            EventoResource evnt = service.modify(Integer.parseInt(id), form);
             return evnt != null ? ResponseEntity.ok(evnt) : ResponseEntity.notFound().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
