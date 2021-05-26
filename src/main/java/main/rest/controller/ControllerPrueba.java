@@ -120,8 +120,8 @@ public class ControllerPrueba {
             response.addCookie(cookie);
 
            Usuario usuario = repoUsuario.findById(getUserByName(user.getUsername()));
+            //Integer userId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
            userId = repoUsuario.findByName(user.getUsername()).getId();
-           //Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
            model.addAttribute("postList", getPosts(user.getUsername()));
            return new ModelAndView("userPage");
         }
@@ -219,7 +219,7 @@ public class ControllerPrueba {
 
     @GetMapping("/friends")
     ModelAndView friends(Model model){
-        //Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+        //Integer userId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
         List<String> friends = friendsService.getFriends(userId);
         model.addAttribute("friendManagement", new FriendForm());
         model.addAttribute("friends", friends);
@@ -228,7 +228,7 @@ public class ControllerPrueba {
 
     @PostMapping("/postFriends")
     ModelAndView postFriends(@Valid @ModelAttribute("friendManagement") FriendForm friend ,Model model){
-        //Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+        //Integer userId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
         try{
             if(friend.getType().equals("add")){
                 AmigoResource amigoResource = friendsService.addFriend(userId, friend.getFriendName());
