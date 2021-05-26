@@ -4,6 +4,7 @@ import main.domain.converter.EventoConverter;
 import main.domain.resource.EventoResource;
 import main.persistence.entity.Evento;
 import main.persistence.repository.RepoEvento;
+import main.rest.forms.EventForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -47,27 +48,27 @@ public class EventServiceImpl implements EventService {
     // ORGANIZAR EVENTO
     //
     // crea un evento nuevo con los datos proporcionados
-    public EventoResource upload(Integer idcolab, String text, MultipartFile image, String date) throws IOException, IllegalArgumentException {
+    public EventoResource upload(EventForm form) throws IOException, IllegalArgumentException {
 
-        Evento evnt = new Evento(idcolab, text, Date.valueOf(date));
+        Evento evnt = new Evento(form.getIdCollab(), form.getText(), form.getDate());
         repoEvent.save(evnt);
 
-        if (image != null) {
-            Matcher matcher = imagePattern.matcher(image.getOriginalFilename());
+        if (form.getImage() != null) {
+            Matcher matcher = imagePattern.matcher(form.getImage().getOriginalFilename());
 
             if (!matcher.matches())
                 throw new IllegalArgumentException("Only jpeg and png images are supported.");
 
             try {
-                File folder = new File(apacheRootFolder + "/events/" + idcolab);
+                File folder = new File(apacheRootFolder + "/events/" + form.getIdCollab());
                 folder.mkdirs();
 
-                String name = folder.getAbsolutePath() + "/" + date + "." + matcher.group(1);
+                String name = folder.getAbsolutePath() + "/" + form.getDate() + "." + matcher.group(1);
                 FileOutputStream stream = new FileOutputStream(name);
-                stream.write(image.getBytes());
+                stream.write(form.getImage().getBytes());
                 stream.close();
 
-                String address = String.format("%s/events/%s/%s.%s", apacheAddress, idcolab, date, matcher.group(1));
+                String address = String.format("%s/events/%s/%s.%s", apacheAddress, form.getIdCollab(), form.getDate(), matcher.group(1));
                 evnt.setImage(address);
                 repoEvent.save(evnt);
             } catch (IOException e) {
@@ -81,16 +82,16 @@ public class EventServiceImpl implements EventService {
     // MODIFICAR EVENTO
     //
     // modifica un evento existente y activo
-    public EventoResource modify(Integer id, String text, MultipartFile image, String date) throws IOException, IllegalArgumentException {
+    public EventoResource modify(Integer id,EventForm form) throws IOException, IllegalArgumentException {
 
         // encuentra el evento de id
         Evento evnt = repoEvent.findById(id);
         // se supone que siempre se encuentra porque en la seleccion del evento se muestran los existente
         // por lo que no hace falta controlar una excepcion de si es null
 
-        if (text != null) evnt.setText(text);
-        if (image != null) {
-            Matcher matcher = imagePattern.matcher(image.getOriginalFilename());
+        if (form.getText() != null) evnt.setText(form.getText());
+        if (form.getImage() != null) {
+            Matcher matcher = imagePattern.matcher(form.getImage().getOriginalFilename());
 
             if (!matcher.matches())
                 throw new IllegalArgumentException("Only jpeg and png images are supported.");
@@ -99,18 +100,18 @@ public class EventServiceImpl implements EventService {
                 File folder = new File(apacheRootFolder + "/events/" + evnt.getIdcolab());
                 folder.mkdirs();
 
-                String name = folder.getAbsolutePath() + "/" + date + "." + matcher.group(1);
+                String name = folder.getAbsolutePath() + "/" + form.getDate() + "." + matcher.group(1);
                 FileOutputStream stream = new FileOutputStream(name);
-                stream.write(image.getBytes());
+                stream.write(form.getImage().getBytes());
                 stream.close();
 
-                String address = String.format("%s/events/%s/%s.%s", apacheAddress, evnt.getIdcolab(), date, matcher.group(1));
+                String address = String.format("%s/events/%s/%s.%s", apacheAddress, evnt.getIdcolab(), form.getDate() , matcher.group(1));
                 evnt.setImage(address);
             } catch (IOException e) {
                 throw e;
             }
         }
-        if (date != null) evnt.setEndtime(Date.valueOf(date));
+        if (form.getDate() != null) evnt.setEndtime(form.getDate());
         repoEvent.save(evnt);
 
         return converterEvent.convert(evnt);
