@@ -1,5 +1,6 @@
 package main.rest.controller;
 
+import javafx.util.Pair;
 import main.application.service.PublicationService;
 import main.application.service.UserService;
 import main.application.service.manageAccountService.ManageFriends;
@@ -8,6 +9,7 @@ import main.domain.resource.PublicacionResource;
 import main.domain.resource.UsuarioResource;
 import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoUsuario;
+import main.rest.forms.FriendForm;
 import main.rest.forms.PostForm;
 import main.rest.forms.UserForm;
 import main.security.*;
@@ -212,6 +214,21 @@ public class ControllerPrueba {
 
     @GetMapping("/friends")
     ModelAndView friends(Model model){
+        List<String> friends = friendsService.getFriends(userId);
+        model.addAttribute("friendManagement", new FriendForm());
+        model.addAttribute("friends", friends);
+        return new ModelAndView("friends");
+    }
+
+    @PostMapping("/postFriends")
+    ModelAndView postFriends(@Valid @ModelAttribute("friendManagement") FriendForm friend ,Model model){
+        if(friend.getType() .equals("add")){
+            model.addAttribute("problem", "adding friend" + friend.getFriendName());
+            return new ModelAndView("problems");
+        }else if(friend.getType().equals("remove")){
+            model.addAttribute("problem", "removing friend" + friend.getFriendName());
+            return new ModelAndView("problems");
+        }
         List<String> friends = friendsService.getFriends(userId);
         model.addAttribute("friends", friends);
         return new ModelAndView("friends");
