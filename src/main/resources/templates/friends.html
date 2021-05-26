@@ -39,8 +39,8 @@
 
 
 
-      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="add">add friend</button>
-      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="remove">remove friend</button>
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" href="#exampleModal" data-whatever="add">add friend</button>
+      <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#exampleModal" href="#exampleModal" data-whatever="remove">remove friend</button>
 
 
       <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -60,11 +60,12 @@
                 <div class="form-group">
                   <input type="text" class="form-control" placeholder="Username" th:field="*{friendName}"/><p></p>
                 </div>
+
+                <button type="submit" class="btn btn-primary btn-block"> Confirm </button>
               </form>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Confirm</button>
             </div>
           </div>
         </div>
