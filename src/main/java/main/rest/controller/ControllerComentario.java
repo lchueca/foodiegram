@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
 
-
+import javax.naming.NoPermissionException;
 
 
 @org.springframework.web.bind.annotation.RestController
@@ -25,10 +25,14 @@ public class ControllerComentario {
     public ResponseEntity<?> editComment(@PathVariable Integer comID, @RequestPart(value="text") String text){
 
        try{
-           ComentarioResource comment = service.editComentario(comID,text);
+           ComentarioResource comment = service.editComentario(comID, text);
            return comment != null ? ResponseEntity.ok(comment) : ResponseEntity.notFound().build();
        }
-       catch (Exception e){
+
+       catch (NoPermissionException e) {
+           return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+       }
+       catch (IllegalArgumentException e){
            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
        }
 
@@ -38,11 +42,19 @@ public class ControllerComentario {
     @RequestMapping(method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteComment(@PathVariable Integer comID) {
 
-        ComentarioResource comment = service.deleteComentario(comID);
-        return comment != null ? ResponseEntity.ok(comment) : ResponseEntity.notFound().build();
+        try{
+            ComentarioResource comment = service.deleteComentario(comID);
+            return comment != null ? ResponseEntity.ok(comment) : ResponseEntity.notFound().build();
+        }
+
+        catch (NoPermissionException e){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        }
 
 
     }
+
+
 }
 
 

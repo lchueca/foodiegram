@@ -15,21 +15,34 @@ import main.persistence.repository.RepoComentario;
 import main.persistence.repository.RepoPublicacion;
 import main.persistence.repository.RepoUsuario;
 import main.persistence.repository.RepoValoracion;
+import main.rest.forms.CommentForm;
+import main.rest.forms.PostForm;
+import main.rest.forms.RatingForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.naming.NoPermissionException;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
-public class PublicationServiceImpl implements PublicationService {
+public class
+PublicationServiceImpl implements PublicationService {
 
     private final PublicacionConverter converterPubli = new PublicacionConverter();
 
     private final ValoracionConverter converterVal = new ValoracionConverter();
 
     private final ComentarioConverter converterCom = new ComentarioConverter();
+
+    private final Pattern imagePattern = Pattern.compile(".+\\.(png|jpg|jpeg)$");
 
     @Autowired
     private RepoPublicacion repoPubli;
@@ -43,13 +56,14 @@ public class PublicationServiceImpl implements PublicationService {
     @Autowired
     private RepoUsuario repoUsuario;
 
+    @Autowired
+    private RestService restService;
+
     @Value("${apache.address}")
     private String apacheAddress;
 
     @Value("${apache.rootFolder}")
     private String apacheRootFolder;
-
-
 
     @Override
     public PublicacionResource getPost(Integer pubID) {
@@ -57,23 +71,21 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     @Override
-    public PublicacionResource editPost(Integer pubID, String text, String loc) throws IllegalArgumentException {
+    public PublicacionResource editPost(Integer pubID, String text) throws IllegalArgumentException, NoPermissionException {
 
-        if (text == null && loc == null)
+        if (text == null)
             throw new IllegalArgumentException("Text or loc should be not null");
 
 
         Publicacion publi = repoPubli.findOne(pubID);
 
-         if (publi != null) {
+        if (publi != null) {
 
-            if (text != null)
-                publi.setText(text);
+            publi.setText(text);
 
-            if (loc != null)
-                publi.setLocalization(loc);
 
             repoPubli.save(publi);
+
         }
 
         return converterPubli.convert(publi);
@@ -81,16 +93,70 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     @Override
-    public PublicacionResource deletePost(Integer pubID) {
+    public PublicacionResource deletePost(Integer pubID) throws NoPermissionException {
 
         Publicacion publi = repoPubli.findOne(pubID);
 
         if (publi != null)
             repoPubli.delete(publi);
 
+
         return converterPubli.convert(publi);
 
 
+    }
+
+    @Override
+    public PublicacionResource upload(Integer userID, PostForm form) throws IOException, IllegalArgumentException {
+        String country = null;
+        String city = null;
+
+        if (form.getLatitud() != null && form.getLongitud() != null) {
+            Map<String, Object> geoData = getCity(form.getLatitud() , form.getLongitud());
+            try {
+                country = geoData.get("country").toString();
+                city = geoData.get("locality").toString();
+            }
+
+            catch (NullPointerException ignored) {
+
+            }
+        }
+
+        Publicacion publi = new Publicacion(form.getText(), userID, country, city);
+        publi = repoPubli.save(publi);
+
+        if (form.getImage() != null) {
+
+            Matcher matcher = imagePattern.matcher(form.getImage().getOriginalFilename());
+
+            if (!matcher.matches())
+                throw new IllegalArgumentException("Only jpeg and png images are supported.");
+
+            // Se crea una publicacion sin imagen
+
+            try {
+                File folder = new File(apacheRootFolder + "/users/" + userID);
+                folder.mkdirs();
+
+                String name = folder.getAbsolutePath() + "/" + publi.getId() + "." + matcher.group(1);
+                FileOutputStream stream = new FileOutputStream(name);
+                stream.write(form.getImage().getBytes());
+                stream.close();
+
+                // Si se ha conseguido guardar la imagen, se le asocia a la publicacion una direccion en la BD.
+                String address = String.format("%s/users/%s/%s.%s", apacheAddress, userID, publi.getId(), matcher.group(1));
+                publi.setImage(address);
+                repoPubli.save(publi);
+            } catch (IOException e) {
+                repoPubli.delete(publi);
+                throw e;
+            }
+
+        }
+
+
+        return converterPubli.convert(publi);
     }
 
     @Override
@@ -108,18 +174,13 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     @Override
-    public ValoracionResource setRating(Integer pubID, String user, Float score) throws IllegalArgumentException {
+    public ValoracionResource setRating(RatingForm form) throws IllegalArgumentException {
 
-        Usuario usuario = repoUsuario.findByName(user);
-
-        if (usuario == null)
-            throw new IllegalArgumentException("That user does not exist.");
-
-        if(score<0 || score>5)
+        if (form.getScore() < 0 || form.getScore() > 5)
             throw new IllegalArgumentException("Punt must be a integer between 0 and 5");
 
         else {
-            Valoracion valora = new Valoracion(pubID, usuario.getId(), score);
+            Valoracion valora = new Valoracion(form.getPubID(), form.getUserID(), form.getScore());
             repoVal.save(valora);
 
             return converterVal.convert(valora);
@@ -128,26 +189,21 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     @Override
-    public ValoracionResource getRating(Integer pubID, String user)  {
-
-        Usuario usuario = repoUsuario.findByName(user);
-
-        if (usuario == null)
-            return  null;
-
-       return converterVal.convert(repoVal.findOne(new IDvaloracion(pubID,usuario.getId())));
-
-    }
-
-    @Override
-    public ValoracionResource deleteRating(Integer pubID, String user)  {
+    public ValoracionResource getRating(Integer pubID, String user) {
 
         Usuario usuario = repoUsuario.findByName(user);
 
         if (usuario == null)
             return null;
 
-        Valoracion valor = repoVal.findOne(new IDvaloracion(pubID, usuario.getId()));
+        return converterVal.convert(repoVal.findOne(new IDvaloracion(pubID, usuario.getId())));
+
+    }
+
+    @Override
+    public ValoracionResource deleteRating(RatingForm form) {
+
+        Valoracion valor = repoVal.findOne(new IDvaloracion(form.getPubID(), form.getUserID()));
 
         if (valor != null)
             repoVal.delete(valor);
@@ -172,19 +228,28 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     @Override
-    public ComentarioResource setComment(Integer pubID, String userID, String text) throws IllegalArgumentException {
+    public ComentarioResource setComment( CommentForm form) throws IllegalArgumentException {
 
-        if (text == null || text.length() == 0)
+        if (form.getText() == null || form.getText().length() == 0)
             throw new IllegalArgumentException("Text must be not null");
 
-        Usuario usuario = repoUsuario.findByName(userID);
 
-        if (usuario == null)
-            throw new IllegalArgumentException("That user does not exist.");
-
-        Comentario comment = new Comentario(pubID, usuario.getId(), text);
+        Comentario comment = new Comentario(form.getPubID(), form.getUserID(), form.getText());
         repoComen.save(comment);
         return converterCom.convert(comment);
 
     }
+
+    private Map<String, Object> getCity(Double lat, Double lon) {
+        String latitude = lat.toString().replace(",", ".");
+        String longitude = lon.toString().replace(",", ".");
+
+        String query = String.format(
+                "http://api.positionstack.com/v1/reverse?access_key=%s&query=%s,%s&limit=1",
+                "7d674e3c9eafdf7c3e6027f5a39fe866", latitude, longitude);
+
+        List<Map<String, Object>> data = (List<Map<String, Object>>) restService.getJSON(query).get("data");
+        return data.get(0);
+    }
 }
+

@@ -1,11 +1,19 @@
 package main.persistence.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import javax.naming.NoPermissionException;
+import javax.persistence.*;
+import java.sql.Date;
+import java.util.Calendar;
+import java.util.Collection;
 
 @Entity
+@NoArgsConstructor
+@Data
 public class Publicacion {
 
     @Id
@@ -14,76 +22,43 @@ public class Publicacion {
     private Integer iduser;
     private String text;
     private String image;
-    private String  localization;
+    private String pais;
+    private String  ciudad;
     private  Float media;
     private Integer numerototalval;
+    private Date fecha;
 
-    public Publicacion(String text, Integer idUser, String image, String localization) {
+    public Publicacion(String text, Integer idUser, String image, String pais, String ciudad) {
         this.text = text;
         this.image = image;
         this.iduser = idUser;
-        this.localization = localization;
+        this.pais = pais;
+        this.ciudad = ciudad;
         this.media=0f;
         this.numerototalval=0;
+        this.fecha = new Date(Calendar.getInstance().getTime().getTime());
     }
 
-    public Publicacion(String text, Integer idUser, String localization) {
+    public Publicacion(String text, Integer idUser,String pais, String ciudad) {
         this.text = text;
         this.image = null;
         this.iduser = idUser;
-        this.localization = localization;
+        this.pais = pais;
+        this.ciudad = ciudad;
         this.media=0f;
         this.numerototalval=0;
+        this.fecha = new Date(Calendar.getInstance().getTime().getTime());
     }
 
-    public Publicacion(String image) {
-        this.text = null;
-        this.image = image;
-        this.iduser = null;
-        this.localization = null;
-        this.media=null;
-        this.numerototalval=null;
+    @PreRemove
+    @PreUpdate
+    private void preventUnauthorizedRemove() throws NoPermissionException {
+
+        Integer deleterId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+
+        if (!deleterId.equals(iduser) && !authorities.contains(RoleEnum.ROLE_MOD) && !authorities.contains(RoleEnum.ROLE_ADMIN))
+            throw new NoPermissionException("You're not allowed to do that");
     }
 
-    public Publicacion(){}
-
-    public Integer getId() {
-        return id;
-    }
-
-    public Integer getIduser() {
-        return iduser;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public String getLocalization() {
-        return localization;
-    }
-
-    public Float getMedia() { return media; }
-
-    public Integer getNumerototalval() { return numerototalval; }
-
-    public void setIduser(Integer iduser) {
-        this.iduser = iduser;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public void setLocalization(String localization) {
-        this.localization = localization;
-    }
 }

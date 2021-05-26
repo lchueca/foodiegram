@@ -1,53 +1,38 @@
 package main.persistence.entity;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+
 import javax.persistence.Id;
 
 @Entity
+@Data
+@NoArgsConstructor
 public class Colaborador {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
     private String origin;
     private String type;
-    private String localization;
+    private String pais;
+    private String ciudad;
+    private String calle;
     private Boolean vip;
     private Integer money;
 
-    public Colaborador(String origin, String type, String localization, Boolean vip, Integer money) {
+    public Colaborador(Integer id,String origin, String type, String pais,String ciudad,String calle) {
+        this.id = id;
         this.origin = origin;
         this.type = type;
-        this.localization = localization;
-        this.vip = vip;
-        this.money = money;
+        this.calle=calle;
+        this.ciudad=ciudad;
+        this.pais=pais;
+        vip=false;
+        money=0;
+
     }
 
-    protected Colaborador() {}
 
 
-    public Integer getId() {
-        return id;
-    }
-
-    public String getOrigin() {
-        return origin;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getLocalization() {
-        return localization;
-    }
-
-    public Boolean getVip() {
-        return vip;
-    }
-
-    public Integer getMoney() {
-        return money;
-    }
 }

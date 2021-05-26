@@ -1,10 +1,11 @@
 package main.application.service;
 
-import main.domain.resource.*;
-import org.springframework.web.multipart.MultipartFile;
+import main.domain.resource.PreviewPublicacion;
+import main.domain.resource.UsuarioResource;
+import main.domain.resource.Usuario_baneadoResource;
+import main.domain.resource.ValoracionResource;
+import main.rest.forms.UserForm;
 
-
-import java.io.IOException;
 import java.util.List;
 
 public interface UserService  {
@@ -15,10 +16,7 @@ public interface UserService  {
     // Devuelve una lista con todas las publicaciones (id e imagen) del usuario, o null si el usuario no existe.
     List<PreviewPublicacion> getPosts(String user);
 
-    // Sube una publicacion. Devuelve la propia publicacion si ha habido exito, null si el usuario no existe.
-    // Lanza excepcion si el usuario no existe, o si no se puede guardar la imagen.
-    // Con este vais a tener problemas haciendo pruebas, yo pasaria de él.
-    public PublicacionResource upload(String user, String text, String loc, MultipartFile image) throws IOException, IllegalArgumentException;
+
 
     // Devuelve todoas las valoraciones que ha hecho un usuario (En todas las publicaciones), o null si el usuario no existe.
     List<ValoracionResource> getRatings(String user);
@@ -26,12 +24,22 @@ public interface UserService  {
     // Da de alta un usuario en la BD y le envia un mail de confirmacion.
     // Lanza una excepcion si se le introduce un usuario, contraseña o email no validos.
     // Si se ha podido registrar al usuario, lo devuelve.
-    UsuarioResource register(String user, String passwd, String email) throws IllegalArgumentException;
+    UsuarioResource register(UserForm user) throws IllegalArgumentException;
 
     // Sudad de este.
     UsuarioResource verify(Integer token);
 
-    //Devuelve una lista de MensajeResource con los mensajes que ha enviado el user1ID.
-    List<MensajeResource> getMensajes(String userName);
+    //banea por nombre y una severidad de 1 a 5 siendo 5 50años
+    Usuario_baneadoResource banUser(String user, String severity);
 
+    //desbanea usuario por nombre
+    Usuario_baneadoResource unbanUser(String user);
+
+    //elimina usuario por nombre
+    UsuarioResource deleteUser(String user);
+
+    //devuelve la lista de usuarios baneados
+    List<Usuario_baneadoResource> getBannedUserList();
+
+    UsuarioResource sendWarning(String user,Integer type);
 }

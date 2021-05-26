@@ -6,10 +6,11 @@ import main.persistence.entity.Mensaje;
 import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoMensaje;
 import main.persistence.repository.RepoUsuario;
+import main.rest.forms.MessageForm;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import javax.naming.NoPermissionException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,18 +22,13 @@ public class MensajeServiceImpl implements MensajeService{
 
     @Autowired
     RepoMensaje repoMens;
+
     @Autowired
     RepoUsuario repoUser;
 
 
     @Override
-    public MensajeResource getMensaje(Integer mensID) {
-        return converterMens.convert(repoMens.findOne(mensID));
-    }
-
-
-    @Override
-    public MensajeResource deleteMensaje(Integer mensID) {
+    public MensajeResource deleteMensaje(Integer mensID) throws NoPermissionException {
         Mensaje mens = repoMens.findOne(mensID);
 
         if (mens != null)
@@ -40,22 +36,31 @@ public class MensajeServiceImpl implements MensajeService{
 
         return converterMens.convert(mens);
 
+    }
+
+    @Override
+    public MensajeResource setMensaje(Integer userID, MessageForm mensaje) throws IllegalArgumentException {
+
+        Usuario user2 = repoUser.findByName(mensaje.getReceiver());
+
+        if (user2 == null)
+            throw new IllegalArgumentException("That user does not exist.");
+
+
+        Mensaje mens = new Mensaje(userID, user2.getId(), mensaje.getText());
+        repoMens.save(mens);
+        return converterMens.convert(mens);
 
     }
 
     @Override
-    public MensajeResource setMensaje(String userName1, String userName2, String mensaje) throws IllegalArgumentException {
-
-        Usuario user1 = repoUser.findByName(userName1);
-        Usuario user2 = repoUser.findByName(userName2);
-
-        if (user1 == null || user2 == null)
-            throw new IllegalArgumentException("Both users should exist.");
+    public List<MensajeResource> getMensajes(Integer userID) {
 
 
-        Mensaje mens = new Mensaje(user1.getId(), user2.getId(), mensaje);
-        repoMens.save(mens);
-        return converterMens.convert(mens);
+        Usuario user = repoUser.findOne(userID);
+
+        List<Mensaje> mensajes = repoMens.findByIduser1OrIduser2(user.getId(), user.getId());
+        return mensajes.stream().map(converterMens::convert).collect(Collectors.toList());
 
     }
 
