@@ -21,14 +21,16 @@
   <div class="card bg-light">
     <article class="card-body mx-auto" style="max-width: 800px;">
 
+      <div th:if="${friends.empty}">
+        <p class="text-center">Add Friends!</p>
+      </div>
+
       <table class="table  table-striped">
         <tbody>
 
-          <tr th:if="${friends.empty}">
-            <th scope="col">Add Friends!</th>
+          <tr th:if="${!friends.empty}">
+            <th scope="col">Friends Name</th>
           </tr>
-
-          <tr><th scope="col"><p class="text-center">friends name</p></th></tr>
 
           <tr th:each="name : ${friends}">
             <th scope="col"><p class="card-title mt-3 text-center" th:text="${name}"/></th>
@@ -39,19 +41,18 @@
 
 
 
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" href="#exampleModal" data-whatever="add">add friend</button>
-      <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#exampleModal" href="#exampleModal" data-whatever="remove">remove friend</button>
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" href="#exampleModal" data-bs-whatever="add">add friend</button>
+      <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#exampleModal" href="#exampleModal" data-bs-whatever="remove">remove friend</button>
 
 
       <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
+
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">New message</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
+              <h5 class="modal-title" id="exampleModalLabel">Managing Friends</h5>
             </div>
+
             <div class="modal-body">
               <form th:action="@{/pruebas/postFriends}" th:object="${friendManagement}" method="post">
                 <div class="form-group">
@@ -64,15 +65,29 @@
                 <button type="submit" class="btn btn-primary btn-block"> Confirm </button>
               </form>
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
+
           </div>
         </div>
       </div>
 
+      <script>
+              var exampleModal = document.getElementById('exampleModal')
+      exampleModal.addEventListener('show.bs.modal', function (event) {
+        // Button that triggered the modal
+        var button = event.relatedTarget
+        // Extract info from data-bs-* attributes
+        var recipient = button.getAttribute('data-bs-whatever')
+        // If necessary, you could initiate an AJAX request here
+        // and then do the updating in a callback.
+        //
+        // Update the modal's content.
+        var modalTitle = exampleModal.querySelector('.modal-title')
+        var modalBodyInput = exampleModal.querySelector('.modal-body input')
 
+        modalBodyInput.value = recipient
+      })
 
+      </script>
       </article>
     </div>
   </div>

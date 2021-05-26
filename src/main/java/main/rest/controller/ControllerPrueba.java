@@ -4,6 +4,7 @@ import javafx.util.Pair;
 import main.application.service.PublicationService;
 import main.application.service.UserService;
 import main.application.service.manageAccountService.ManageFriends;
+import main.domain.resource.AmigoResource;
 import main.domain.resource.PreviewPublicacion;
 import main.domain.resource.PublicacionResource;
 import main.domain.resource.UsuarioResource;
@@ -15,10 +16,13 @@ import main.rest.forms.UserForm;
 import main.security.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -117,6 +121,7 @@ public class ControllerPrueba {
 
            Usuario usuario = repoUsuario.findById(getUserByName(user.getUsername()));
            userId = repoUsuario.findByName(user.getUsername()).getId();
+           //Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
            model.addAttribute("postList", getPosts(user.getUsername()));
            return new ModelAndView("userPage");
         }
@@ -214,6 +219,7 @@ public class ControllerPrueba {
 
     @GetMapping("/friends")
     ModelAndView friends(Model model){
+        //Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
         List<String> friends = friendsService.getFriends(userId);
         model.addAttribute("friendManagement", new FriendForm());
         model.addAttribute("friends", friends);
@@ -222,16 +228,22 @@ public class ControllerPrueba {
 
     @PostMapping("/postFriends")
     ModelAndView postFriends(@Valid @ModelAttribute("friendManagement") FriendForm friend ,Model model){
-        if(friend.getType() .equals("add")){
-            model.addAttribute("problem", "adding friend" + friend.getFriendName());
-            return new ModelAndView("problems");
-        }else if(friend.getType().equals("remove")){
-            model.addAttribute("problem", "removing friend" + friend.getFriendName());
+        //Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+        try{
+            if(friend.getType().equals("add")){
+                AmigoResource amigoResource = friendsService.addFriend(userId, friend.getFriendName());
+            }else{
+                AmigoResource amigoResource = friendsService.removeFriend(userId, friend.getFriendName());
+            }
+            List<String> friends = friendsService.getFriends(userId);
+            model.addAttribute("friends", friends);
+            return new ModelAndView("friends");
+        }
+        catch (IllegalArgumentException e){
+            model.addAttribute("problem", e.getMessage());
             return new ModelAndView("problems");
         }
-        List<String> friends = friendsService.getFriends(userId);
-        model.addAttribute("friends", friends);
-        return new ModelAndView("friends");
+
     }
 
     //---------------------------------------SEARCH---------------------------------------//
