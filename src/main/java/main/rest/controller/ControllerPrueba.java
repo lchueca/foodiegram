@@ -122,6 +122,8 @@ public class ControllerPrueba {
            Usuario usuario = repoUsuario.findById(getUserByName(user.getUsername()));
             //Integer userId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
            userId = repoUsuario.findByName(user.getUsername()).getId();
+
+           model.addAttribute("pruebas" , "");
            model.addAttribute("postList", getPosts(user.getUsername()));
            return new ModelAndView("userPage");
         }
@@ -211,7 +213,7 @@ public class ControllerPrueba {
 
     @GetMapping("/manageAccount")
     ModelAndView manageAccount(Model model){
-        model.addAttribute("postSrc", new String());
+        model.addAttribute("postSrc", "");
         return new ModelAndView("manageAccount");
     }
 
@@ -248,9 +250,9 @@ public class ControllerPrueba {
 
     //---------------------------------------SEARCH---------------------------------------//
 
-    @GetMapping("/search")
-    ModelAndView search(Model model){
-        model.addAttribute("search", "search");
+    @PostMapping("/search")
+    ModelAndView search(@Valid @ModelAttribute("pruebas") String prueba, Model model){
+        model.addAttribute("search", "searching : " + prueba);
         return new ModelAndView("search");
     }
 }
