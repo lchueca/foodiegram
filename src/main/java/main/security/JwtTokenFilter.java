@@ -12,6 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -36,9 +37,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         try {
             // Comprueba si se ha dado un token valido. Se lanza una UnsupportedJwtException si no es valido.
-            checkJWTToken(request, response);
-            Claims claims = validateToken(request);
+            Cookie cookie = checkJWTToken(request, response);
+            Claims claims = validateToken(cookie);
             setUpSpringAuthentication(claims);
+
 
             chain.doFilter(request, response);
 
@@ -46,12 +48,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException e) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            ((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
         }
     }
 
-    private Claims validateToken(HttpServletRequest request) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException{
-        String jwtToken = request.getHeader(HttpHeaders.AUTHORIZATION).replace("Bearer", "");
+    private Claims validateToken(Cookie cookie) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException{
+
+        String jwtToken = cookie.getValue();
 
         Claims claims =  Jwts.parser().setSigningKey(SECRET.getBytes()).parseClaimsJws(jwtToken).getBody();
 
@@ -77,11 +80,21 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     }
 
-    private void checkJWTToken(HttpServletRequest request, HttpServletResponse res) throws UnsupportedJwtException {
-        String authenticationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if (authenticationHeader == null || !authenticationHeader.startsWith("Bearer"))
-            throw new UnsupportedJwtException("You must be logged in to access this resource.");
+    private Cookie checkJWTToken(HttpServletRequest request, HttpServletResponse res) throws UnsupportedJwtException {
+
+          Cookie[] cookies= request.getCookies();
+
+          if(cookies==null)
+              throw new UnsupportedJwtException("You must be logged in to access this resource.");
+
+          for(Cookie cookie : cookies)
+              if(cookie.getName().equals("authToken"))
+                  return  cookie;
+
+          throw new UnsupportedJwtException("You must be logged in to access this resource.");
+
+
     }
 
 

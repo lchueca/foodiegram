@@ -120,49 +120,62 @@ public class ControllerUsuario {
             authenticationManager.authenticate(userData);
             // Generamos el token de autentificacion
             String authToken = authTokenGenerator.buildToken(user.getUsername(), 15);
+            Cookie cookieA = new Cookie("authToken",authToken);
+            cookieA.setDomain(domain);
+            cookieA.setHttpOnly(true);
+            cookieA.setMaxAge(900);
+            cookieA.setPath("/");
+            response.addCookie(cookieA);
 
             // Generamos el refresh token
             String refreshToken = refreshTokenGenerator.buildToken(user.getUsername(), 300);
-            Cookie cookie = new Cookie("refreshToken", refreshToken);
-            cookie.setDomain(domain);
-            cookie.setHttpOnly(true);
-            cookie.setMaxAge(18000);
-            cookie.setPath("/users/refresh");
+            Cookie cookieR = new Cookie("refreshToken", refreshToken);
+            cookieR.setDomain(domain);
+            cookieR.setHttpOnly(true);
+            cookieR.setMaxAge(18000);
+            cookieR.setPath("/users/refresh");
 
 
-            response.addCookie(cookie);
 
-            return ResponseEntity.ok(String.format("{\"status\": \"200\", \"token\": \"%s\"}", authToken));
+            response.addCookie(cookieR);
+
+            return ResponseEntity.ok(" {'Status' : '200'} ");
         }
 
         catch (NullPointerException e) {
-            return ResponseEntity.badRequest().body("Invalid form.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(String.format("{'Status' : 400, 'message': '%s' }",e.getMessage()));
         }
 
         catch (BadCredentialsException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong credentials.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{'Status' : 401, 'message': 'Wrong Credentials' }");
         }
 
         catch (DisabledException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is disabled.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{'Status' : 401, 'message': 'User is Disabled' }");
         }
     }
 
     @RequestMapping(value="/refresh", method=RequestMethod.GET)
-    public ResponseEntity<?> refresh(@CookieValue("refreshToken") String refreshToken) {
+    public ResponseEntity<?> refresh(@CookieValue("refreshToken") String refreshToken, HttpServletResponse response) {
 
         try {
             String token = tokenRefresher.refresh(refreshToken);
+            Cookie cookieA = new Cookie("authToken",token);
+            cookieA.setDomain(domain);
+            cookieA.setHttpOnly(true);
+            cookieA.setMaxAge(900);
+            cookieA.setPath("/");
+            response.addCookie(cookieA);
 
-            return ResponseEntity.ok(String.format("{\"status\": \"200\", \"token\": \"%s\"}", token));
+            return ResponseEntity.ok(" {'Status' : '200'} ");
         }
 
         catch (ExpiredJwtException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token has expired.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{'Status' : 401, 'message': 'Token has expired }");
         }
 
         catch (MalformedJwtException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Malformed token.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{'Status' : 401, 'message': 'Malform Token ' }");
         }
 
 
