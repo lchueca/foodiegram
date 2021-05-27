@@ -8,6 +8,6 @@ public class PreviewColabJOINUserConverter implements Converter<ColabJOINUser, P
 
     @Override
     public PreviewColabJOINUser convert(ColabJOINUser source) {
-        return source != null ? new PreviewColabJOINUser(source.getName(), source.getOrigin(), source.getType(), source.getLocalization(), source.getImage()) : null;
+        return source != null ? new PreviewColabJOINUser(source.getName(), source.getOrigin(), source.getType(), source.getPais(),source.getCiudad(), source.getCalle(), source.getImage()) : null;
     }
 }
