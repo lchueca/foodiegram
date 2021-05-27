@@ -1,6 +1,6 @@
 package main.rest.controller;
 
-import javafx.util.Pair;
+
 import main.application.service.PublicationService;
 import main.application.service.UserService;
 import main.application.service.manageAccountService.ManageFriends;
@@ -67,7 +67,7 @@ public class ControllerPrueba {
     private TokenRefresher tokenRefresher;
 
     private Model model;
-    private int userId;
+
 
     //devuelve un id de usuario dado un nombre
     public int getUserByName(String userName) {
@@ -108,21 +108,27 @@ public class ControllerPrueba {
             authenticationManager.authenticate(userData);
             // Generamos el token de autentificacion
             String authToken = authTokenGenerator.buildToken(user.getUsername(), 15);
+            Cookie cookieA = new Cookie("authToken",authToken);
+            cookieA.setDomain(domain);
+            cookieA.setHttpOnly(true);
+            cookieA.setMaxAge(900);
+            cookieA.setPath("/");
+            response.addCookie(cookieA);
 
             // Generamos el refresh token
             String refreshToken = refreshTokenGenerator.buildToken(user.getUsername(), 300);
-            Cookie cookie = new Cookie("refreshToken", refreshToken);
-            cookie.setDomain(domain);
-            cookie.setHttpOnly(true);
-            cookie.setMaxAge(18000);
-            cookie.setPath("/users/refresh");
+            Cookie cookieR = new Cookie("refreshToken", refreshToken);
+            cookieR.setDomain(domain);
+            cookieR.setHttpOnly(true);
+            cookieR.setMaxAge(18000);
+            cookieR.setPath("/users/refresh");
 
 
-            response.addCookie(cookie);
 
-           Usuario usuario = repoUsuario.findById(getUserByName(user.getUsername()));
-            //Integer userId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
-           userId = repoUsuario.findByName(user.getUsername()).getId();
+            response.addCookie(cookieR);
+
+
+
 
            model.addAttribute("search" , new SearchForm());
            model.addAttribute("postList", getPosts(user.getUsername()));
@@ -196,7 +202,8 @@ public class ControllerPrueba {
     ModelAndView postUpload(@Valid @ModelAttribute("newPost") PostForm post,  Model model) {
 
         try {
-            PublicacionResource publi = postService.upload(1, post);
+            Integer userId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+            PublicacionResource publi = postService.upload(userId, post);
             return new ModelAndView("userPage");
 
         } catch (IOException e) {
@@ -222,7 +229,7 @@ public class ControllerPrueba {
 
     @GetMapping("/friends")
     ModelAndView friends(Model model){
-        //Integer userId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+        Integer userId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
         List<String> friends = friendsService.getFriends(userId);
         model.addAttribute("friendManagement", new FriendForm());
         model.addAttribute("friends", friends);
@@ -231,7 +238,8 @@ public class ControllerPrueba {
 
     @PostMapping("/postFriends")
     ModelAndView postFriends(@Valid @ModelAttribute("friendManagement") FriendForm friend ,Model model){
-        //Integer userId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+
+        Integer userId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
         try{
             if(friend.getType().equals("add")){
                 AmigoResource amigoResource = friendsService.addFriend(userId, friend.getFriendName());
