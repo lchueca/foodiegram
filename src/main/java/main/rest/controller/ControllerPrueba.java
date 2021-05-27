@@ -12,6 +12,7 @@ import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoUsuario;
 import main.rest.forms.FriendForm;
 import main.rest.forms.PostForm;
+import main.rest.forms.SearchForm;
 import main.rest.forms.UserForm;
 import main.security.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,7 +124,7 @@ public class ControllerPrueba {
             //Integer userId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
            userId = repoUsuario.findByName(user.getUsername()).getId();
 
-           model.addAttribute("pruebas" , "");
+           model.addAttribute("search" , new SearchForm());
            model.addAttribute("postList", getPosts(user.getUsername()));
            return new ModelAndView("userPage");
         }
@@ -251,8 +252,8 @@ public class ControllerPrueba {
     //---------------------------------------SEARCH---------------------------------------//
 
     @PostMapping("/search")
-    ModelAndView search(@Valid @ModelAttribute("pruebas") String prueba, Model model){
-        model.addAttribute("search", "searching : " + prueba);
+    ModelAndView search(@Valid @ModelAttribute("search") SearchForm search, Model model){
+        model.addAttribute("search", "searching : " + search.getText());
         return new ModelAndView("search");
     }
 }
