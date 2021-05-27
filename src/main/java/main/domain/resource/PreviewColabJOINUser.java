@@ -13,6 +13,8 @@ public class PreviewColabJOINUser {
     private String name;
     private String origin;
     private String type;
-    private String localization;
+    private String pais;
+    private String ciudad;
+    private String calle;
     private String image;
 }

@@ -3,6 +3,7 @@ package main.persistence.repository;
 import main.persistence.entity.Publicacion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,25 +13,29 @@ public interface RepoPublicacion extends JpaRepository<Publicacion, Integer> {
 
      List<Publicacion> findByIduser(Integer id);
 
-     @Query (value="SELECT * FROM publicacion " +
-             "ORDER BY publicacion.media DESC " +
-             "LIMIT 0,50 " +
-             "where publicacion.fecha > date_sub(NOW(), interval ?1 ?2)"
+     @Query (value="SELECT * FROM publicacion "+
+             "where ( ?1 = -1 or publicacion.fecha > date_sub(NOW(), interval ?1 DAY) ) and (IFNULL(publicacion.ciudad, 'xxx') LIKE ?3 and IFNULL(publicacion.pais LIKE ?2, 'xxx'))" +
+             "ORDER BY publicacion.media DESC "+
+             "LIMIT 0,50 "
              ,nativeQuery = true)
-     List<Publicacion> discoverBestRated(Integer quantity, String interval);
+     List<Publicacion> bestRated(Integer amount, String country, String city);
 
      @Query (value="SELECT * FROM publicacion "+
+             "where ( ?1 = -1 or publicacion.fecha > date_sub(NOW(), interval ?1 DAY) ) and (IFNULL(publicacion.ciudad, 'xxx') LIKE ?3 and IFNULL(publicacion.pais LIKE ?2, 'xxx'))" +
              "ORDER BY publicacion.numerototalval DESC "+
-             "LIMIT 0,50 "+
-             "where publicacion.fecha > date_sub(NOW(), interval ?1 ?2)"
+             "LIMIT 0,50 "
+
              ,nativeQuery = true)
-     List<Publicacion> discoverMostRated(Integer quantity, String interval);
+     List<Publicacion> mostRated(Integer amount);
 
      @Query(value="SELECT publicacion.* " +
              "FROM publicacion JOIN amigo ON amigo.iduser2 = publicacion.iduser " +
              "WHERE  amigo.iduser1=?1 "+
              "ORDER BY publicacion.fecha DESC",nativeQuery = true)
-     List<Publicacion> findbyFriend(Integer user1);
+     List<Publicacion> fromFriends(Integer user1);
+
+
+
 
 
 }
