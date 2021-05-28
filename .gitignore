@@ -7,3 +7,4 @@
 target
 images
 src/main/resources/application.properties
+*.p12
