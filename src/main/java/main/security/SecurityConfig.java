@@ -27,6 +27,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${jwt.logout.secret}")
     private String logoutSecret;
 
+    @Value("${domain}")
+    private String domain;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
          http.cors().and().csrf().disable();
@@ -45,6 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/**").hasRole("ADMIN");
 
         http.addFilterAfter(new JwtTokenFilter(repoTokens, authSecret, logoutSecret), UsernamePasswordAuthenticationFilter.class);
+
 
     }
 

@@ -44,9 +44,6 @@ public class ControllerPrueba {
     private PublicationService postService;
 
     @Autowired
-    RepoUsuario repoUsuario;
-
-    @Autowired
     private UserService service;
 
     @Autowired
@@ -131,13 +128,13 @@ public class ControllerPrueba {
 
             response.addCookie(cookieR);
 
-            String logoutToken = logoutTokenGenerator.getToken(user.getUsername());
+            String loginToken = logoutTokenGenerator.getToken(user.getUsername());
 
-            Cookie logoutCookie = new Cookie("loggedOut", logoutToken);
-            logoutCookie.setDomain(domain);
-            logoutCookie.setPath("/");
+            Cookie loggedInCookie = new Cookie("loggedIn", loginToken);
+            loggedInCookie.setDomain(domain);
+            loggedInCookie.setPath("/");
 
-            response.addCookie(logoutCookie);
+            response.addCookie(loggedInCookie);
 
             // Se redirige al usuario a su pagina personal
             response.setHeader("Location", "https://" + domain + ":8080/pruebas/me");
@@ -224,7 +221,6 @@ public class ControllerPrueba {
     ModelAndView personalPage(Model model){
 
         Integer userId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
-        Usuario user = repoUsuario.findOne(userId);
         model.addAttribute("search" , new SearchForm());
         model.addAttribute("postList", getPosts(userId));
         return new ModelAndView("userPage");
