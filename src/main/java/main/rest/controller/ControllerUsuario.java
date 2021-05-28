@@ -8,6 +8,7 @@ import main.domain.resource.PreviewPublicacion;
 import main.domain.resource.UsuarioResource;
 import main.domain.resource.ValoracionResource;
 import main.security.AuthTokenGenerator;
+import main.security.LogoutTokenGenerator;
 import main.security.RefreshTokenGenerator;
 import main.security.TokenRefresher;
 import main.rest.forms.UserForm;
@@ -43,6 +44,9 @@ public class ControllerUsuario {
 
     @Autowired
     private RefreshTokenGenerator refreshTokenGenerator;
+
+    @Autowired
+    private LogoutTokenGenerator logoutTokenGenerator;
 
     @Autowired
     private TokenRefresher tokenRefresher;
@@ -125,6 +129,7 @@ public class ControllerUsuario {
             cookieA.setHttpOnly(true);
             cookieA.setMaxAge(900);
             cookieA.setPath("/");
+
             response.addCookie(cookieA);
 
             // Generamos el refresh token
@@ -135,9 +140,17 @@ public class ControllerUsuario {
             cookieR.setMaxAge(18000);
             cookieR.setPath("/users/refresh");
 
-
-
             response.addCookie(cookieR);
+
+
+            String logoutToken = logoutTokenGenerator.getToken(user.getUsername());
+
+            Cookie logoutCookie = new Cookie("loggedOut", logoutToken);
+            cookieR.setDomain(domain);
+
+            response.addCookie(logoutCookie);
+
+
 
             return ResponseEntity.ok(" {'Status' : '200'} ");
         }

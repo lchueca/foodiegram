@@ -22,7 +22,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     RepoJwtoken repoTokens;
 
     @Value("${jwt.auth.secret}")
-    private String secretKey;
+    private String authSecret;
+
+    @Value("${jwt.logout.secret}")
+    private String logoutSecret;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -41,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/mod/**").hasAnyRole("ADMIN", "MOD")
                 .antMatchers("/admin/**").hasRole("ADMIN");
 
-        http.addFilterAfter(new JwtTokenFilter(repoTokens, secretKey), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAfter(new JwtTokenFilter(repoTokens, authSecret, logoutSecret), UsernamePasswordAuthenticationFilter.class);
 
     }
 
