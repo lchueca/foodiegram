@@ -143,13 +143,13 @@ public class ControllerUsuario {
             response.addCookie(cookieR);
 
 
-            String logoutToken = logoutTokenGenerator.getToken(user.getUsername());
+            String loginToken = logoutTokenGenerator.getToken(user.getUsername());
 
-            Cookie logoutCookie = new Cookie("loggedOut", logoutToken);
-            logoutCookie.setDomain(domain);
-            logoutCookie.setPath("/");
+            Cookie loggedInCookie = new Cookie("loggedIn", loginToken);
+            loggedInCookie.setDomain(domain);
+            loggedInCookie.setPath("/");
 
-            response.addCookie(logoutCookie);
+            response.addCookie(loggedInCookie);
 
 
 

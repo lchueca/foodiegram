@@ -2,6 +2,7 @@ package main.persistence.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import main.security.ForbiddenException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -34,7 +35,7 @@ public class Mensaje {
         Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
 
         if (!deleterId.equals(iduser1) && !authorities.contains(RoleEnum.ROLE_MOD) && !authorities.contains(RoleEnum.ROLE_ADMIN))
-            throw new NoPermissionException("You're not allowed to do that");
+            throw new ForbiddenException("You're not allowed to do that");
     }
 
 }
