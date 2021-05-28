@@ -54,7 +54,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // Controller usuario
                 .antMatchers("/users/**")
-                .antMatchers("/pruebas/**")
+                .antMatchers("/pruebas")
+                .antMatchers("/pruebas/postLogin")
+                .antMatchers("/pruebas/problems")
                 .antMatchers("/register")
                 // Controller publicacion
                 .regexMatchers(HttpMethod.GET, "\\/posts\\/\\w+$")

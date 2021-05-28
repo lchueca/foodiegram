@@ -62,7 +62,7 @@ public class ControllerUsuario {
     @RequestMapping(value = "/{user}/{pubID}", method = RequestMethod.GET)
     public void redirectToPost(HttpServletResponse httpServletResponse, @PathVariable Integer pubID) {
 
-        httpServletResponse.setHeader("Location", "http://" + domain + "/posts/" + pubID);
+        httpServletResponse.setHeader("Location", "https://" + domain + ":8080/posts/" + pubID);
         httpServletResponse.setStatus(302);
     }
 
@@ -146,7 +146,8 @@ public class ControllerUsuario {
             String logoutToken = logoutTokenGenerator.getToken(user.getUsername());
 
             Cookie logoutCookie = new Cookie("loggedOut", logoutToken);
-            cookieR.setDomain(domain);
+            logoutCookie.setDomain(domain);
+            logoutCookie.setPath("/");
 
             response.addCookie(logoutCookie);
 

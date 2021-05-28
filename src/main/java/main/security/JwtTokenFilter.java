@@ -68,7 +68,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private void checkLogoutCookie(Cookie cookie) throws UnsupportedJwtException, MalformedJwtException {
 
         String jwToken = cookie.getValue();
-        Jwts.parser().setSigningKey(authSecret.getBytes()).parseClaimsJws(jwToken).getBody();
+        Jwts.parser().setSigningKey(logoutSecret.getBytes()).parseClaimsJws(jwToken).getBody();
 
     }
 
