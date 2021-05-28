@@ -36,20 +36,21 @@ public class ManageFriendsImpl implements ManageFriends{
     RepoPublicacion repoPost;
 
     @Override
-    public AmigoResource addFriend(Integer id, String name) {
+    public AmigoResource addFriend(Integer id, String name)throws IllegalArgumentException {
 
         Usuario user  = repoUser.findByName(name);
 
         if(user == null || user.getId() == id) //comprobamos que el usuario existe
-            return null;
+            throw new IllegalArgumentException("There is not a user with name: " + name);
         else{
             List<String> friends = getFriends(id);
             if(!friends.contains(name)){
                 Amigo friend = new Amigo(id, user.getId());
                 repoAmigo.save(friend);
                 return friendConverter.convert(friend);
+            }else{
+                throw new IllegalArgumentException("You are already friends");
             }
-            return null;
         }
     }
 
@@ -58,7 +59,7 @@ public class ManageFriendsImpl implements ManageFriends{
         Usuario user = repoUser.findByName(name);
 
         if(user == null)//comprobamos que el usuario existe
-            throw new IllegalArgumentException("The is not a user with name: " + name);
+            throw new IllegalArgumentException("There is not a user with name: " + name);
         else{
             Amigo friend1 = repoAmigo.findOne(new IDamigo(id, user.getId())); //comprobamos que son amigos
             Amigo friend2 = repoAmigo.findOne(new IDamigo(user.getId(), id));

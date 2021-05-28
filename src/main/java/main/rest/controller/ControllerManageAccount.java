@@ -39,20 +39,31 @@ public class ControllerManageAccount {
 
     //añade un amigo pasando un id de la persona que añade amigo y el nombre de la persona que quiere añadir
     @RequestMapping(method = RequestMethod.PUT)
-    public ResponseEntity<?> add(@RequestPart(value = "name", required = true) String name){
+    public ResponseEntity<?> add(@RequestPart(value = "name", required = true) String name)throws IllegalArgumentException{
+        try{
+            Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+            AmigoResource friend = manageFriends.addFriend(userID, name);
+            return friend != null ? ResponseEntity.ok(friend) : ResponseEntity.notFound().build();
+        }
 
-        Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
-        AmigoResource friend = manageFriends.addFriend(userID, name);
-        return friend != null ? ResponseEntity.ok(friend) : ResponseEntity.notFound().build();
+        catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
     }
 
     //elimina un amigo pasando un id de la persona que elimina amigo y el nombre de la persona que quiere eliminar
     @RequestMapping(method = RequestMethod.DELETE)
-    public ResponseEntity<?> remove(@RequestPart(value = "name", required = true) String name){
+    public ResponseEntity<?> remove(@RequestPart(value = "name", required = true) String name)throws IllegalArgumentException{
+        try{
+            Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+            AmigoResource friend = manageFriends.removeFriend(userID, name);
+            return friend != null ? ResponseEntity.ok(friend) : ResponseEntity.notFound().build();
+        }
+        catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
 
-        Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
-        AmigoResource friend = manageFriends.removeFriend(userID, name);
-        return friend != null ? ResponseEntity.ok(friend) : ResponseEntity.notFound().build();
     }
 
     //permite ver las imagenes del usuario con nombre name si el amigo del usuario con id

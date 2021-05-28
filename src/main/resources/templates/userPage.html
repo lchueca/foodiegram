@@ -18,7 +18,7 @@
         <script>
             function deleteCookies() {
                 console.log("asd")
-               document.cookie = "loggedOut"" +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+                document.cookie = "loggedOut=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";;
             }
 
 
@@ -42,11 +42,14 @@
             <ul class="navbar-nav ml-auto">
 
                 <li class="nav-item">
-                    <a class="nav-link text-white" th:href="@{/pruebas/search}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-search" style="font-size: 2rem; color: white;" viewBox="0 0 16 16">
-                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                        </svg>
-                    </a>
+                    <form class="d-flex" th:action="@{/pruebas/search}" th:object="${search}" method="post">
+                        <input class="form-control me-2" type="text" th:field="*{text}" placeholder="Search" aria-label="Search"/>
+                        <button class="btn btn-outline-success" type="submit">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-search" style="font-size: 2rem; color: white;" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                            </svg>
+                        </button>
+                    </form>
                 </li>
 
                 <li class="nav-item">
@@ -86,17 +89,19 @@
 
 <!-- Page Content -->
 <div class="container">
-    <table>
+
+    <div th:if="${postList.empty}">
+        <p class="text-center"> Upload Posts! </p>
+    </div>
+
+    <table class="table  table-striped">
         <tbody>
-        <tr th:if="${postList.empty}">
-            <td colspan="2"> Upload Posts! </td>
-        </tr>
-        <tr th:each="image : ${postList}">
-            <img class="image-responsive" src="${image}" alt="AN ERROR TOOK PLACE LOADING THE PHOTO"/>
-        </tr>
+            <tr th:each="image : ${postList}">
+                <img class="image-responsive" th:src="${image}" alt="AN ERROR TOOK PLACE LOADING THE PHOTO" style="width:700px;height:600px;"/>
+                <p></p>
+            </tr>
         </tbody>
     </table>
-    <img class="image-responsive" src="https://static.guiainfantil.com/media/9611/c/como-decorar-la-comida-de-los-ninos-lg.jpg" alt="AN ERROR TOOK PLACE LOADING THE PHOTO"/>
 </div>
 </body>
 </html>

@@ -1,22 +1,30 @@
 package main.rest.controller;
 
+
 import main.application.service.PublicationService;
 import main.application.service.UserService;
 import main.application.service.manageAccountService.ManageFriends;
+import main.application.service.manageAccountService.ViewImages;
+import main.domain.resource.AmigoResource;
 import main.domain.resource.PreviewPublicacion;
 import main.domain.resource.PublicacionResource;
 import main.domain.resource.UsuarioResource;
 import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoUsuario;
+import main.rest.forms.FriendForm;
 import main.rest.forms.PostForm;
+import main.rest.forms.SearchForm;
 import main.rest.forms.UserForm;
 import main.security.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -57,10 +65,13 @@ public class ControllerPrueba {
     private RefreshTokenGenerator refreshTokenGenerator;
 
     @Autowired
-    private TokenRefresher tokenRefresher;
+    private ViewImages viewImages;
+
+    @Autowired
+    private LogoutTokenGenerator logoutTokenGenerator;
 
     private Model model;
-    private int userId;
+
 
     //devuelve un id de usuario dado un nombre
     public int getUserByName(String userName) {
@@ -70,9 +81,9 @@ public class ControllerPrueba {
     }
 
     //Devuelve la lista de publicaciones de un usuario dado su nombre
-    public List<String> getPosts(String user) {
+    public List<String> getPosts(Integer user) {
 
-        List<PreviewPublicacion> publicaciones = service.getPosts(user);
+        List<PreviewPublicacion> publicaciones = viewImages.viewPost(user);
         List<String> listPosts = new ArrayList<>();
         for(PreviewPublicacion p : publicaciones){
             listPosts.add(p.getImage());
@@ -94,48 +105,88 @@ public class ControllerPrueba {
     }
 
     @PostMapping("/postLogin")
-    public ModelAndView login(@Valid @ModelAttribute("userLog") UserForm user, HttpServletResponse response, Model model) {
+    public void login(@Valid @ModelAttribute("userLog") UserForm user, HttpServletResponse response, Model model) {
 
         try {
             UsernamePasswordAuthenticationToken userData = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
             authenticationManager.authenticate(userData);
             // Generamos el token de autentificacion
             String authToken = authTokenGenerator.buildToken(user.getUsername(), 15);
+            Cookie cookieA = new Cookie("authToken",authToken);
+            cookieA.setDomain(domain);
+            cookieA.setHttpOnly(true);
+            cookieA.setMaxAge(900);
+            cookieA.setPath("/");
+            response.addCookie(cookieA);
 
             // Generamos el refresh token
             String refreshToken = refreshTokenGenerator.buildToken(user.getUsername(), 300);
-            Cookie cookie = new Cookie("refreshToken", refreshToken);
-            cookie.setDomain(domain);
-            cookie.setHttpOnly(true);
-            cookie.setMaxAge(18000);
-            cookie.setPath("/users/refresh");
+            Cookie cookieR = new Cookie("refreshToken", refreshToken);
+            cookieR.setDomain(domain);
+            cookieR.setHttpOnly(true);
+            cookieR.setMaxAge(18000);
+            cookieR.setPath("/users/refresh");
 
 
-            response.addCookie(cookie);
 
-           Usuario usuario = repoUsuario.findById(getUserByName(user.getUsername()));
-           userId = repoUsuario.findByName(user.getUsername()).getId();
-           model.addAttribute("postList", getPosts(user.getUsername()));
-           return new ModelAndView("userPage");
+            response.addCookie(cookieR);
+
+            String logoutToken = logoutTokenGenerator.getToken(user.getUsername());
+
+            Cookie logoutCookie = new Cookie("loggedOut", logoutToken);
+            logoutCookie.setDomain(domain);
+            logoutCookie.setPath("/");
+
+            response.addCookie(logoutCookie);
+
+            // Se redirige al usuario a su pagina personal
+            response.setHeader("Location", "https://" + domain + ":8080/pruebas/me");
+            response.setStatus(302);
+
         }
 
         catch (NullPointerException e) {
-            model.addAttribute("problem", "Invalid form.");
-            return new ModelAndView("problems");
+            response.setHeader("Location", "https://" + domain + ":8080/pruebas/problems/1");
+            response.setStatus(302);
         }
 
         catch (BadCredentialsException ex) {
-            model.addAttribute("problem", "Wrong credentials.");
-            return new ModelAndView("problems");
+            response.setHeader("Location", "https://" + domain + ":8080/pruebas/problems/2");
+            response.setStatus(302);
         }
 
         catch (DisabledException e) {
-            model.addAttribute("problem", "User is disabled. Confirm your account firs");
-            return new ModelAndView("problems");
+            response.setHeader("Location", "https://" + domain + ":8080/pruebas/problems/3");
+            response.setStatus(302);
         }
     }
 
    //---------------------------------------REGISTER---------------------------------------//
+
+    @GetMapping("/problems/{type}")
+    ModelAndView problema(Model model, @PathVariable Integer type) {
+
+        switch(type) {
+
+            case 1: {
+                model.addAttribute("problem", "Invalid form.");
+                break;
+            }
+
+            case 2: {
+                model.addAttribute("problem", "Wrong credentials.");
+                break;
+            }
+
+            case 3: {
+                model.addAttribute("problem", "User is disabled. Confirm your account first.");
+                break;
+            }
+        }
+
+
+        return new ModelAndView("problems");
+    }
 
     @GetMapping("/register")
     ModelAndView register(Model model){
@@ -169,9 +220,14 @@ public class ControllerPrueba {
 
     //---------------------------------------PERSONAL PAGE---------------------------------------//
 
-    @GetMapping("/personalpage")
+    @GetMapping("/me")
     ModelAndView personalPage(Model model){
-       return new ModelAndView("userPage");
+
+        Integer userId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+        Usuario user = repoUsuario.findOne(userId);
+        model.addAttribute("search" , new SearchForm());
+        model.addAttribute("postList", getPosts(userId));
+        return new ModelAndView("userPage");
     }
 
     //---------------------------------------UPLOAD POST---------------------------------------//
@@ -186,7 +242,8 @@ public class ControllerPrueba {
     ModelAndView postUpload(@Valid @ModelAttribute("newPost") PostForm post,  Model model) {
 
         try {
-            PublicacionResource publi = postService.upload(1, post);
+            Integer userId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+            PublicacionResource publi = postService.upload(userId, post);
             return new ModelAndView("userPage");
 
         } catch (IOException e) {
@@ -204,7 +261,7 @@ public class ControllerPrueba {
 
     @GetMapping("/manageAccount")
     ModelAndView manageAccount(Model model){
-        model.addAttribute("postSrc", new String());
+        model.addAttribute("postSrc", "");
         return new ModelAndView("manageAccount");
     }
 
@@ -212,16 +269,39 @@ public class ControllerPrueba {
 
     @GetMapping("/friends")
     ModelAndView friends(Model model){
+        Integer userId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
         List<String> friends = friendsService.getFriends(userId);
+        model.addAttribute("friendManagement", new FriendForm());
         model.addAttribute("friends", friends);
         return new ModelAndView("friends");
     }
 
+    @PostMapping("/postFriends")
+    ModelAndView postFriends(@Valid @ModelAttribute("friendManagement") FriendForm friend ,Model model){
+
+        Integer userId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+        try{
+            if(friend.getType().equals("add")){
+                AmigoResource amigoResource = friendsService.addFriend(userId, friend.getFriendName());
+            }else{
+                AmigoResource amigoResource = friendsService.removeFriend(userId, friend.getFriendName());
+            }
+            List<String> friends = friendsService.getFriends(userId);
+            model.addAttribute("friends", friends);
+            return new ModelAndView("friends");
+        }
+        catch (IllegalArgumentException e){
+            model.addAttribute("problem", e.getMessage());
+            return new ModelAndView("problems");
+        }
+
+    }
+
     //---------------------------------------SEARCH---------------------------------------//
 
-    @GetMapping("/search")
-    ModelAndView search(Model model){
-        model.addAttribute("search", "search");
+    @PostMapping("/search")
+    ModelAndView search(@Valid @ModelAttribute("search") SearchForm search, Model model){
+        model.addAttribute("search", "searching : " + search.getText());
         return new ModelAndView("search");
     }
 }
