@@ -90,8 +90,6 @@ public class ManageFriendsImpl implements ManageFriends{
             for(Amigo friend : friends){
                 if(user.getId() == friend.getIduser1()){
                     friendsName.add(repoUser.findById(friend.getIduser2()).getName());
-                }else{
-                    friendsName.add(repoUser.findById(friend.getIduser1()).getName());
                 }
 
             }

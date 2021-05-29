@@ -110,7 +110,6 @@ public class ControllerPrueba {
             // Generamos el token de autentificacion
             String authToken = authTokenGenerator.buildToken(user.getUsername(), 15);
             Cookie cookieA = new Cookie("authToken",authToken);
-            cookieA.setDomain(domain);
             cookieA.setHttpOnly(true);
             cookieA.setMaxAge(900);
             cookieA.setPath("/");
@@ -119,7 +118,6 @@ public class ControllerPrueba {
             // Generamos el refresh token
             String refreshToken = refreshTokenGenerator.buildToken(user.getUsername(), 300);
             Cookie cookieR = new Cookie("refreshToken", refreshToken);
-            cookieR.setDomain(domain);
             cookieR.setHttpOnly(true);
             cookieR.setMaxAge(18000);
             cookieR.setPath("/users/refresh");
@@ -131,7 +129,6 @@ public class ControllerPrueba {
             String loginToken = logoutTokenGenerator.getToken(user.getUsername());
 
             Cookie loggedInCookie = new Cookie("loggedIn", loginToken);
-            loggedInCookie.setDomain(domain);
             loggedInCookie.setPath("/");
 
             response.addCookie(loggedInCookie);
