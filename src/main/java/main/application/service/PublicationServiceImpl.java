@@ -112,7 +112,7 @@ PublicationServiceImpl implements PublicationService {
         String city = null;
 
         if (form.getLatitud() != null && form.getLongitud() != null) {
-            Map<String, Object> geoData = getCity(form.getLatitud() , form.getLongitud());
+            Map<String, Object> geoData = restService.getGeoData(form.getLatitud(), form.getLongitud());
             try {
                 country = geoData.get("country").toString();
                 city = geoData.get("locality").toString();
@@ -240,16 +240,5 @@ PublicationServiceImpl implements PublicationService {
 
     }
 
-    private Map<String, Object> getCity(Double lat, Double lon) {
-        String latitude = lat.toString().replace(",", ".");
-        String longitude = lon.toString().replace(",", ".");
-
-        String query = String.format(
-                "http://api.positionstack.com/v1/reverse?access_key=%s&query=%s,%s&limit=1",
-                "7d674e3c9eafdf7c3e6027f5a39fe866", latitude, longitude);
-
-        List<Map<String, Object>> data = (List<Map<String, Object>>) restService.getJSON(query).get("data");
-        return data.get(0);
-    }
 }
 
