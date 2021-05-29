@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 @org.springframework.web.bind.annotation.RestController
@@ -60,10 +61,8 @@ public class ControllerUsuario {
 
     // Si buscas /users/user/postID se te redirige a /posts/postID
     @RequestMapping(value = "/{user}/{pubID}", method = RequestMethod.GET)
-    public void redirectToPost(HttpServletResponse httpServletResponse, @PathVariable Integer pubID) {
-
-        httpServletResponse.setHeader("Location", "https://" + domain + ":8080/posts/" + pubID);
-        httpServletResponse.setStatus(302);
+    public void redirectToPost(HttpServletResponse response, @PathVariable Integer pubID) throws IOException {
+        response.sendRedirect("/posts/" + pubID);
     }
 
     // Devuelve una lista con todas las IDs de las publicaciones del usuario y las imagenes correspondientes.
