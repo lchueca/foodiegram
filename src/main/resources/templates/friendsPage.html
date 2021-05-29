@@ -17,8 +17,10 @@
   <section class="py-5 text-center container">
     <div class="row py-lg-5">
       <div class="col-lg-6 col-md-8 mx-auto">
-        <img class="image-responsive img-circle" th:src="${profilePic}" alt="AN ERROR TOOK PLACE LOADING THE PHOTO" style="width:700px;height:600px;"/>
-        <h1 class="fw-light" th:text="${userName}"/>
+          <div  th:if="${!#strings.isEmpty(profilePic)}">
+              <img class="image-responsive img-circle" th:src="${profilePic}" alt="" style="width:700px;height:600px;"/>
+          </div>
+        <h1 class="fw-light text-align" th:text="${userName}"/>
       </div>
     </div>
   </section>
