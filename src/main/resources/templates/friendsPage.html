@@ -42,9 +42,10 @@
 
             <div>
               <div class="card-body" th:each="image : ${postList}">
-                <div class="card shadow-sm">
-                  <img class="image-responsive" th:src="${image}" alt="AN ERROR TOOK PLACE LOADING THE PHOTO" style="width:700px;height:600px;"/>
-                  <p class="card-text">Pie de foto</p>
+                <div class="card shadow-sm text-align" style="width:700px;height:700px;">
+                    <img class="image-responsive" th:src="${image.image}" alt="AN ERROR TOOK PLACE LOADING THE PHOTO" style="width:700px;height:600px;"/>
+                    <h5 th:text="${image.text}"/>
+                    Average Rating :  <p th:text="${image.media}"/>
                 </div>
               </div>
             </div>

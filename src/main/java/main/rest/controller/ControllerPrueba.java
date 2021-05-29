@@ -5,10 +5,12 @@ import main.application.service.PublicationService;
 import main.application.service.UserService;
 import main.application.service.manageAccountService.ManageFriends;
 import main.application.service.manageAccountService.ViewImages;
+import main.domain.converter.PublicacionConverter;
 import main.domain.resource.AmigoResource;
 import main.domain.resource.PreviewPublicacion;
 import main.domain.resource.PublicacionResource;
 import main.domain.resource.UsuarioResource;
+import main.persistence.repository.RepoPublicacion;
 import main.rest.forms.FriendForm;
 import main.rest.forms.PostForm;
 import main.rest.forms.SearchForm;
@@ -61,9 +63,13 @@ public class ControllerPrueba {
     private ViewImages viewImages;
 
     @Autowired
+    private RepoPublicacion repoPubli;
+
+    @Autowired
     private LogoutTokenGenerator logoutTokenGenerator;
 
     private Model model;
+    private final PublicacionConverter converterPubli = new PublicacionConverter();
 
 
     //devuelve un id de usuario dado un nombre
@@ -74,12 +80,12 @@ public class ControllerPrueba {
     }
 
     //Devuelve la lista de publicaciones de un usuario dado su id
-    public List<String> getPosts(Integer user) {
+    public List<PublicacionResource> getPosts(Integer user) {
 
         List<PreviewPublicacion> publicaciones = viewImages.viewPost(user);
-        List<String> listPosts = new ArrayList<>();
+        List<PublicacionResource> listPosts = new ArrayList<>();
         for(PreviewPublicacion p : publicaciones){
-            listPosts.add(p.getImage());
+            listPosts.add(converterPubli.convert(repoPubli.findOne(p.getId())));
         }
 
         return listPosts;
