@@ -19,8 +19,6 @@
             function deleteCookies() {
                 document.cookie = "loggedIn=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";;
             }
-
-
         </script>
 
         <a onclick="deleteCookies()" class="navbar-brand text-white" th:href="@{/pruebas}">
@@ -93,14 +91,15 @@
         <p class="text-center"> Upload Posts! </p>
     </div>
 
-    <table class="table  table-striped">
-        <tbody>
-            <tr th:each="image : ${postList}">
-                <img class="image-responsive" th:src="${image}" alt="AN ERROR TOOK PLACE LOADING THE PHOTO" style="width:700px;height:600px;"/>
-                <p></p>
-            </tr>
-        </tbody>
-    </table>
+    <div>
+        <div class="card-body" th:each="image : ${postList}">
+            <div class="card shadow-sm" style="width:700px;height:700px;">
+                <img class="image-responsive" th:src="${image.image}" alt="AN ERROR TOOK PLACE LOADING THE PHOTO" style="width:700px;height:600px;"/>
+                <h5 th:text="${image.text}"/>
+                Average Rating <p class="card-text" th:text="${image.media}"/>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>
