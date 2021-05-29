@@ -102,7 +102,7 @@ public class ControllerPrueba {
     }
 
     @PostMapping("/postLogin")
-    public void login(@Valid @ModelAttribute("userLog") UserForm user, HttpServletResponse response, Model model) {
+    public void login(@Valid @ModelAttribute("userLog") UserForm user, HttpServletResponse response, Model model) throws IOException {
 
         try {
             UsernamePasswordAuthenticationToken userData = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
@@ -137,24 +137,19 @@ public class ControllerPrueba {
             response.addCookie(loggedInCookie);
 
             // Se redirige al usuario a su pagina personal
-            response.setHeader("Location", "https://" + domain + ":8080/pruebas/me");
-            response.setStatus(302);
-
+            response.sendRedirect("/pruebas/me");
         }
 
         catch (NullPointerException e) {
-            response.setHeader("Location", "https://" + domain + ":8080/pruebas/problems/1");
-            response.setStatus(302);
+            response.sendRedirect("/pruebas/problems/1");
         }
 
         catch (BadCredentialsException ex) {
-            response.setHeader("Location", "https://" + domain + ":8080/pruebas/problems/2");
-            response.setStatus(302);
+            response.sendRedirect("/pruebas/problems/2");
         }
 
         catch (DisabledException e) {
-            response.setHeader("Location", "https://" + domain + ":8080/pruebas/problems/3");
-            response.setStatus(302);
+            response.sendRedirect("/pruebas/problems/3");
         }
     }
 
