@@ -8,6 +8,7 @@ import main.domain.resource.PreviewPublicacion;
 import main.domain.resource.UsuarioResource;
 import main.domain.resource.ValoracionResource;
 import main.security.AuthTokenGenerator;
+import main.security.LogoutTokenGenerator;
 import main.security.RefreshTokenGenerator;
 import main.security.TokenRefresher;
 import main.rest.forms.UserForm;
@@ -45,6 +46,9 @@ public class ControllerUsuario {
     private RefreshTokenGenerator refreshTokenGenerator;
 
     @Autowired
+    private LogoutTokenGenerator logoutTokenGenerator;
+
+    @Autowired
     private TokenRefresher tokenRefresher;
 
     @RequestMapping(value = "/{user}", method = RequestMethod.GET)
@@ -58,7 +62,7 @@ public class ControllerUsuario {
     @RequestMapping(value = "/{user}/{pubID}", method = RequestMethod.GET)
     public void redirectToPost(HttpServletResponse httpServletResponse, @PathVariable Integer pubID) {
 
-        httpServletResponse.setHeader("Location", "http://" + domain + "/posts/" + pubID);
+        httpServletResponse.setHeader("Location", "https://" + domain + ":8080/posts/" + pubID);
         httpServletResponse.setStatus(302);
     }
 
@@ -125,6 +129,7 @@ public class ControllerUsuario {
             cookieA.setHttpOnly(true);
             cookieA.setMaxAge(900);
             cookieA.setPath("/");
+
             response.addCookie(cookieA);
 
             // Generamos el refresh token
@@ -135,9 +140,18 @@ public class ControllerUsuario {
             cookieR.setMaxAge(18000);
             cookieR.setPath("/users/refresh");
 
-
-
             response.addCookie(cookieR);
+
+
+            String loginToken = logoutTokenGenerator.getToken(user.getUsername());
+
+            Cookie loggedInCookie = new Cookie("loggedIn", loginToken);
+            loggedInCookie.setDomain(domain);
+            loggedInCookie.setPath("/");
+
+            response.addCookie(loggedInCookie);
+
+
 
             return ResponseEntity.ok(" {'Status' : '200'} ");
         }

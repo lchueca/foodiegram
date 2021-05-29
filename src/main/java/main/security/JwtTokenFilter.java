@@ -1,11 +1,12 @@
 package main.security;
 
 
+import eu.bitwalker.useragentutils.BrowserType;
+import eu.bitwalker.useragentutils.UserAgent;
 import io.jsonwebtoken.*;
 import main.persistence.entity.Jwtoken;
 import main.persistence.entity.RoleEnum;
 import main.persistence.repository.RepoJwtoken;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -17,51 +18,90 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 
 public class JwtTokenFilter extends OncePerRequestFilter {
 
-    private final String SECRET;
+    private final String authSecret;
+    private final String logoutSecret;
 
     private RepoJwtoken repoTokens;
 
-    public JwtTokenFilter(RepoJwtoken repoToken, String secret) {
+    public JwtTokenFilter(RepoJwtoken repoToken, String authSecret, String logoutSecret) {
         this.repoTokens = repoToken;
-        this.SECRET = secret;
+        this.authSecret = authSecret;
+        this.logoutSecret = logoutSecret;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
 
 
+
         try {
             // Comprueba si se ha dado un token valido. Se lanza una UnsupportedJwtException si no es valido.
-            Cookie cookie = checkJWTToken(request, response);
-            Claims claims = validateToken(cookie);
-            setUpSpringAuthentication(claims);
 
+            Cookie logoutCookie = getCookie(request, "loggedIn");
+            if (logoutCookie == null) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                throw new MalformedJwtException("You need to log in to access this resource");
+            }
+
+
+            Claims claims1 = checkLogoutCookie(logoutCookie);
+
+
+            Cookie authCookie = getCookie(request, "authToken");
+
+            if (authCookie == null)
+                throw new MalformedJwtException("You need to log in to access this resource");
+
+            Claims claims2 = validateAuthToken(authCookie);
+            setUpSpringAuthentication(claims2);
+
+            if (!claims1.getSubject().equals(claims2.getSubject()))
+                throw new UnsupportedJwtException("Incompatible tokens.");
 
             chain.doFilter(request, response);
 
 
 
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException e) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+
+            UserAgent agent = UserAgent.parseUserAgentString(request.getHeader("user-agent"));
+            BrowserType type = agent.getBrowser().getBrowserType();
+
+            if (type == BrowserType.WEB_BROWSER || type == BrowserType.MOBILE_BROWSER || type == BrowserType.APP) {
+                response.sendRedirect("/pruebas");
+            }
+
+            else {
+                response.setStatus(401);
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+            }
+
         }
     }
 
-    private Claims validateToken(Cookie cookie) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException{
+    private Claims checkLogoutCookie(Cookie cookie) throws UnsupportedJwtException, MalformedJwtException {
+
+        String jwToken = cookie.getValue();
+        return Jwts.parser().setSigningKey(logoutSecret.getBytes()).parseClaimsJws(jwToken).getBody();
+
+    }
+
+    private Claims validateAuthToken(Cookie cookie) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException {
 
         String jwtToken = cookie.getValue();
 
-        Claims claims =  Jwts.parser().setSigningKey(SECRET.getBytes()).parseClaimsJws(jwtToken).getBody();
+        Claims claims =  Jwts.parser().setSigningKey(authSecret.getBytes()).parseClaimsJws(jwtToken).getBody();
 
         Jwtoken lastToken = repoTokens.findByUserid(Integer.parseInt(claims.getSubject()));
 
         if (lastToken != null && claims.getExpiration().compareTo(lastToken.getExpiredate()) < 0)
-            throw new ExpiredJwtException(null, claims, "A new token for this user has been created");
+            throw new ExpiredJwtException(null, claims, "Someone logged in from another computer");
 
 
         return claims;
@@ -81,20 +121,16 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     }
 
 
-    private Cookie checkJWTToken(HttpServletRequest request, HttpServletResponse res) throws UnsupportedJwtException {
+    private Cookie getCookie(HttpServletRequest request, String name) {
 
-          Cookie[] cookies= request.getCookies();
+        if (request.getCookies() == null)
+            return null;
 
-          if(cookies==null)
-              throw new UnsupportedJwtException("You must be logged in to access this resource.");
+        for (Cookie cookie : request.getCookies())
+            if(cookie.getName().equals(name))
+                return cookie;
 
-          for(Cookie cookie : cookies)
-              if(cookie.getName().equals("authToken"))
-                  return  cookie;
-
-          throw new UnsupportedJwtException("You must be logged in to access this resource.");
-
-
+        return null;
     }
 
 

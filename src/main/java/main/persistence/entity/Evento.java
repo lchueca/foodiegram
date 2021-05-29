@@ -3,6 +3,7 @@ package main.persistence.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import main.security.ForbiddenException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -40,6 +41,6 @@ public class Evento {
         Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
 
         if (!deleterId.equals(idcolab) && !authorities.contains(RoleEnum.ROLE_COL))
-            throw new NoPermissionException("You're not allowed to do that");
+            throw new ForbiddenException("You're not allowed to do that");
     }
 }
