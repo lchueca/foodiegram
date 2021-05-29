@@ -30,7 +30,7 @@ public class ManageInfoImpl implements ManageInfo{
     @Value("${apache.address}")
     private String apacheAddress;
 
-    private final Pattern imagePattern = Pattern.compile(".+\\.(png|jpg|jpeg)$");
+    private final Pattern imagePattern = Pattern.compile(".+\\.(png|jpg|jpeg)$", Pattern.CASE_INSENSITIVE);
 
 
     @Override

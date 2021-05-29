@@ -42,7 +42,7 @@ PublicationServiceImpl implements PublicationService {
 
     private final ComentarioConverter converterCom = new ComentarioConverter();
 
-    private final Pattern imagePattern = Pattern.compile(".+\\.(png|jpg|jpeg)$");
+    private final Pattern imagePattern = Pattern.compile(".+\\.(png|jpg|jpeg)$", Pattern.CASE_INSENSITIVE);
 
     @Autowired
     private RepoPublicacion repoPubli;
