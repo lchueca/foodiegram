@@ -287,6 +287,7 @@ public class ControllerPrueba {
         Integer userId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
         List<String> friends = friendsService.getFriends(userId);
 
+        model.addAttribute("userName", "");
         model.addAttribute("friendManagement", new FriendForm());
         model.addAttribute("friends", friends);
         return new ModelAndView("friends");
@@ -326,12 +327,11 @@ public class ControllerPrueba {
 
     //---------------------------------------Friends Page---------------------------------------//
     @GetMapping("/friendsPage")
-    ModelAndView friendsPage(Model model){
+    ModelAndView friendsPage(@Valid @ModelAttribute("userName") String friend, HttpServletResponse response,Model model){
 
-
-        model.addAttribute("userName", "user1");
-        model.addAttribute("profilePic", getUserByName("user1").getImage());
-        model.addAttribute("postList", getPosts(getUserByName("user1").getId()));
+        model.addAttribute("userName", friend);
+        model.addAttribute("profilePic", getUserByName(friend).getImage());
+        model.addAttribute("postList", getPosts(getUserByName(friend).getId()));
 
         return new ModelAndView("friendsPage");
     }
