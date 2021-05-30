@@ -39,6 +39,7 @@ public class ControllerManageAccount {
 
     //añade un amigo pasando un id de la persona que añade amigo y el nombre de la persona que quiere añadir
     @RequestMapping(method = RequestMethod.PUT)
+
     public ResponseEntity<?> add(@RequestPart(value = "name", required = true) String name)throws IllegalArgumentException{
         try{
             Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());

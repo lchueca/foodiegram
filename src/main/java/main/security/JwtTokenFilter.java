@@ -114,7 +114,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         roles.add(RoleEnum.valueOf(claims.get("rol").toString()));
 
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(claims.getSubject(), null,roles );
-
+        auth.setDetails(claims.get("username").toString());
         SecurityContextHolder.getContext().setAuthentication(auth);
 
 
