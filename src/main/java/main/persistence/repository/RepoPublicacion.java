@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface RepoPublicacion extends JpaRepository<Publicacion, Integer> {
 
-     List<Publicacion> findByIduser(Integer id);
+     List<Publicacion> findByIduserOrderByIdDesc(Integer id);
 
      @Query (value="SELECT * FROM publicacion "+
              "where ( ?1 = -1 or publicacion.fecha > date_sub(NOW(), interval ?1 DAY) ) and (IFNULL(publicacion.ciudad, 'xxx') LIKE ?3 and IFNULL(publicacion.pais LIKE ?2, 'xxx'))" +
