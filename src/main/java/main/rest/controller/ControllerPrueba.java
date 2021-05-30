@@ -227,7 +227,6 @@ public class ControllerPrueba {
     @GetMapping("/me")
     ModelAndView personalPage(Model model){
         Integer userId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
-        System.out.println(SecurityContextHolder.getContext().getAuthentication().getDetails().toString());
 
         model.addAttribute("search" , new SearchForm());
         model.addAttribute("postList", getPosts(userId));
