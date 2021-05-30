@@ -10,7 +10,7 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
-<body>
+<body style="background-image: url(https://cdn.discordapp.com/attachments/734750766895595581/848359437122666516/cute-food-icon-doodle-background_57490-171.jpg);">
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-light bg-dark static-top mb-5 shadow">
     <div class="container">
@@ -92,13 +92,33 @@
     </div>
 
     <div>
-        <div class="card-body" th:each="image : ${postList}">
-            <div class="card shadow-sm" style="width:700px;height:700px;">
-                <img class="image-responsive" th:src="${image.image}" alt="AN ERROR TOOK PLACE LOADING THE PHOTO" style="width:700px;height:600px;"/>
-                <h5 th:text="${image.text}"/>
-                Average Rating <p class="card-text" th:text="${image.media}"/>
+
+        <div class="cards" style="max-width: 1200px;display: grid;grid-template-columns: repeat(5, 1fr);grid-auto-rows: auto;grid-gap: 12px;">
+
+            <div class="card text-white bg-dark border-dark" th:each="image : ${postList}" style="width:200px;height:350px;border-style: solid solid solid solid;">
+                <img class="card-img-top" th:src="${image.image}"  alt="AN ERROR TOOK PLACE LOADING THE PHOTO" style="width:198px;height:200px;border-radius: 5px;"/>
+
+                <div class="card-body">
+                    <p class="card-text" th:text="${image.text}"></p>
+                    <div style="position: absolute;bottom: 0;right: 0;">
+                        <p class="card-text"  th:text="${image.media} + '⭐'"></p>
+                    </div>
+
+
+                </div>
             </div>
+
         </div>
+
+
+
+<!--        <div class="card" th:each="image : ${postList}">-->
+<!--            <div class="card-img-top" style="width:700px;height:700px;">-->
+<!--                <img class="image-responsive" th:src="${image.image}" alt="AN ERROR TOOK PLACE LOADING THE PHOTO" style="width:700px;height:600px;"/>-->
+<!--                <h5 th:text="${image.text}"/>-->
+<!--                Average Rating <p class="card-text" th:text="${image.media}"/>-->
+<!--            </div>-->
+<!--        </div>-->
     </div>
 </div>
 </body>
