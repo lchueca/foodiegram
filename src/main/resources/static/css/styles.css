@@ -36,7 +36,7 @@
 }
 
 #page-mask {
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.85);
     position: fixed;
     top: 0;
     right: 0;
