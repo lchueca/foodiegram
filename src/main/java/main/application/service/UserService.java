@@ -13,8 +13,6 @@ public interface UserService  {
     // Devuelve la info del usuario, o null si el usuario no existe.
     UsuarioResource getUserByName(String user);
 
-    UsuarioResource getUserById(Integer id);
-
     // Devuelve una lista con todas las publicaciones (id e imagen) del usuario, o null si el usuario no existe.
     List<PreviewPublicacion> getPosts(String user);
 

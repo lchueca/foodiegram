@@ -61,11 +61,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UsuarioResource getUserById(Integer id) {
-        return converterUser.convert(repoUsuario.findOne(id));
-    }
-
-    @Override
     public List<PreviewPublicacion> getPosts(String user) {
 
         Usuario usuario = repoUsuario.findByName(user);

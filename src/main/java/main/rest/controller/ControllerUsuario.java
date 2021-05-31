@@ -52,24 +52,6 @@ public class ControllerUsuario {
     @Autowired
     private TokenRefresher tokenRefresher;
 
-    @GetMapping()
-    public ResponseEntity<?> getUserByName(@RequestParam(required = false) String id) {
-        UsuarioResource usuario = null;
-
-        if (id != null) {
-
-            try {
-                usuario = service.getUserById(Integer.parseInt(id));
-            }
-
-            catch (NumberFormatException e) {
-                return ResponseEntity.badRequest().build();
-            }
-        }
-        return usuario != null ? ResponseEntity.ok(usuario) : ResponseEntity.notFound().build();
-    }
-
-
     @RequestMapping(value = "/{user}", method = RequestMethod.GET)
     public ResponseEntity<?> getUserByName(@PathVariable String user, @RequestParam(required = false) String id) {
 

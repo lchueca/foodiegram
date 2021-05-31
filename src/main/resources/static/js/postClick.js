@@ -29,6 +29,7 @@ function generateComment(comment) {
 function loadComments(comments) {comments.forEach(generateComment);}
 
 function onPostClicked(e) {
+
     // Se vacian los comentarios que habia antes en el modal.
     $('#post-modal-comments').empty()
 
