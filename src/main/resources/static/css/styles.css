@@ -46,3 +46,11 @@
     left: 0;
     z-index: 1;
 }
+
+.username {
+    color: black;
+}
+
+.comment {
+    color: gray;
+}
