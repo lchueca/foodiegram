@@ -1,4 +1,4 @@
-function setUpPostData(data) {
+function loadPublication(data) {
 
     document.getElementById("post-modal").style.display="block";
     document.getElementById("post-modal").style.zIndex= "10";
@@ -16,32 +16,26 @@ function generateComment(comment) {
     let temp = document.getElementsByTagName("template")[0];
     let clon = temp.content.cloneNode(true);
 
-    $.get("/users?id=" + comment.iduser, userInfo => {
+    if (comment.pfp)
+        clon.children[0].children[0].children[0].children[0].src = comment.pfp;
+    else
+        clon.children[0].children[0].children[0].children[0].src = "https://icon-library.com/images/no-profile-pic-icon/no-profile-pic-icon-11.jpg";
 
-        if (userInfo.image)
-            clon.children[0].children[0].children[0].children[0].src = userInfo.image;
-        else
-            clon.children[0].children[0].children[0].children[0].src = "https://icon-library.com/images/no-profile-pic-icon/no-profile-pic-icon-11.jpg";
-
-        clon.children[0].children[0].children[1].children[0].innerHTML = `<p class="username">${userInfo.name}: <span class="comment"> ${comment.text}</span></p>`;
-        document.getElementById("post-modal-comments").appendChild(clon);
-
-    });
-
-
+    clon.children[0].children[0].children[1].children[0].innerHTML = `<p class="username">${comment.user}: <span class="comment"> ${comment.text}</span></p>`;
+    document.getElementById("post-modal-comments").appendChild(clon);
 
 }
 
-function loadComments(comments) {
-    var com;
-    for (com of comments) {
-        generateComment(com);
-    }
-}
+function loadComments(comments) {comments.forEach(generateComment);}
 
 function onPostClicked(e) {
+    // Se vacian los comentarios que habia antes en el modal.
     $('#post-modal-comments').empty()
-    $.get("/posts/" + e.dataset.postid, setUpPostData);
+
+    // Se llama a /posts/postID para obtener la info de la publicacion
+    $.get("/posts/" + e.dataset.postid, loadPublication);
+
+    // Se llama a /posts/postId/comments para obtener la lista de los comentarios
     $.get("/posts/" + e.dataset.postid + "/comments", loadComments);
 
 
@@ -56,7 +50,4 @@ document.addEventListener("click", e => {
         document.getElementById("page-mask").remove();
     }
 
-
-    }
-
-)
+})

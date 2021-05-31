@@ -21,6 +21,8 @@ public class Comentario {
     private Integer idpubli;
     private Integer iduser;
     private String text;
+    private String name;
+    private String image;
 
     public Comentario(Integer idPubli, Integer idUser, String text) {
         this.idpubli = idPubli;

@@ -12,5 +12,7 @@ public class ComentarioResource {
     private Integer idpubli;
     private Integer iduser;
     private String text;
+    private String user;
+    private String pfp;
 
 }

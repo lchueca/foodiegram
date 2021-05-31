@@ -20,6 +20,8 @@ public class ComentarioConverter implements Converter<Comentario, ComentarioReso
         response.setIdpubli(source.getIdpubli());
         response.setIduser(source.getIduser());
         response.setText(source.getText());
+        response.setUser(source.getName());
+        response.setPfp(source.getImage());
         return response;
 
     }
