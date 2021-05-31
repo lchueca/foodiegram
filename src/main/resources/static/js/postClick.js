@@ -1,15 +1,12 @@
 function loadPublication(data) {
 
-    document.getElementById("post-modal").style.display="block";
-    document.getElementById("post-modal").style.zIndex= "10";
     document.getElementById("post-modal-image").src = data.image;
     document.getElementById("post-modal-text").innerText = data.text;
     document.getElementById("post-modal-avgRating").innerText = data.media + '⭐';
     document.getElementById("post-modal-ratingAmount").innerText = data.numerototalval + '🧐';
 
-    let dim = document.createElement("div");
-    dim.id = "page-mask";
-    document.body.appendChild(dim);
+    document.getElementById("page-mask").style.display = "flex";
+
 }
 
 function generateComment(comment) {
@@ -43,12 +40,10 @@ function onPostClicked(e) {
 }
 
 document.addEventListener("click", e => {
-    let modal = document.getElementById("post-modal");
+    let pageMask = document.getElementById("page-mask");
 
-    if (modal.style.display === "block" && !e.target.closest(".modal-click-box")) {
-        modal.style.display = "none";
-        modal.style.zIndex = "-1";
-        document.getElementById("page-mask").remove();
-    }
+    if (pageMask.style.display !== "none" && !e.target.closest(".modal-click-box")) 
+        document.getElementById("page-mask").style.display = "none";
+
 
 })
