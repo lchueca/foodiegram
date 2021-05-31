@@ -1,0 +1,46 @@
+.foodiegram-bg {
+    background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url(https://cdn.discordapp.com/attachments/734750766895595581/848359437122666516/cute-food-icon-doodle-background_57490-171.jpg);
+}
+
+.user-images {
+    max-width: 1200px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-gap: 12px;
+}
+
+.post-card {
+    width:200px;
+    height:350px;
+    border-style: solid;
+    border-radius: 10px;
+}
+
+.post-card-image {
+    width:200px;
+    height:200px;
+    transform: translate(-1px, -2px);
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#post-modal {
+    display: none;
+    position: absolute;
+
+    z-index: -1;
+    width: 100%; /* Full width */
+    height: 50%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+
+}
+
+#page-mask {
+    background: rgba(0, 0, 0, 0.7);
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+}

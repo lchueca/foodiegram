@@ -57,6 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring()
 
                 // Controller usuario
+                .antMatchers("/css/**")
                 .antMatchers("/users/**")
                 .antMatchers("/pruebas")
                 .antMatchers("/pruebas/postLogin")

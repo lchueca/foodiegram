@@ -42,6 +42,9 @@ public class ControllerPrueba {
     private PublicationService postService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private UserService service;
 
     @Autowired
@@ -50,9 +53,6 @@ public class ControllerPrueba {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @Value("${domain}")
-    private String domain;
-
     @Autowired
     private AuthTokenGenerator authTokenGenerator;
 
@@ -60,16 +60,8 @@ public class ControllerPrueba {
     private RefreshTokenGenerator refreshTokenGenerator;
 
     @Autowired
-    private ViewImages viewImages;
-
-    @Autowired
-    private RepoPublicacion repoPubli;
-
-    @Autowired
     private LogoutTokenGenerator logoutTokenGenerator;
 
-    private Model model;
-    private final PublicacionConverter converterPubli = new PublicacionConverter();
 
 
     //devuelve un id de usuario dado un nombre
@@ -79,17 +71,7 @@ public class ControllerPrueba {
         return usuario;
     }
 
-    //Devuelve la lista de publicaciones de un usuario dado su id
-    public List<PublicacionResource> getPosts(Integer user) {
 
-        List<PreviewPublicacion> publicaciones = viewImages.viewPost(user);
-        List<PublicacionResource> listPosts = new ArrayList<>();
-        for(PreviewPublicacion p : publicaciones){
-            listPosts.add(converterPubli.convert(repoPubli.findOne(p.getId())));
-        }
-
-        return listPosts;
-    }
 
     ////---------------------------------------PROBLEMS---------------------------------------//
 
@@ -226,10 +208,10 @@ public class ControllerPrueba {
 
     @GetMapping("/me")
     ModelAndView personalPage(Model model){
-        Integer userId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+        String user = SecurityContextHolder.getContext().getAuthentication().getDetails().toString();
 
         model.addAttribute("search" , new SearchForm());
-        model.addAttribute("postList", getPosts(userId));
+        model.addAttribute("postList", userService.getPosts(user));
 
         return new ModelAndView("userPage");
     }
@@ -331,7 +313,7 @@ public class ControllerPrueba {
 
         model.addAttribute("userName", friend);
         model.addAttribute("profilePic", getUserByName(friend).getImage());
-        model.addAttribute("postList", getPosts(getUserByName(friend).getId()));
+        model.addAttribute("postList", userService.getPosts(getUserByName(friend).getName()));
 
         return new ModelAndView("friendsPage");
     }
