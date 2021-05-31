@@ -31,10 +31,12 @@ function onPostClicked(e) {
 document.addEventListener("click", e => {
     var modal = document.getElementById("post-modal");
 
-    if (modal.style.display === "block" && (e.target.matches(".button-close-modal") || !e.target.closest(".modal")))
+    if (modal.style.display === "block" && !e.target.closest(".modal-click-box")) {
         modal.style.display = "none";
         modal.style.zIndex = "-1";
         document.getElementById("page-mask").remove();
+    }
+
 
     }
 
