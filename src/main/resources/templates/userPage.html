@@ -9,6 +9,7 @@
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"/>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"/>
 
 
     <link rel="stylesheet"  href="/css/styles.css"/>
@@ -94,16 +95,6 @@
     </div>
 </nav>
 
-
-
-
-
-
-
-
-
-
-
 <!-- Page Content -->
 <div class="container" style="position: relative">
 
@@ -111,25 +102,36 @@
 
             <div id="post-modal">
 
-                <img class="modal-click-box" id = "post-modal-image" style="max-width: 70%; max-height: 100%;"/>
+                <img class="modal-click-box" id="post-modal-image"/>
 
-                <div class="modal-click-box" id="post-modal-right" style="width: 15%; background-color: rgb(255,255,255); border-left: 1px solid gray">
+                <div class="modal-click-box" id="post-modal-right">
 
-                    <div  style="width: 100%; height:20%; position: relative; border-bottom: 1px solid gray;font-family: Arial,serif;">
-                        <p id="post-modal-text" style="position: absolute;top: 10px;left: 10px; font-family: Arial,serif;" >Cargando texto...</p>
-                        <p id="post-modal-avgRating" style="position: absolute;bottom: 0;right: 10px; font-family: Arial,serif;">Cargando ⭐...</p>
-                        <p id="post-modal-ratingAmount" style="position: absolute;bottom: 0;left: 10px; font-family: Arial,serif;">Cargando 🧐...</p>
+                    <div id = "post-modal-details">
+                        <p id="post-modal-text">Cargando texto...</p>
+                        <p id="post-modal-ratings">Cargando ⭐...</p>
+                        <p id="post-modal-date"></p>
                     </div >
 
-                    <div style="width: 100%; height:70%;">
+                    <div id="post-modal-comments-container">
 
-                        <ul id="post-modal-comments" style="list-style: none; padding:0;overflow-y: scroll; width: 100%; height: 100%;">
+                        <ul id="post-modal-comments">
 
                         </ul>
 
                     </div>
 
-                    <div style="width: 100%; height:10%;">
+                    <div id="post-modal-comment-input">
+
+                        <div style="width: 80%; height: 100%;">
+                            <label style="width: 100%; height: 100%">
+                                <input placeholder="Write something nice." style="width: 100%; height: 100%; border: none; padding-left: 10px;"/>
+                            </label>
+                        </div>
+
+                        <div id="post-modal-send-button-container">
+                            <span id="post-modal-send-button" class="bi bi-arrow-right-circle-fill"></span>
+
+                        </div>
 
                     </div>
                 </div>
@@ -169,15 +171,16 @@
 
     <template>
 
-        <li class="list-group-item" style=" padding-left: 0; padding-top: 2px;">
+        <li class="list-group-item" style=" padding-left: 0; padding-top: 2px; border:none;">
+
             <div style="width: 100%; display: flex;" >
 
                 <div style="width: 20%;">
-                    <img alt="pfp" src="https://i1.sndcdn.com/avatars-Zb6FhWSzovp4iWWr-61CkuA-t500x500.jpg" style="max-width: min(75%, 30px); max-height: min(75%, 30px); border-radius: 50%;transform: translate(35%, 8%)"/>
+                    <img class="comment-pfp" alt="pfp" src="https://icon-library.com/images/no-profile-pic-icon/no-profile-pic-icon-11.jpg" />
                 </div>
 
                 <div style="width: 90%; padding-left: 3px;">
-                    <p class="username"> Fungus: <span class="comment"> Comentario para probar si funciona esta mierda</span></p>
+                    <p></p>
                 </div>
 
             </div>

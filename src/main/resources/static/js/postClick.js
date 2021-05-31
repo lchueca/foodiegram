@@ -2,8 +2,8 @@ function loadPublication(data) {
 
     document.getElementById("post-modal-image").src = data.image;
     document.getElementById("post-modal-text").innerText = data.text;
-    document.getElementById("post-modal-avgRating").innerText = data.media + '⭐';
-    document.getElementById("post-modal-ratingAmount").innerText = data.numerototalval + '🧐';
+    document.getElementById("post-modal-ratings").innerHTML = data.media + '<i class="bi bi-star"></i>' + ' ' + data.numerototalval + '<i class="bi bi-person"></i>';
+    document.getElementById("post-modal-date").innerText = data.fecha;
 
     document.getElementById("page-mask").style.display = "flex";
 
@@ -15,8 +15,6 @@ function generateComment(comment) {
 
     if (comment.pfp)
         clon.children[0].children[0].children[0].children[0].src = comment.pfp;
-    else
-        clon.children[0].children[0].children[0].children[0].src = "https://icon-library.com/images/no-profile-pic-icon/no-profile-pic-icon-11.jpg";
 
     clon.children[0].children[0].children[1].children[0].innerHTML = `<p class="username">${comment.user}: <span class="comment"> ${comment.text}</span></p>`;
     document.getElementById("post-modal-comments").appendChild(clon);
@@ -42,7 +40,7 @@ function onPostClicked(e) {
 document.addEventListener("click", e => {
     let pageMask = document.getElementById("page-mask");
 
-    if (pageMask.style.display !== "none" && !e.target.closest(".modal-click-box")) 
+    if (pageMask.style.display !== "none" && !e.target.closest(".modal-click-box"))
         document.getElementById("page-mask").style.display = "none";
 
 
