@@ -15,11 +15,8 @@ function onPostDataReceived(data) {
 
 function onPostClicked(e) {
 
-    const postID = e.dataset.postid;
-    const url = "https://localhost:8080/posts/" + postID;
-
     var req = new XMLHttpRequest();
-    req.open('GET', url, true);
+    req.open('GET',"/posts/" + e.dataset.postid, true);
     req.onload  = () => {
         var jsonResponse = JSON.parse(req.responseText);
         onPostDataReceived(jsonResponse);
