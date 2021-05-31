@@ -221,7 +221,7 @@ PublicationServiceImpl implements PublicationService {
 
         else {
 
-            List<Comentario> comentarios = repoComen.findByIdpubli(pubID);
+            List<Comentario> comentarios = repoComen.findByIdpubliOrderByIdAsc(pubID);
             return comentarios.stream().map(converterCom::convert).collect(Collectors.toList());
         }
 
