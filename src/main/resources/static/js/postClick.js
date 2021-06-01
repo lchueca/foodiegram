@@ -4,6 +4,7 @@ function loadPublication(data) {
     document.getElementById("post-modal-text").innerText = data.text;
     document.getElementById("post-modal-ratings").innerHTML = data.media + '<i class="bi bi-star"></i>' + ' ' + data.numerototalval + '<i class="bi bi-person"></i>';
     document.getElementById("post-modal-date").innerText = data.fecha;
+    document.getElementById("post-modal-loc").innerText = data.pais + `, ` + data.ciudad;
 
     document.getElementById("page-mask").style.display = "flex";
 

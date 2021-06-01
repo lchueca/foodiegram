@@ -64,16 +64,25 @@
 
 #post-modal-ratings {
     position: absolute;
-    bottom: -10px;
+    bottom: -15px;
     left: 10px;
     font-family: Arial,serif;
 }
 
 #post-modal-date {
     position: absolute;
-    bottom: -10px;
+    bottom: -15px;
     right: 10px;
     font-family: Arial,serif;
+    font-size: smaller;
+}
+
+#post-modal-loc {
+    position: absolute;
+    bottom: 2px;
+    right: 10px;
+    font-family: Arial,serif;
+    font-size: smaller;
 }
 
 #post-modal-comments-container {
