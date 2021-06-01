@@ -2,6 +2,8 @@ package main.rest.controller;
 
 
 import main.application.service.PublicationService;
+import main.domain.converter.ComentarioJOINUserConverter;
+import main.domain.resource.ComentarioJOINUserResource;
 import main.domain.resource.ComentarioResource;
 import main.domain.resource.PublicacionResource;
 import main.domain.resource.ValoracionResource;
@@ -142,9 +144,9 @@ public class ControllerPublicacion {
 
 
     @RequestMapping(value="/{pubID}/comments", method=RequestMethod.GET)
-    public ResponseEntity<List<ComentarioResource>> getComments(@PathVariable Integer pubID) {
+    public ResponseEntity<List<ComentarioJOINUserResource>> getComments(@PathVariable Integer pubID) {
 
-        List<ComentarioResource> comentarios = service.getComments(pubID);
+        List<ComentarioJOINUserResource> comentarios = service.getComments(pubID);
         return comentarios != null ? ResponseEntity.ok(comentarios) : ResponseEntity.notFound().build();
 
     }

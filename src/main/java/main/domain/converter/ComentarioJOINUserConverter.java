@@ -1,25 +1,27 @@
 package main.domain.converter;
 
-
+import main.domain.resource.ComentarioJOINUserResource;
 import main.domain.resource.ComentarioResource;
-import main.persistence.entity.Comentario;
+import main.persistence.entity.ComentarioJOINUser;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ComentarioConverter implements Converter<Comentario, ComentarioResource> {
+public class ComentarioJOINUserConverter implements Converter<ComentarioJOINUser, ComentarioJOINUserResource> {
 
     @Override
-    public ComentarioResource convert(Comentario source){
+    public ComentarioJOINUserResource convert(ComentarioJOINUser source){
 
         if (source == null)
             return null;
 
-        ComentarioResource response=new ComentarioResource();
+        ComentarioJOINUserResource response=new ComentarioJOINUserResource();
         response.setId(source.getId());
         response.setIdpubli(source.getIdpubli());
         response.setIduser(source.getIduser());
         response.setText(source.getText());
+        response.setUser(source.getName());
+        response.setPfp(source.getImage());
         return response;
 
     }

@@ -7,6 +7,7 @@ function loadPublication(data) {
 
     document.getElementById("page-mask").style.display = "flex";
 
+    document.getElementById("post-modal-comment-input-field").dataset.postid = data.id;
 }
 
 function generateComment(comment) {
@@ -21,12 +22,14 @@ function generateComment(comment) {
 
 }
 
-function loadComments(comments) {comments.forEach(generateComment);}
+function loadComments(comments) {
+    // Se vacian los comentarios que habia antes en el modal.
+    $('#post-modal-comments').empty();
+    comments.forEach(generateComment);}
 
 function onPostClicked(e) {
 
-    // Se vacian los comentarios que habia antes en el modal.
-    $('#post-modal-comments').empty()
+    document.getElementById("post-modal-comment-input-field").value = "";
 
     // Se llama a /posts/postID para obtener la info de la publicacion
     $.get("/posts/" + e.dataset.postid, loadPublication);
@@ -37,11 +40,41 @@ function onPostClicked(e) {
 
 }
 
+function sendComment(event) {
+
+    if (!event.keyCode || event.keyCode === 13) {
+
+        let inputField = document.getElementById("post-modal-comment-input-field");
+
+        if (inputField.value.length !== 0) {
+
+            let newComment = {text: inputField.value};
+            $.post("/posts/" + inputField.dataset.postid + "/comments", newComment, () =>  $.get("/posts/" + inputField.dataset.postid + "/comments", loadComments));
+            inputField.value = "";
+
+        }
+    }
+
+
+}
+
+
 document.addEventListener("click", e => {
+
     let pageMask = document.getElementById("page-mask");
 
     if (pageMask.style.display !== "none" && !e.target.closest(".modal-click-box"))
         document.getElementById("page-mask").style.display = "none";
 
 
+})
+
+document.addEventListener("keydown", e => {
+
+    if (e.key === "Escape") {
+        let pageMask = document.getElementById("page-mask");
+
+        if (pageMask.style.display !== "none")
+            document.getElementById("page-mask").style.display = "none";
+    }
 })

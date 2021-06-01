@@ -124,12 +124,12 @@
 
                         <div style="width: 80%; height: 100%;">
                             <label style="width: 100%; height: 100%">
-                                <input placeholder="Write something nice." style="width: 100%; height: 100%; border: none; padding-left: 10px;"/>
+                                <input onkeydown="sendComment(event)" id="post-modal-comment-input-field" placeholder="Write something nice." autocomplete="off" style="width: 100%; height: 100%; border: none; padding-left: 10px;"/>
                             </label>
                         </div>
 
                         <div id="post-modal-send-button-container">
-                            <span id="post-modal-send-button" class="bi bi-arrow-right-circle-fill"></span>
+                            <span  onclick="sendComment(event)" id="post-modal-send-button" class="bi bi-arrow-right-circle-fill" style="cursor: pointer;z-index: 3"></span>
 
                         </div>
 

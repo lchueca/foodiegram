@@ -1,20 +1,16 @@
 package main.application.service;
 
 import main.domain.converter.ComentarioConverter;
+import main.domain.converter.ComentarioJOINUserConverter;
 import main.domain.converter.PublicacionConverter;
 import main.domain.converter.ValoracionConverter;
+import main.domain.resource.ComentarioJOINUserResource;
 import main.domain.resource.ComentarioResource;
 import main.domain.resource.PublicacionResource;
 import main.domain.resource.ValoracionResource;
 import main.persistence.IDs.IDvaloracion;
-import main.persistence.entity.Comentario;
-import main.persistence.entity.Publicacion;
-import main.persistence.entity.Usuario;
-import main.persistence.entity.Valoracion;
-import main.persistence.repository.RepoComentario;
-import main.persistence.repository.RepoPublicacion;
-import main.persistence.repository.RepoUsuario;
-import main.persistence.repository.RepoValoracion;
+import main.persistence.entity.*;
+import main.persistence.repository.*;
 import main.rest.forms.CommentForm;
 import main.rest.forms.PostForm;
 import main.rest.forms.RatingForm;
@@ -42,6 +38,8 @@ PublicationServiceImpl implements PublicationService {
 
     private final ComentarioConverter converterCom = new ComentarioConverter();
 
+    private final ComentarioJOINUserConverter converterJoin = new ComentarioJOINUserConverter();
+
     private final Pattern imagePattern = Pattern.compile(".+\\.(png|jpg|jpeg)$", Pattern.CASE_INSENSITIVE);
 
     @Autowired
@@ -52,6 +50,9 @@ PublicationServiceImpl implements PublicationService {
 
     @Autowired
     private RepoComentario repoComen;
+
+    @Autowired
+    private RepoComentarioJOINUser repoJoin;
 
     @Autowired
     private RepoUsuario repoUsuario;
@@ -212,7 +213,7 @@ PublicationServiceImpl implements PublicationService {
     }
 
     @Override
-    public List<ComentarioResource> getComments(Integer pubID) {
+    public List<ComentarioJOINUserResource> getComments(Integer pubID) {
 
         Publicacion pub = repoPubli.findOne(pubID);
 
@@ -221,8 +222,8 @@ PublicationServiceImpl implements PublicationService {
 
         else {
 
-            List<Comentario> comentarios = repoComen.findByIdpubliOrderByIdAsc(pubID);
-            return comentarios.stream().map(converterCom::convert).collect(Collectors.toList());
+            List<ComentarioJOINUser> comentarios = repoJoin.findByIdpubliOrderByIdAsc(pubID);
+            return comentarios.stream().map(converterJoin::convert).collect(Collectors.toList());
         }
 
     }
