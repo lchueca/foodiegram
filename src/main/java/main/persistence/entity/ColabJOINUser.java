@@ -24,7 +24,7 @@ public class ColabJOINUser {
     private String ciudad;
     private String calle;
     private Boolean vip;
-    private Integer money;
+    private Float money;
     private String passwd;
     private String email;
     private String image;
