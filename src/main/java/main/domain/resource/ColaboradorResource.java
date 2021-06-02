@@ -16,7 +16,7 @@ public class ColaboradorResource {
     private String ciudad;
     private String calle;
     private boolean vip;
-    private Integer money;
+    private Float money;
 
 
 }
