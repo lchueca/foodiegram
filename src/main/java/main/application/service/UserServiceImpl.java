@@ -75,8 +75,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-
-
     @Override
     public List<ValoracionResource> getRatings(String user) {
 

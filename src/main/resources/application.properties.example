@@ -12,11 +12,8 @@ spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQLDialect
 
 positionstack.api.key =
 
-
 apache.address = http://localhost:4555
-
 apache.rootFolder = images/
-
 
 spring.mail.protocol=smtp
 spring.mail.host=smtp.gmail.com
@@ -28,6 +25,7 @@ spring.mail.properties.mail.smtp.starttls.enable=true
 
 jwt.auth.secret =
 jwt.refresh.secret =
+jwt.logout.secret =
 
 server.ssl.key-store-type=PKCS12
 server.ssl.key-store=
@@ -35,3 +33,9 @@ server.ssl.key-store-password=
 server.ssl.key-alias=
 
 server.ssl.enabled=true
+
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds=5000
+hystrix.command.default.circuitBreaker.errorThresholdPercentage = 30
+hystrix.command.default.metrics.rollingStats.timeInMilliseconds = 15000
+hystrix.command.default.circuitBreaker.requestVolumeThreshold = 2
+hystrix.command.default.circuitBreaker.sleepWindowInMilliseconds = 30000

@@ -10,19 +10,22 @@
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"/>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet"  href="/css/styles.css"/>
 </head>
-<body>
 
-    <h1 class="card-title mt-3 text-center">Foodiegram</h1><p></p>
+<body class="foodiegram-bg">
 
+    <div class="container" style="left: 0; right:0; top: 10vh; bottom:0; position: fixed; display: flex;justify-content: center;">
 
-    <form th:action="@{/pruebas/postLogin}" th:object="${userLog}" method="post">
-        <div class="container">
+        <form th:action="@{/pruebas/postLogin}" th:object="${userLog}" method="post" style="width: max(35%, 250px)">
 
-            <div class="card bg-light">
-                <article class="card-body mx-auto" style="max-width: 800px;">
+            <div class="card bg-light" style="border-radius: 15px; width: 100%; display: flex; flex-direction: column; align-items: center;">
 
-                    <h3 class="card-title mt-3 text-center">Log in</h3><p></p>
+                <h1 style="font-family: 'Papyrus', sans-serif ; font-weight: bold; padding-top: 20px" class="card-title mt-3 text-center;">Foodiegram</h1>
+
+                <article class="card-body mx-auto">
+
+                    <h4 class="card-title mt-3 text-center">Log in</h4><p></p>
 
                     <div class="form-group input-group">
                         <input type="text" class="form-control" placeholder="Username" th:field="*{username}"/><p></p>
@@ -37,16 +40,22 @@
                     </div>
 
                 </article>
-            </div><p></p><p></p>
-        </div>
-    </form>
 
-    <div class="card bg-light">
-        <article class="card-body mx-auto" style="max-width: 400px;">
-            <h5 class="card-title mt-3 text-center">Don't you have an account?
-                <h5 class="card-title mt-3 text-center"> <a th:href="@{/pruebas/register}"> Register </a></h5>
-            </h5>
-        </article>
+
+                <article class="card-body mx-auto" style="max-width: 400px;">
+                    <h5 class="card-title mt-3 text-center">Don't you have an account?
+                        <h5 class="card-title mt-3 text-center"> <a href="/pruebas/register"> Register </a></h5>
+                    </h5>
+                </article>
+            </div>
+        </form>
     </div>
+
+    <article class="bg-secondary" style="position: absolute;bottom: 0; width: 100vw;">
+        <div class="card-body text-center">
+            <h5 class="text-white mt-3">Foodiegram, for the real foodies</h5>
+        </div>
+    </article>
+
 </body>
 </html>

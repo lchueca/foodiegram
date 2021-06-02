@@ -53,7 +53,7 @@ public class ControllerUsuario {
     private TokenRefresher tokenRefresher;
 
     @RequestMapping(value = "/{user}", method = RequestMethod.GET)
-    public ResponseEntity<?> getUserByName(@PathVariable String user) {
+    public ResponseEntity<?> getUserByName(@PathVariable String user, @RequestParam(required = false) String id) {
 
         UsuarioResource usuario = service.getUserByName(user);
         return usuario != null ? ResponseEntity.ok(usuario) : ResponseEntity.notFound().build();

@@ -16,8 +16,6 @@ public interface UserService  {
     // Devuelve una lista con todas las publicaciones (id e imagen) del usuario, o null si el usuario no existe.
     List<PreviewPublicacion> getPosts(String user);
 
-
-
     // Devuelve todoas las valoraciones que ha hecho un usuario (En todas las publicaciones), o null si el usuario no existe.
     List<ValoracionResource> getRatings(String user);
 
