@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
 
         else {
 
-            List<Publicacion> publicaciones = repoPubli.findByIduser(usuario.getId());
+            List<Publicacion> publicaciones = repoPubli.findByIduserOrderByIdDesc(usuario.getId());
             return publicaciones.stream().map(converterPreview::convert).collect(Collectors.toList());
         }
     }

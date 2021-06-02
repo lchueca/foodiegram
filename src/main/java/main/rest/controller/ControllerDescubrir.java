@@ -2,18 +2,13 @@ package main.rest.controller;
 
 
 import main.application.service.DiscoverService;
-import main.application.service.MensajeService;
-import main.domain.resource.MensajeResource;
-import main.domain.resource.PreviewPublicacion;
-import main.domain.resource.PublicacionResource;
-import main.domain.resource.UsuarioResource;
+import main.domain.resource.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.naming.NoPermissionException;
 import java.util.List;
 
 
@@ -25,15 +20,17 @@ public class ControllerDescubrir {
     private DiscoverService service;
 
 
-    @RequestMapping(value="/posts/",method = RequestMethod.GET)
+    @RequestMapping(value = "/posts", method = RequestMethod.GET)
     public ResponseEntity<?> discoverPosts(@RequestParam(required = false, defaultValue = "friends") String findBy,
-                                           @RequestParam(required = false, defaultValue = "month") String period){
+                                           @RequestParam(required = false, defaultValue = "month") String period,
+                                           @RequestParam(required = false, defaultValue = "%") String city,
+                                           @RequestParam(required = false, defaultValue = "%") String country) {
 
         try {
 
             List<PreviewPublicacion> pub = null;
 
-            switch(findBy) {
+            switch (findBy) {
 
                 case "friends": {
                     pub = service.discoverByAmigo();
@@ -41,7 +38,7 @@ public class ControllerDescubrir {
                 }
 
                 case "bestRated": {
-                    pub = service.discoverBestRated(period);
+                    pub = service.discoverBestRated(period, country, city);
                     break;
                 }
 
@@ -53,36 +50,54 @@ public class ControllerDescubrir {
             }
 
 
-            ;
-
             return pub != null ? ResponseEntity.ok(pub) : ResponseEntity.notFound().build();
-        }
-
-        catch(IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 
     }
 
 
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
+    public ResponseEntity<?> findFollowedByFriends() {
 
-    @RequestMapping(value="/users/xd",method = RequestMethod.GET)
-    public ResponseEntity<?> findFollowedByFriends(){
-
-        try{
-            Integer userid=Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
-            List<UsuarioResource> users = service.findFollowedByFriends(userid);
+        try {
+            Integer userid = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+            List<PreviewUsuario> users = service.findFollowedByFriends(userid);
             return users != null ? ResponseEntity.ok(users) : ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
-        catch(Exception e){
+
+    }
+
+    @RequestMapping(value = "/users/{userName}", method = RequestMethod.GET)
+    public ResponseEntity<?> userWhoFollowXAlsoFollowY(@PathVariable String userName) {
+
+        try {
+            List<PreviewUsuario> users = service.userWhoFollowXAlsoFollowY(userName);
+            return users != null ? ResponseEntity.ok(users) : ResponseEntity.notFound().build();
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 
     }
 
 
+
+
+    @RequestMapping(value = "/collab", method = RequestMethod.GET)
+    public ResponseEntity<?> findCollabbyLoc(@RequestParam(required = false, defaultValue = "%") String city,
+                                             @RequestParam(required = false, defaultValue = "%") String country) {
+
+        try {
+            List<PreviewColabJOINUser> collabs = service.findCollabs(country, city);
+            return collabs != null ? ResponseEntity.ok(collabs) : ResponseEntity.notFound().build();
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 
 }
-
-
 

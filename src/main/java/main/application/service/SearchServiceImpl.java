@@ -84,7 +84,7 @@ public class SearchServiceImpl implements SearchService {
 
     // BUSQUEDA DE PUBLICACIONES
     //
-    // devuelve una lista de publicaciones cuyo texto contenga un hastag coincidente con tag
+    // devuelve una lista de publicaciones cuyo texto contenga un hashtag coincidente con tag
     @Override
     public List<PreviewPubliJOINUser> getPubliListByTag(String tag) {
 

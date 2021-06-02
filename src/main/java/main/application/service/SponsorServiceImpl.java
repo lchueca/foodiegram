@@ -24,7 +24,7 @@ public class SponsorServiceImpl implements SponsorService {
     private RepoColaborador repoColab;
 
     // devuelve la fecha de vencimiento del patrocinio de un nuevo sponsor
-    public String getNewDateNewSponsor(Integer days) {
+    private String getNewDateNewSponsor(Integer days) {
         LocalDate date = LocalDate.now();
         return date.plusDays(days).toString();
     }
@@ -42,7 +42,7 @@ public class SponsorServiceImpl implements SponsorService {
 
 
     // pone a true el valor de VIP
-    public void setVIP(Integer id) {
+    private void setVIP(Integer id) {
 
         Colaborador colab = repoColab.findById(id);
         colab.setVip(true);

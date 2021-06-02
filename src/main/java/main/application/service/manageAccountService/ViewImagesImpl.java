@@ -33,7 +33,7 @@ public class ViewImagesImpl implements  ViewImages{
         if(user == null) //comprobamos que existe el usuario con idUser
             return null;
         else{
-            List<Publicacion> post = repoPost.findByIduser(idUser);
+            List<Publicacion> post = repoPost.findByIduserOrderByIdDesc(idUser);
             return post.stream().map(converterPreview::convert).collect(Collectors.toList());
         }
     }

@@ -41,5 +41,6 @@ public interface UserService  {
     //devuelve la lista de usuarios baneados
     List<Usuario_baneadoResource> getBannedUserList();
 
+    //envia un mensaje por correo con la advertencia.
     UsuarioResource sendWarning(String user,Integer type);
 }

@@ -10,19 +10,25 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
-<body>
+<body style="background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url(https://cdn.discordapp.com/attachments/734750766895595581/848359437122666516/cute-food-icon-doodle-background_57490-171.jpg)">
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-light bg-dark static-top mb-5 shadow">
     <div class="container">
 
+        <script>
+            function deleteCookies() {
+                document.cookie = "loggedIn=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";;
+            }
+        </script>
 
-
-        <a class="navbar-brand text-white" th:href="@{/pruebas}">
+        <a onclick="deleteCookies()" class="navbar-brand text-white" th:href="@{/pruebas}">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-box-arrow-left" style="font-size: 2rem; color: white;" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0v2z"/>
                 <path fill-rule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
             </svg>
         </a>
+
+
 
         <div class="navbar-brand text-center">
             <h3 class="navbar-brand mt-3 text-white">Foodiegram</h3>
@@ -33,11 +39,14 @@
             <ul class="navbar-nav ml-auto">
 
                 <li class="nav-item">
-                    <a class="nav-link text-white" th:href="@{/pruebas/search}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-search" style="font-size: 2rem; color: white;" viewBox="0 0 16 16">
-                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                        </svg>
-                    </a>
+                    <form class="d-flex" th:action="@{/pruebas/search}" th:object="${search}" method="post">
+                        <input class="form-control me-2" type="text" th:field="*{text}" placeholder="Search" aria-label="Search"/>
+                        <button class="btn btn-outline-success" type="submit">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-search" style="font-size: 2rem; color: white;" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                            </svg>
+                        </button>
+                    </form>
                 </li>
 
                 <li class="nav-item">
@@ -77,17 +86,40 @@
 
 <!-- Page Content -->
 <div class="container">
-    <table>
-        <tbody>
-        <tr th:if="${postList.empty}">
-            <td colspan="2"> Upload Posts! </td>
-        </tr>
-        <tr th:each="image : ${postList}">
-            <img class="image-responsive" src="${image}" alt="AN ERROR TOOK PLACE LOADING THE PHOTO"/>
-        </tr>
-        </tbody>
-    </table>
-    <img class="image-responsive" src="https://static.guiainfantil.com/media/9611/c/como-decorar-la-comida-de-los-ninos-lg.jpg" alt="AN ERROR TOOK PLACE LOADING THE PHOTO"/>
+
+    <div th:if="${postList.empty}">
+        <p class="text-center"> Upload Posts! </p>
+    </div>
+
+
+
+        <div class="cards" style="max-width: 1200px;display: grid;grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));grid-gap: 12px;">
+
+            <div class="card text-white bg-dark border-dark" th:each="image : ${postList}" style="width:200px;height:350px;border-style: solid solid solid solid;border-radius: 10px;">
+                <img class="card-img-top" th:src="${image.image}"  alt="AN ERROR TOOK PLACE LOADING THE PHOTO" style="width:200px;height:200px;transform: translate(-1px, -2px);border-radius: 10px;"/>
+
+                <div class="card-body">
+                    <p class="card-text" th:text="${image.text}"></p>
+                    <div style="position: absolute;bottom: 0;right: 0;">
+                        <p class="card-text"  th:text="${image.media} + '⭐'"></p>
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+
+
+
+<!--        <div class="card" th:each="image : ${postList}">-->
+<!--            <div class="card-img-top" style="width:700px;height:700px;">-->
+<!--                <img class="image-responsive" th:src="${image.image}" alt="AN ERROR TOOK PLACE LOADING THE PHOTO" style="width:700px;height:600px;"/>-->
+<!--                <h5 th:text="${image.text}"/>-->
+<!--                Average Rating <p class="card-text" th:text="${image.media}"/>-->
+<!--            </div>-->
+<!--        </div>-->
+
 </div>
 </body>
 </html>
