@@ -10,16 +10,21 @@
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"/>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet"  href="/css/styles.css"/>
 </head>
-<body>
 
-    <h1 class="card-title mt-3 text-center">Foodiegram</h1><p></p>
+<body class="foodiegram-bg">
+
+<div style="display: flex; justify-content: center">
+
+    <div class="container" style="position: fixed; top: 10vw;width: 20vw;">
+        <form th:action="@{/pruebas/postLogin}" th:object="${userLog}" method="post">
 
 
-    <form th:action="@{/pruebas/postLogin}" th:object="${userLog}" method="post">
-        <div class="container">
+            <div class="card bg-light" style="border-radius: 15px;">
 
-            <div class="card bg-light">
+                <h1 class="card-title mt-3 text-center">Foodiegram</h1><p></p>
+
                 <article class="card-body mx-auto" style="max-width: 800px;">
 
                     <h3 class="card-title mt-3 text-center">Log in</h3><p></p>
@@ -37,16 +42,19 @@
                     </div>
 
                 </article>
-            </div><p></p><p></p>
-        </div>
-    </form>
 
-    <div class="card bg-light">
-        <article class="card-body mx-auto" style="max-width: 400px;">
-            <h5 class="card-title mt-3 text-center">Don't you have an account?
-                <h5 class="card-title mt-3 text-center"> <a th:href="@{/pruebas/register}"> Register </a></h5>
-            </h5>
-        </article>
+
+                <article class="card-body mx-auto" style="max-width: 400px;">
+                    <h5 class="card-title mt-3 text-center">Don't you have an account?
+                        <h5 class="card-title mt-3 text-center"> <a href="/pruebas/register"> Register </a></h5>
+                    </h5>
+                </article>
+            </div><p></p><p></p>
+        </form>
     </div>
+
+</div>
+
+
 </body>
 </html>
