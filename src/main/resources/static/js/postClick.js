@@ -93,11 +93,16 @@ function drawRating(score) {
             xx.classList.add("bi-star-fill");
         }
     }
+
+    let e = document.getElementById("post-modal-comment-input-field");
+    $.get("/posts/" + e.dataset.postid, loadPublication);
 }
 
 function loadRatings(data) {
 
     drawRating(data[0].punt)
+
+
 
 }
 
