@@ -1,9 +1,14 @@
 package main.application.service;
 
 import main.domain.converter.EventoConverter;
+import main.domain.converter.MeetUpConverter;
 import main.domain.resource.EventoResource;
+import main.domain.resource.MeetupResource;
+import main.persistence.IDs.IDmeetUp;
 import main.persistence.entity.Evento;
+import main.persistence.entity.MeetUp;
 import main.persistence.repository.RepoEvento;
+import main.persistence.repository.RepoMeetup;
 import main.rest.forms.EventForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,10 +29,15 @@ public class EventServiceImpl implements EventService {
 
     private EventoConverter converterEvent = new EventoConverter();
 
+    private MeetUpConverter converterMeet= new MeetUpConverter();
+
     private final Pattern imagePattern = Pattern.compile("\\.+.(png|jpg|jpeg)$", Pattern.CASE_INSENSITIVE);
 
     @Autowired
     private RepoEvento repoEvent;
+
+    @Autowired
+    private RepoMeetup repoMeetup;
 
     @Value("${apache.rootFolder}")
     private String apacheRootFolder;
@@ -131,7 +141,35 @@ public class EventServiceImpl implements EventService {
         return false;
     }
 
-   
+    public MeetupResource joinEvent(Integer userid, Integer eventID){
+
+        Evento event= repoEvent.findById(eventID);
+
+        if(event!= null) {
+
+            MeetUp meet=new MeetUp(eventID,userid);
+            repoMeetup.save(meet);
+            return converterMeet.convert(meet);
+
+        }
+
+        return null;
+    }
+
+    public MeetupResource leaveEvent(Integer userid, Integer eventID){
+
+        MeetUp meet = repoMeetup.findOne(new IDmeetUp(eventID,userid));
+
+        if(meet!= null) {
+
+            repoMeetup.delete(meet);
+            return converterMeet.convert(meet);
+
+        }
+
+        return null;
+    }
+
 
 
 }

@@ -1,6 +1,7 @@
 package main.application.service;
 
 import main.domain.resource.EventoResource;
+import main.domain.resource.MeetupResource;
 import main.rest.forms.EventForm;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,4 +29,14 @@ public interface EventService {
     //
     // devuelve true si consigue eliminar el evento sino false
     boolean delete(Integer id);
+
+    //UNIRSE A UN EVENTO
+    //
+    //devuelve un Meetupresource con el evento y el usuario que se unio.
+    MeetupResource joinEvent(Integer userid, Integer eventID);
+
+    //SALIR DE UN EVENTO
+    //
+    //devuelve el MeetupResource eliminado.
+    MeetupResource leaveEvent(Integer userid, Integer eventID);
 }
