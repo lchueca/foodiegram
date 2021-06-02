@@ -41,11 +41,12 @@ public class SponsorServiceImpl implements SponsorService {
     public PatrocinioResource getSponsorship(Integer id) { return converterSponsor.convert(repoSponsor.findById(id)); }
 
 
-    // pone a true el valor de VIP
-    public void setVIP(Integer id) {
+    // pone a true el valor de VIP y mete el dinero aportado
+    public void setVIP(Integer id, Float money) {
 
         Colaborador colab = repoColab.findById(id);
         colab.setVip(true);
+        colab.setMoney(colab.getMoney() + money);
         repoColab.save(colab);
     }
 
@@ -54,7 +55,7 @@ public class SponsorServiceImpl implements SponsorService {
     //
     // crea un nuevo patrocinio
     // devuelve un patrocinio creado
-    public PatrocinioResource obtain(Integer id, Integer type) {
+    public PatrocinioResource obtain(Integer id, Integer type, Float money) {
 
         Patrocinio sponsorship = null;
         switch(type) {
@@ -71,10 +72,9 @@ public class SponsorServiceImpl implements SponsorService {
                 sponsorship = new Patrocinio(id, Date.valueOf(getNewDateNewSponsor(30*12)));
                 break;
         }
-        System.out.println(sponsorship.getId());
         repoSponsor.save(sponsorship);
 
-        setVIP(id);
+        setVIP(id, money);
 
         return converterSponsor.convert(sponsorship);
     }
@@ -84,7 +84,7 @@ public class SponsorServiceImpl implements SponsorService {
     //
     // amplia el tiempo de patrocinio
     // devuelve un patrocinio modificado
-    public PatrocinioResource modify(Integer id, Integer type) {
+    public PatrocinioResource modify(Integer id, Integer type, Float money) {
 
         Patrocinio sponsorship = repoSponsor.findById(id);
         LocalDate date = sponsorship.getEndtime().toLocalDate();
@@ -104,7 +104,7 @@ public class SponsorServiceImpl implements SponsorService {
         }
         repoSponsor.save(sponsorship);
 
-        setVIP(id);
+        setVIP(id, money);
 
         return converterSponsor.convert(sponsorship);
     }

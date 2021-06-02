@@ -22,7 +22,7 @@ public class ColabJOINUser {
     private String type;
     private String localization;
     private Boolean vip;
-    private Integer money;
+    private Float money;
     private String passwd;
     private String email;
     private String image;

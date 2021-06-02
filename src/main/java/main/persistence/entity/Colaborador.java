@@ -19,9 +19,9 @@ public class Colaborador {
     private String type;
     private String localization;
     private Boolean vip;
-    private Integer money;
+    private Float money;
 
-    public Colaborador(String origin, String type, String localization, Boolean vip, Integer money) {
+    public Colaborador(String origin, String type, String localization, Boolean vip, Float money) {
         this.origin = origin;
         this.type = type;
         this.localization = localization;
