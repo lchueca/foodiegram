@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.sql.Date;
 
 @Entity
 @Data
@@ -23,7 +24,9 @@ public class PubliJOINUser {
     private String userimage;
     private String text;
     private String image;
-    private String localization;
+    private String pais;
+    private String ciudad;
+    private Date fecha;
     private Float media;
     private Integer numerototalval;
 }

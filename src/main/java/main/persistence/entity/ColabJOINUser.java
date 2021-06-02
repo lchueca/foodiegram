@@ -20,7 +20,9 @@ public class ColabJOINUser {
     private Integer id;
     private String origin;
     private String type;
-    private String localization;
+    private String pais;
+    private String ciudad;
+    private String calle;
     private Boolean vip;
     private Float money;
     private String passwd;

@@ -22,7 +22,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     RepoJwtoken repoTokens;
 
     @Value("${jwt.auth.secret}")
-    private String secretKey;
+    private String authSecret;
+
+    @Value("${jwt.logout.secret}")
+    private String logoutSecret;
+
+    @Value("${domain}")
+    private String domain;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -41,7 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/mod/**").hasAnyRole("ADMIN", "MOD")
                 .antMatchers("/admin/**").hasRole("ADMIN");
 
-        http.addFilterAfter(new JwtTokenFilter(repoTokens, secretKey), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAfter(new JwtTokenFilter(repoTokens, authSecret, logoutSecret), UsernamePasswordAuthenticationFilter.class);
+
 
     }
 
@@ -51,7 +58,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // Controller usuario
                 .antMatchers("/users/**")
-
+                .antMatchers("/pruebas")
+                .antMatchers("/pruebas/postLogin")
+                .regexMatchers("/pruebas/problems/\\d+")
+                .antMatchers("/pruebas/register")
+                .antMatchers("/pruebas/postRegister")
                 // Controller publicacion
                 .regexMatchers(HttpMethod.GET, "\\/posts\\/\\w+$")
                 .regexMatchers(HttpMethod.GET, "\\/posts\\/\\w+\\/ratings$")
@@ -64,8 +75,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/event/**")
 
                 // Controller patrocinio
+<<<<<<< HEAD
                 .antMatchers("/sponsor/**")
                 .antMatchers("/payment/**");
+=======
+                .antMatchers("/sponsor/**");
+
+
+>>>>>>> 94a038da8523566b3f0d64df24584a8cbdd44b2b
     }
 
     @Bean

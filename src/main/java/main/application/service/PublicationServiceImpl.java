@@ -15,22 +15,26 @@ import main.persistence.repository.RepoComentario;
 import main.persistence.repository.RepoPublicacion;
 import main.persistence.repository.RepoUsuario;
 import main.persistence.repository.RepoValoracion;
+import main.rest.forms.CommentForm;
+import main.rest.forms.PostForm;
+import main.rest.forms.RatingForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.naming.NoPermissionException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
-public class PublicationServiceImpl implements PublicationService {
+public class
+PublicationServiceImpl implements PublicationService {
 
     private final PublicacionConverter converterPubli = new PublicacionConverter();
 
@@ -38,7 +42,7 @@ public class PublicationServiceImpl implements PublicationService {
 
     private final ComentarioConverter converterCom = new ComentarioConverter();
 
-    private final Pattern imagePattern = Pattern.compile("\\w+.(png|jpg)$");
+    private final Pattern imagePattern = Pattern.compile(".+\\.(png|jpg|jpeg)$", Pattern.CASE_INSENSITIVE);
 
     @Autowired
     private RepoPublicacion repoPubli;
@@ -52,12 +56,14 @@ public class PublicationServiceImpl implements PublicationService {
     @Autowired
     private RepoUsuario repoUsuario;
 
+    @Autowired
+    private RestService restService;
+
     @Value("${apache.address}")
     private String apacheAddress;
 
     @Value("${apache.rootFolder}")
     private String apacheRootFolder;
-
 
     @Override
     public PublicacionResource getPost(Integer pubID) {
@@ -65,9 +71,9 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     @Override
-    public PublicacionResource editPost(Integer pubID, String text, String loc) throws IllegalArgumentException, NoPermissionException {
+    public PublicacionResource editPost(Integer pubID, String text) throws IllegalArgumentException, NoPermissionException {
 
-        if (text == null && loc == null)
+        if (text == null)
             throw new IllegalArgumentException("Text or loc should be not null");
 
 
@@ -75,11 +81,8 @@ public class PublicationServiceImpl implements PublicationService {
 
         if (publi != null) {
 
-            if (text != null)
-                publi.setText(text);
+            publi.setText(text);
 
-            if (loc != null)
-                publi.setLocalization(loc);
 
             repoPubli.save(publi);
 
@@ -104,35 +107,54 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     @Override
-    public PublicacionResource upload(Integer userID, String text, String loc, MultipartFile image) throws IOException, IllegalArgumentException {
+    public PublicacionResource upload(Integer userID, PostForm form) throws IOException, IllegalArgumentException {
+        String country = null;
+        String city = null;
 
+        if (form.getLatitud() != null && form.getLongitud() != null) {
+            Map<String, Object> geoData = restService.getGeoData(form.getLatitud(), form.getLongitud());
+            try {
+                country = geoData.get("country").toString();
+                city = geoData.get("locality").toString();
+            }
 
-        Matcher matcher = imagePattern.matcher(image.getOriginalFilename());
+            catch (NullPointerException ignored) {
 
-        if (!matcher.matches())
-            throw new IllegalArgumentException("Only jpeg and png images are supported.");
+            }
+        }
 
-        // Se crea una publicacion sin imagen
-        Publicacion publi = new Publicacion(text, userID, loc);
+        Publicacion publi = new Publicacion(form.getText(), userID, country, city);
         publi = repoPubli.save(publi);
 
-        try {
-            File folder = new File(apacheRootFolder + "/users/" + userID);
-            folder.mkdirs();
+        if (form.getImage() != null) {
 
-            String name = folder.getAbsolutePath() + "/" + publi.getId() + "." + matcher.group(1);
-            FileOutputStream stream = new FileOutputStream(name);
-            stream.write(image.getBytes());
-            stream.close();
+            Matcher matcher = imagePattern.matcher(form.getImage().getOriginalFilename());
 
-            // Si se ha conseguido guardar la imagen, se le asocia a la publicacion una direccion en la BD.
-            String address = String.format("%s/users/%s/%s.%s", apacheAddress, userID, publi.getId(), matcher.group(1));
-            publi.setImage(address);
-            repoPubli.save(publi);
-        } catch (IOException e) {
-            repoPubli.delete(publi);
-            throw e;
+            if (!matcher.matches())
+                throw new IllegalArgumentException("Only jpeg and png images are supported.");
+
+            // Se crea una publicacion sin imagen
+
+            try {
+                File folder = new File(apacheRootFolder + "/users/" + userID);
+                folder.mkdirs();
+
+                String name = folder.getAbsolutePath() + "/" + publi.getId() + "." + matcher.group(1);
+                FileOutputStream stream = new FileOutputStream(name);
+                stream.write(form.getImage().getBytes());
+                stream.close();
+
+                // Si se ha conseguido guardar la imagen, se le asocia a la publicacion una direccion en la BD.
+                String address = String.format("%s/users/%s/%s.%s", apacheAddress, userID, publi.getId(), matcher.group(1));
+                publi.setImage(address);
+                repoPubli.save(publi);
+            } catch (IOException e) {
+                repoPubli.delete(publi);
+                throw e;
+            }
+
         }
+
 
         return converterPubli.convert(publi);
     }
@@ -152,16 +174,13 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     @Override
-    public ValoracionResource setRating(Integer pubID, Integer userID, Float score) throws IllegalArgumentException {
+    public ValoracionResource setRating(RatingForm form) throws IllegalArgumentException {
 
-        Usuario usuario = repoUsuario.findOne(userID);
-
-
-        if (score < 0 || score > 5)
+        if (form.getScore() < 0 || form.getScore() > 5)
             throw new IllegalArgumentException("Punt must be a integer between 0 and 5");
 
         else {
-            Valoracion valora = new Valoracion(pubID, userID, score);
+            Valoracion valora = new Valoracion(form.getPubID(), form.getUserID(), form.getScore());
             repoVal.save(valora);
 
             return converterVal.convert(valora);
@@ -182,11 +201,9 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     @Override
-    public ValoracionResource deleteRating(Integer pubID, Integer userid) {
+    public ValoracionResource deleteRating(RatingForm form) {
 
-        Usuario usuario = repoUsuario.findOne(userid);
-
-        Valoracion valor = repoVal.findOne(new IDvaloracion(pubID, userid));
+        Valoracion valor = repoVal.findOne(new IDvaloracion(form.getPubID(), form.getUserID()));
 
         if (valor != null)
             repoVal.delete(valor);
@@ -211,16 +228,17 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     @Override
-    public ComentarioResource setComment(Integer pubID, Integer userID, String text) throws IllegalArgumentException {
+    public ComentarioResource setComment( CommentForm form) throws IllegalArgumentException {
 
-        if (text == null || text.length() == 0)
+        if (form.getText() == null || form.getText().length() == 0)
             throw new IllegalArgumentException("Text must be not null");
 
 
-        Comentario comment = new Comentario(pubID, userID, text);
+        Comentario comment = new Comentario(form.getPubID(), form.getUserID(), form.getText());
         repoComen.save(comment);
         return converterCom.convert(comment);
 
     }
+
 }
 

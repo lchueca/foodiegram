@@ -30,16 +30,16 @@ public class AuthTokenGenerator {
     public String buildToken(String username, int minutes) {
 
         Usuario user = repoUser.findByName(username);
-        return getToken(user.getId(), minutes, user.getRole().toString());
+        return getToken(user.getId(), username, minutes, user.getRole().toString());
     }
 
     public String buildToken(Integer userID, int minutes) {
 
         Usuario user = repoUser.findOne(userID);
-        return getToken(user.getId(), minutes, user.getRole().toString());
+        return getToken(user.getId(), user.getName(), minutes, user.getRole().toString());
     }
 
-    private String getToken(Integer userID, int minutes, String role) {
+    private String getToken(Integer userID, String userName, int minutes, String role) {
 
         minutes *= 60000;
 
@@ -56,6 +56,7 @@ public class AuthTokenGenerator {
 
         return  Jwts.builder()
                 .setSubject(userID.toString())
+                .claim("username", userName)
                 .claim("rol", role)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + minutes))

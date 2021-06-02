@@ -8,9 +8,10 @@ import main.domain.resource.PreviewPublicacion;
 import main.domain.resource.UsuarioResource;
 import main.domain.resource.ValoracionResource;
 import main.security.AuthTokenGenerator;
+import main.security.LogoutTokenGenerator;
 import main.security.RefreshTokenGenerator;
 import main.security.TokenRefresher;
-import main.security.UserForm;
+import main.rest.forms.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 @org.springframework.web.bind.annotation.RestController
@@ -46,6 +47,9 @@ public class ControllerUsuario {
     private RefreshTokenGenerator refreshTokenGenerator;
 
     @Autowired
+    private LogoutTokenGenerator logoutTokenGenerator;
+
+    @Autowired
     private TokenRefresher tokenRefresher;
 
     @RequestMapping(value = "/{user}", method = RequestMethod.GET)
@@ -57,10 +61,8 @@ public class ControllerUsuario {
 
     // Si buscas /users/user/postID se te redirige a /posts/postID
     @RequestMapping(value = "/{user}/{pubID}", method = RequestMethod.GET)
-    public void redirectToPost(HttpServletResponse httpServletResponse, @PathVariable String user, @PathVariable Integer pubID) {
-
-        httpServletResponse.setHeader("Location", "http://" + domain + "/posts/" + pubID);
-        httpServletResponse.setStatus(302);
+    public void redirectToPost(HttpServletResponse response, @PathVariable Integer pubID) throws IOException {
+        response.sendRedirect("/posts/" + pubID);
     }
 
     // Devuelve una lista con todas las IDs de las publicaciones del usuario y las imagenes correspondientes.
@@ -81,11 +83,11 @@ public class ControllerUsuario {
 
     }
 
-    @RequestMapping(value = "register", method = RequestMethod.POST)
-    public ResponseEntity<?> registerUser(@Valid @ModelAttribute("employee") UserForm user) {
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public ResponseEntity<?> registerUser(UserForm user) {
 
         try {
-            UsuarioResource newUser = service.register(user.getUsername(), user.getPassword(), user.getEmail());
+            UsuarioResource newUser = service.register(user);
             return ResponseEntity.ok(newUser);
         }
 
@@ -114,56 +116,79 @@ public class ControllerUsuario {
     }
 
     @RequestMapping(value="/login", method=RequestMethod.POST)
-    public ResponseEntity<?> login(@Valid @ModelAttribute("UserForm") UserForm user, HttpServletResponse response) {
+    public ResponseEntity<?> login(UserForm user, HttpServletResponse response) {
 
         try {
             UsernamePasswordAuthenticationToken userData = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
             authenticationManager.authenticate(userData);
             // Generamos el token de autentificacion
             String authToken = authTokenGenerator.buildToken(user.getUsername(), 15);
+            Cookie cookieA = new Cookie("authToken",authToken);
+            cookieA.setDomain(domain);
+            cookieA.setHttpOnly(true);
+            cookieA.setMaxAge(900);
+            cookieA.setPath("/");
+
+            response.addCookie(cookieA);
 
             // Generamos el refresh token
             String refreshToken = refreshTokenGenerator.buildToken(user.getUsername(), 300);
-            Cookie cookie = new Cookie("refreshToken", refreshToken);
-            cookie.setDomain(domain);
-            cookie.setHttpOnly(true);
-            cookie.setMaxAge(18000);
-            cookie.setPath("/users/refresh");
+            Cookie cookieR = new Cookie("refreshToken", refreshToken);
+            cookieR.setDomain(domain);
+            cookieR.setHttpOnly(true);
+            cookieR.setMaxAge(18000);
+            cookieR.setPath("/users/refresh");
+
+            response.addCookie(cookieR);
 
 
-            response.addCookie(cookie);
+            String loginToken = logoutTokenGenerator.getToken(user.getUsername());
 
-            return ResponseEntity.ok(String.format("{\"status\": \"200\", \"token\": \"%s\"}", authToken));
+            Cookie loggedInCookie = new Cookie("loggedIn", loginToken);
+            loggedInCookie.setDomain(domain);
+            loggedInCookie.setPath("/");
+
+            response.addCookie(loggedInCookie);
+
+
+
+            return ResponseEntity.ok(" {'Status' : '200'} ");
         }
 
         catch (NullPointerException e) {
-            return ResponseEntity.badRequest().body("Invalid form.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(String.format("{'Status' : 400, 'message': '%s' }",e.getMessage()));
         }
 
         catch (BadCredentialsException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong credentials.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{'Status' : 401, 'message': 'Wrong Credentials' }");
         }
 
         catch (DisabledException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is disabled.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{'Status' : 401, 'message': 'User is Disabled' }");
         }
     }
 
     @RequestMapping(value="/refresh", method=RequestMethod.GET)
-    public ResponseEntity<?> refresh(@CookieValue("refreshToken") String refreshToken) {
+    public ResponseEntity<?> refresh(@CookieValue("refreshToken") String refreshToken, HttpServletResponse response) {
 
         try {
             String token = tokenRefresher.refresh(refreshToken);
+            Cookie cookieA = new Cookie("authToken",token);
+            cookieA.setDomain(domain);
+            cookieA.setHttpOnly(true);
+            cookieA.setMaxAge(900);
+            cookieA.setPath("/");
+            response.addCookie(cookieA);
 
-            return ResponseEntity.ok(String.format("{\"status\": \"200\", \"token\": \"%s\"}", token));
+            return ResponseEntity.ok(" {'Status' : '200'} ");
         }
 
         catch (ExpiredJwtException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token has expired.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{'Status' : 401, 'message': 'Token has expired }");
         }
 
         catch (MalformedJwtException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Malformed token.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{'Status' : 401, 'message': 'Malform Token ' }");
         }
 
 
