@@ -8,12 +8,15 @@ import main.persistence.IDs.IDamigo;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.Table;
+
 
 @Entity
 @IdClass(IDamigo.class)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name="amigo")
 public class Amigo {
 
     @Id

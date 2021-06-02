@@ -1,6 +1,7 @@
 package main.application.service;
 
 import main.domain.resource.EventoResource;
+import main.rest.forms.EventForm;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -8,8 +9,23 @@ import java.util.List;
 
 public interface EventService {
 
+    // BUSCAR EVENTO
+    //
+    // devuelve una lista con los eventos registrados por el colaborador de idcolab que esten activos
     List<EventoResource> getEventListByIdcolab(Integer idcolab);
-    EventoResource upload(Integer idcolab, String text, MultipartFile image, String date) throws IOException, IllegalArgumentException;
-    EventoResource modify(Integer id, String Text, MultipartFile image, String date) throws IOException, IllegalArgumentException;
+
+    // ORGANIZAR EVENTO
+    //
+    // crea un evento nuevo con los datos proporcionados
+    EventoResource upload(EventForm form) throws IOException, IllegalArgumentException;
+
+    // MODIFICAR EVENTO
+    //
+    // modifica un evento existente y activo
+    EventoResource modify(Integer id, EventForm form) throws IOException, IllegalArgumentException;
+
+    // ELIMINAR EVENTO
+    //
+    // devuelve true si consigue eliminar el evento sino false
     boolean delete(Integer id);
 }

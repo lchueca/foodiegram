@@ -1,11 +1,13 @@
 package main.persistence.entity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class Usuario {
 
     @Id
@@ -29,7 +31,5 @@ public class Usuario {
         this.role = null;
 
     }
-
-    protected Usuario() {}
 
 }

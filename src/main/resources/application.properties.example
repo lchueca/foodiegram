@@ -10,6 +10,7 @@ spring.datasource.password=toor
 
 spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQLDialect
 
+positionstack.api.key =
 
 
 apache.address = http://localhost:4555
@@ -25,5 +26,12 @@ spring.mail.password=
 spring.mail.properties.mail.smtp.auth=true;
 spring.mail.properties.mail.smtp.starttls.enable=true
 
-jwt.auth.secret = MamiChanXFungus
-jwt.refresh.secret = FungusXcr7
+jwt.auth.secret =
+jwt.refresh.secret =
+
+server.ssl.key-store-type=PKCS12
+server.ssl.key-store=
+server.ssl.key-store-password=
+server.ssl.key-alias=
+
+server.ssl.enabled=true

@@ -29,31 +29,6 @@ public class ControllerModerador {
     private ComentarioService comService;
 
 
-    @GetMapping
-    public String xD(){
-        return  "hola";
-    }
-
-    @RequestMapping(value="/deletePub",method=RequestMethod.DELETE)
-    public ResponseEntity<?> deletePub(@RequestPart ("pubID")String pubID) {
-        try{
-
-            PublicacionResource deletedPost=pubService.deletePost(Integer.parseInt(pubID));
-            return ResponseEntity.ok(deletedPost);
-        }catch (IllegalArgumentException | NoPermissionException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
-    @RequestMapping(value="/deleteComment",method=RequestMethod.DELETE)
-    public ResponseEntity<?> deleteComment(@RequestPart ("comID")String comID) {
-        try{
-
-            ComentarioResource deletedCom=comService.deleteComentario(Integer.parseInt(comID));
-            return ResponseEntity.ok(deletedCom);
-        }catch (IllegalArgumentException | NoPermissionException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
 
     @RequestMapping(value="/sendWarning",method=RequestMethod.POST)
     public ResponseEntity<?> sendWarning(@RequestPart ("user")String user,@RequestPart ("type")String type) {

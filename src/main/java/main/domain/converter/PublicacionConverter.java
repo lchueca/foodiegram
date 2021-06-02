@@ -22,7 +22,9 @@ public class PublicacionConverter implements Converter<Publicacion, PublicacionR
         response.setIduser(source.getIduser());
         response.setText(source.getText());
         response.setImage(source.getImage());
-        response.setLocalization(source.getLocalization());
+        response.setCiudad(source.getCiudad());
+        response.setPais(source.getPais());
+        response.setFecha(source.getFecha());
         response.setMedia(df.format(source.getMedia()));
         response.setNumerototalval(source.getNumerototalval());
         return response;
