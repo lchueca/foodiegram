@@ -20,8 +20,6 @@ function loadPublication(data) {
 
 
     document.getElementById("page-mask").style.display = "flex";
-
-    document.getElementById("post-modal-comment-input-field").dataset.postid = data.id;
 }
 
 function generateComment(comment) {
@@ -43,7 +41,10 @@ function loadComments(comments) {
 
 function onPostClicked(e) {
     resetRating();
+
     document.getElementById("post-modal-comment-input-field").value = "";
+    document.getElementById("post-modal").dataset.postid = e.dataset.postid;
+
 
     // Se llama a /posts/postID para obtener la info de la publicacion
     $.get("/posts/" + e.dataset.postid, loadPublication);
@@ -60,11 +61,12 @@ function sendComment(event) {
     if (!event.keyCode || event.keyCode === 13) {
 
         let inputField = document.getElementById("post-modal-comment-input-field");
+        let postID = document.getElementById("post-modal").dataset.postid
 
         if (inputField.value.length !== 0) {
 
             let newComment = {text: inputField.value};
-            $.post("/posts/" + inputField.dataset.postid + "/comments", newComment, () =>  $.get("/posts/" + inputField.dataset.postid + "/comments", loadComments));
+            $.post("/posts/" + postID + "/comments", newComment, () =>  $.get("/posts/" + postID + "/comments", loadComments));
             inputField.value = "";
 
         }
@@ -94,8 +96,8 @@ function drawRating(score) {
         }
     }
 
-    let e = document.getElementById("post-modal-comment-input-field");
-    $.get("/posts/" + e.dataset.postid, loadPublication);
+    let postid = document.getElementById("post-modal").dataset.postid;
+    $.get("/posts/" + postid, loadPublication);
 }
 
 function loadRatings(data) {
@@ -110,7 +112,7 @@ function setRating(target) {
 
     let rat = target.id;
     rat = parseInt(rat.substr(rat.length - 1));
-    let postID = document.getElementById("post-modal-comment-input-field").dataset.postid;
+    let postID = document.getElementById("post-modal").dataset.postid;
 
     data = {score: rat}
     $.post("/posts/" + postID + "/ratings", data, () =>  drawRating(rat) );
@@ -124,7 +126,6 @@ document.addEventListener("click", e => {
 
     if (pageMask.style.display !== "none" && !e.target.closest(".modal-click-box"))
         document.getElementById("page-mask").style.display = "none";
-
 
 })
 
