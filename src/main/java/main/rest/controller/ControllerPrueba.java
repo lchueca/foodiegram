@@ -146,10 +146,11 @@ public class ControllerPrueba {
 
             response.addCookie(cookieR);
 
-            String loginToken = logoutTokenGenerator.getToken(user.getUsername());
+            String loginToken = logoutTokenGenerator.getToken(user.getUsername(), 300);
 
             Cookie loggedInCookie = new Cookie("loggedIn", loginToken);
             loggedInCookie.setPath("/");
+            loggedInCookie.setMaxAge(18000);
 
             response.addCookie(loggedInCookie);
 
