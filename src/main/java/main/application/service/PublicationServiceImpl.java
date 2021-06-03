@@ -1,10 +1,8 @@
 package main.application.service;
 
 import main.domain.converter.ComentarioConverter;
-import main.domain.converter.ComentarioJOINUserConverter;
 import main.domain.converter.PublicacionConverter;
 import main.domain.converter.ValoracionConverter;
-import main.domain.resource.ComentarioJOINUserResource;
 import main.domain.resource.ComentarioResource;
 import main.domain.resource.PublicacionResource;
 import main.domain.resource.ValoracionResource;
@@ -38,8 +36,6 @@ PublicationServiceImpl implements PublicationService {
 
     private final ComentarioConverter converterCom = new ComentarioConverter();
 
-    private final ComentarioJOINUserConverter converterJoin = new ComentarioJOINUserConverter();
-
     private final Pattern imagePattern = Pattern.compile(".+\\.(png|jpg|jpeg)$", Pattern.CASE_INSENSITIVE);
 
     @Autowired
@@ -50,9 +46,6 @@ PublicationServiceImpl implements PublicationService {
 
     @Autowired
     private RepoComentario repoComen;
-
-    @Autowired
-    private RepoComentarioJOINUser repoJoin;
 
     @Autowired
     private RepoUsuario repoUsuario;
@@ -213,7 +206,7 @@ PublicationServiceImpl implements PublicationService {
     }
 
     @Override
-    public List<ComentarioJOINUserResource> getComments(Integer pubID) {
+    public List<ComentarioResource> getComments(Integer pubID) {
 
         Publicacion pub = repoPubli.findOne(pubID);
 
@@ -222,8 +215,8 @@ PublicationServiceImpl implements PublicationService {
 
         else {
 
-            List<ComentarioJOINUser> comentarios = repoJoin.findByIdpubliOrderByIdAsc(pubID);
-            return comentarios.stream().map(converterJoin::convert).collect(Collectors.toList());
+            List<Comentario> comentarios = repoComen.findByIdpubliOrderByIdAsc(pubID);
+            return comentarios.stream().map(converterCom::convert).collect(Collectors.toList());
         }
 
     }
@@ -235,7 +228,7 @@ PublicationServiceImpl implements PublicationService {
             throw new IllegalArgumentException("Text must be not null");
 
 
-        Comentario comment = new Comentario(form.getPubID(), form.getUserID(), form.getText());
+        Comentario comment = new Comentario(form.getPubID(), repoUsuario.findOne(form.getUserID()), form.getText());
         repoComen.save(comment);
         return converterCom.convert(comment);
 

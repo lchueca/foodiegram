@@ -28,7 +28,7 @@ public class ViewImagesImpl implements  ViewImages{
     @Override
     public List<PreviewPublicacion> viewPost(Integer idUser) {
 
-        Usuario user = repoUser.findById(idUser);
+        Usuario user = repoUser.findOne(idUser);
 
         if(user == null) //comprobamos que existe el usuario con idUser
             return null;

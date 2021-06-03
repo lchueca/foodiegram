@@ -2,15 +2,12 @@ package main.rest.controller;
 
 
 import main.application.service.PublicationService;
-import main.domain.converter.ComentarioJOINUserConverter;
-import main.domain.resource.ComentarioJOINUserResource;
 import main.domain.resource.ComentarioResource;
 import main.domain.resource.PublicacionResource;
 import main.domain.resource.ValoracionResource;
 import main.rest.forms.CommentForm;
 import main.rest.forms.PostForm;
 import main.rest.forms.RatingForm;
-import main.rest.forms.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -145,9 +142,9 @@ public class ControllerPublicacion {
 
 
     @RequestMapping(value="/{pubID}/comments", method=RequestMethod.GET)
-    public ResponseEntity<List<ComentarioJOINUserResource>> getComments(@PathVariable Integer pubID) {
+    public ResponseEntity<List<ComentarioResource>> getComments(@PathVariable Integer pubID) {
 
-        List<ComentarioJOINUserResource> comentarios = service.getComments(pubID);
+        List<ComentarioResource> comentarios = service.getComments(pubID);
         return comentarios != null ? ResponseEntity.ok(comentarios) : ResponseEntity.notFound().build();
 
     }
