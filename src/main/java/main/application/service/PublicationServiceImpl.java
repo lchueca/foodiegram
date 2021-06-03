@@ -228,7 +228,7 @@ PublicationServiceImpl implements PublicationService {
             throw new IllegalArgumentException("Text must be not null");
 
 
-        Comentario comment = new Comentario(form.getPubID(), repoUsuario.findOne(form.getUserID()), form.getText());
+        Comentario comment = new Comentario(form.getPubID(), new Usuario(form.getUserID()), form.getText());
         repoComen.save(comment);
         return converterCom.convert(comment);
 

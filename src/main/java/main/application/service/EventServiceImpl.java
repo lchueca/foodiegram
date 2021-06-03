@@ -13,12 +13,10 @@ import main.rest.forms.EventForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -95,7 +93,7 @@ public class EventServiceImpl implements EventService {
     public EventoResource modify(Integer id,EventForm form) throws IOException, IllegalArgumentException {
 
         // encuentra el evento de id
-        Evento evnt = repoEvent.findById(id);
+        Evento evnt = repoEvent.findOne(id);
         // se supone que siempre se encuentra porque en la seleccion del evento se muestran los existente
         // por lo que no hace falta controlar una excepcion de si es null
 
@@ -131,7 +129,7 @@ public class EventServiceImpl implements EventService {
     //
     // devuelve true si consigue eliminar el evento sino false
     public boolean delete(Integer id) {
-        Evento evnt = repoEvent.findById(id);
+        Evento evnt = repoEvent.findOne(id);
 
         if (evnt != null) {
             repoEvent.delete(evnt);
@@ -143,7 +141,7 @@ public class EventServiceImpl implements EventService {
 
     public MeetupResource joinEvent(Integer userid, Integer eventID){
 
-        Evento event= repoEvent.findById(eventID);
+        Evento event= repoEvent.findOne(eventID);
 
         if(event!= null) {
 
