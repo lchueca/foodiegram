@@ -9,6 +9,4 @@ import java.util.List;
 @Repository
 public interface RepoUsuario_baneado extends JpaRepository<Usuario_baneado, Integer> {
 
-    public Usuario_baneado findById(Integer id);
-    public List<Usuario_baneado> findAll();
 }

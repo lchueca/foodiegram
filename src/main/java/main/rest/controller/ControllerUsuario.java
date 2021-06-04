@@ -142,11 +142,11 @@ public class ControllerUsuario {
             response.addCookie(cookieR);
 
 
-            String loginToken = logoutTokenGenerator.getToken(user.getUsername());
+            String loginToken = logoutTokenGenerator.getToken(user.getUsername(), 300);
 
             Cookie loggedInCookie = new Cookie("loggedIn", loginToken);
-            loggedInCookie.setDomain(domain);
             loggedInCookie.setPath("/");
+            loggedInCookie.setMaxAge(18000);
 
             response.addCookie(loggedInCookie);
 

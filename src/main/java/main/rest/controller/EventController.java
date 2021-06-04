@@ -2,10 +2,12 @@ package main.rest.controller;
 
 import main.application.service.EventService;
 import main.domain.resource.EventoResource;
+import main.domain.resource.MeetupResource;
 import main.rest.forms.EventForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.method.P;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,18 +22,36 @@ public class EventController {
     @Autowired
     private EventService service;
 
+
     // ORGANIZAR EVENTO
     //
     // crea un evento con los datos correspondientes
 
-    @RequestMapping(value="/join", method=RequestMethod.GET)
-    public String joinEvent() {
-        return "TODO";
+    @RequestMapping(value="/join/{id}", method=RequestMethod.POST)
+    public ResponseEntity<?> joinEvent(@PathVariable String id) {
+
+        try{
+            Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+            MeetupResource meet= service.joinEvent(Integer.parseInt(id),userID);
+            return meet != null ? ResponseEntity.ok(meet) : ResponseEntity.notFound().build();
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
+
     }
 
-    @RequestMapping(value="/leave", method=RequestMethod.GET)
-    public String leaveEvent() {
-        return "TODO";
+    @RequestMapping(value="/leave/{id}", method=RequestMethod.DELETE)
+    public ResponseEntity<?> leaveEvent(@PathVariable String id) {
+        try{
+            Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+            MeetupResource meet= service.leaveEvent(Integer.parseInt(id),userID);
+            return meet != null ? ResponseEntity.ok(meet) : ResponseEntity.notFound().build();
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
 

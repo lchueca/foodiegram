@@ -43,7 +43,7 @@ public class ColaboradorServiceImpl implements ColaboradorService {
             Map<String, Object> geoData = restService.getGeoData(form.getLatitud(), form.getLongitud());
             try {
                 country = geoData.get("country").toString();
-                city = geoData.get("locality").toString();
+                city = geoData.get("city").toString();
                 street=geoData.get("street").toString();
             }
 
@@ -59,6 +59,7 @@ public class ColaboradorServiceImpl implements ColaboradorService {
 
         return converterCol.convert(colaborador);
     }
+
 
 
 }

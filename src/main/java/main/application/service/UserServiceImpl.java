@@ -210,7 +210,7 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Usuario no existe");
         }
 
-        Usuario_baneado bannedUser=repoUsuario_baneado.findById(id);
+        Usuario_baneado bannedUser=repoUsuario_baneado.findOne(id);
         repoUsuario_baneado.delete(bannedUser);
         newUser.setEnabled(true);
 

@@ -17,7 +17,7 @@ public class UnsubscribeImpl implements  Unsubscribe{
 
     @Override
     public UsuarioResource unsubscribe(Integer userId) {
-        Usuario user = repoUser.findById(userId);
+        Usuario user = repoUser.findOne(userId);
 
         if(user != null){
 

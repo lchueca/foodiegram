@@ -1,12 +1,9 @@
 package main.application.service;
 
-import main.domain.resource.ComentarioJOINUserResource;
 import main.domain.resource.ComentarioResource;
 import main.domain.resource.PublicacionResource;
 import main.domain.resource.ValoracionResource;
-import main.persistence.entity.Comentario;
 import main.rest.forms.CommentForm;
-import main.rest.forms.MessageForm;
 import main.rest.forms.PostForm;
 import main.rest.forms.RatingForm;
 
@@ -54,7 +51,7 @@ PublicationService {
     // COMENTARIOS
 
     // Devuelve la lista de comentarios de una foto, o null si la publicacion no existe.
-    List<ComentarioJOINUserResource> getComments(Integer pubID);
+    List<ComentarioResource> getComments(Integer pubID);
 
     // Añade o cambia un el comentario de un usuario en una publicacion.
     // Devuelve el mismo comentario tras haberse aplicado el cambio.
