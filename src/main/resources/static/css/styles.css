@@ -154,6 +154,12 @@
     z-index: 3;
 }
 
+#post-modal-send-button:hover {
+
+    color: cornflowerblue;
+}
+
+
 ::-webkit-scrollbar {
     width: 3px;
 
