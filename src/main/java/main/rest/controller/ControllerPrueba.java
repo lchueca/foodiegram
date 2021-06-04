@@ -11,10 +11,7 @@ import main.domain.resource.PreviewPublicacion;
 import main.domain.resource.PublicacionResource;
 import main.domain.resource.UsuarioResource;
 import main.persistence.repository.RepoPublicacion;
-import main.rest.forms.FriendForm;
-import main.rest.forms.PostForm;
-import main.rest.forms.SearchForm;
-import main.rest.forms.UserForm;
+import main.rest.forms.*;
 import main.security.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -269,7 +266,7 @@ public class ControllerPrueba {
         Integer userId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
         List<String> friends = friendsService.getFriends(userId);
 
-        model.addAttribute("userName", "");
+        model.addAttribute("userName", new FriendNameForm());
         model.addAttribute("friendManagement", new FriendForm());
         model.addAttribute("friends", friends);
         return new ModelAndView("friends");
@@ -309,12 +306,23 @@ public class ControllerPrueba {
 
     //---------------------------------------Friends Page---------------------------------------//
     @GetMapping("/friendsPage")
-    ModelAndView friendsPage(@Valid @ModelAttribute("userName") String friend, HttpServletResponse response,Model model){
+    ModelAndView friendsPage(Model model){
 
-        model.addAttribute("userName", friend);
-        model.addAttribute("profilePic", getUserByName(friend).getImage());
-        model.addAttribute("postList", userService.getPosts(getUserByName(friend).getName()));
+        model.addAttribute("userName", "friend");
+        model.addAttribute("profilePic", "https://offloadmedia.feverup.com/madridsecreto.co/wp-content/uploads/2019/06/08103837/shutterstock_1051494194-1.jpg" );
+        model.addAttribute("postList", userService.getPosts(getUserByName("user1").getName()));
 
         return new ModelAndView("friendsPage");
     }
+    /*
+    @GetMapping("/friendsPage")
+    ModelAndView friendsPage(@Valid @ModelAttribute("userName") FriendNameForm friend, HttpServletResponse response,Model model){
+
+        model.addAttribute("userName", friend.getFriendName());
+        model.addAttribute("profilePic", getUserByName(friend.getFriendName()).getImage());
+        model.addAttribute("postList", userService.getPosts(getUserByName(friend.getFriendName()).getName()));
+
+        return new ModelAndView("friendsPage");
+    }
+    */
 }
