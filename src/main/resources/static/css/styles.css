@@ -4,25 +4,27 @@
 }
 
 .user-images {
-    max-width: 1200px;
+    max-width: 101%;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    grid-gap: 12px;
+    justify-items: center;
+    grid-gap: 20px;
 }
 
 .post-card {
     width:200px;
     height:350px;
-    border-style: solid;
     border-radius: 10px;
+    border: none;
 }
 
 .post-card-image {
-    width:200px;
-    height:200px;
+    padding:0;
+    width:100%;
+    height:100%;
     object-fit: cover;
     object-position: 0, 0;
-    transform: translate(-1px, -2px);
+
     border-radius: 10px;
     cursor: pointer;
     -webkit-user-drag: none;
@@ -107,7 +109,7 @@
     max-width: min(75%, 30px);
     max-height: min(75%, 30px);
     border-radius: 50%;
-    transform: translate(35%, 8%)
+    /*transform: translate(35%, 8%)*/
 }
 
 .username {
