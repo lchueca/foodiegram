@@ -10,7 +10,6 @@ public class PreviewPublicacion {
 
     private final Integer id;
     private final String image;
-    private final String fecha;
     private final String media;
     private final String text;
 

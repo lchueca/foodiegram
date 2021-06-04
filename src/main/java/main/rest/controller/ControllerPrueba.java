@@ -306,6 +306,7 @@ public class ControllerPrueba {
     }
 
     //---------------------------------------Friends Page---------------------------------------//
+    /*
     @GetMapping("/friendsPage")
     ModelAndView friendsPage(Model model){
 
@@ -315,15 +316,15 @@ public class ControllerPrueba {
 
         return new ModelAndView("friendsPage");
     }
-    /*
-    @GetMapping("/friendsPage")
-    ModelAndView friendsPage(@Valid @ModelAttribute("userName") FriendNameForm friend, HttpServletResponse response,Model model){
+    */
+    @GetMapping("/friendsPage/{userName}")
+    ModelAndView friendsPage(@PathVariable String userName, HttpServletResponse response,Model model){
 
-        model.addAttribute("userName", friend.getFriendName());
-        model.addAttribute("profilePic", getUserByName(friend.getFriendName()).getImage());
-        model.addAttribute("postList", userService.getPosts(getUserByName(friend.getFriendName()).getName()));
+        model.addAttribute("userName", userName.toString());
+        model.addAttribute("profilePic", getUserByName(userName).getImage());
+        model.addAttribute("postList", userService.getPosts(getUserByName(userName).getName()));
 
         return new ModelAndView("friendsPage");
     }
-    */
+
 }

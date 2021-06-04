@@ -39,10 +39,7 @@
           </tr>
 
           <tr th:each="name : ${friends}">
-            <form th:action="@{/pruebas/friendsPage}" th:object="${userName}" th:href="@{/pruebas/friendsPage}" method="get">
-              <input class="form-control" type="text" hidden="hidden" th:value="${name}" th:field="*{friendName}"/>
-              <th scope="col"><a class="card-title mt-3 text-center" onclick="form.submit()" th:text="${name}"/></th>
-            </form>
+            <th scope="col"><a class="card-title mt-3 text-center" onclick="form.submit()" th:href="@{/pruebas/friendsPage/} + ${name}" th:text="${name}"/></th>
           </tr>
 
         </tbody>
@@ -97,6 +94,7 @@
       })
 
       </script>
+
       </article>
     </div>
   </div>

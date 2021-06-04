@@ -13,6 +13,6 @@ public class PreviewPublicacionConverter implements Converter<Publicacion, Previ
     public PreviewPublicacion convert(Publicacion source) {
 
         DecimalFormat df = new DecimalFormat("#.##");
-        return source != null ? new PreviewPublicacion(source.getId(), source.getImage(), source.getFecha().toString(), df.format(source.getMedia()), source.getText()) : null;
+        return source != null ? new PreviewPublicacion(source.getId(), source.getImage(), df.format(source.getMedia()), source.getText()) : null;
     }
 }
