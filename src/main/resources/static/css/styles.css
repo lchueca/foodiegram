@@ -109,7 +109,6 @@
     max-width: min(75%, 30px);
     max-height: min(75%, 30px);
     border-radius: 50%;
-    /*transform: translate(35%, 8%)*/
 }
 
 .username {
@@ -146,11 +145,13 @@
     height: 100%;
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
 #post-modal-send-button {
-    font-size: 1.5vw;
-    padding-top: 5px;
+    font-size: 180%;
+    cursor: pointer;
+    z-index: 3;
 }
 
 ::-webkit-scrollbar {
