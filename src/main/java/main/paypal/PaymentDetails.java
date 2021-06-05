@@ -1,5 +1,9 @@
 package main.paypal;
 
+import com.paypal.api.payments.Payment;
+
+import java.util.Locale;
+
 public class PaymentDetails {
 
     private String sponsorType;
@@ -17,24 +21,52 @@ public class PaymentDetails {
         this.total = Float.parseFloat(total);
     }
 
+    public PaymentDetails(String type) {
+        this.sponsorType = type;
+
+        switch(type) {
+
+            case "1":
+                this.subtotal = 10;
+                break;
+
+            case "2":
+                this.subtotal = 25;
+                break;
+
+
+            case "3":
+                this.subtotal = 45;
+                break;
+
+            case "4":
+                this.subtotal = 85;
+                break;
+        }
+
+        this.tax = this.subtotal * 0.21f;
+        this.shipping = 0.0f;
+        this.total = this.subtotal + this.tax;
+
+    }
+
     public String getSponsorType() {
 
         return sponsorType;
     }
 
     public String getSubtotal() {
-        return String.format("%.2f", subtotal);
+        return String.format(Locale.ENGLISH, "%.2f", subtotal);
     }
-
     public String getShipping() {
-        return String.format("%.2f", shipping);
+        return String.format(Locale.ENGLISH,"%.2f", shipping);
     }
 
     public String getTax() {
-        return String.format("%.2f", tax);
+        return String.format(Locale.ENGLISH,"%.2f", tax);
     }
 
     public String getTotal() {
-        return String.format("%.2f", total);
+        return String.format(Locale.ENGLISH,"%.2f", total);
     }
 }

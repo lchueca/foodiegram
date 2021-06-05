@@ -1,5 +1,7 @@
 package main.rest.controller;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.paypal.api.payments.PayerInfo;
 import com.paypal.api.payments.Payment;
 import com.paypal.api.payments.ShippingAddress;
@@ -11,10 +13,13 @@ import main.application.service.PaypalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @org.springframework.web.bind.annotation.RestController
 @RequestMapping("/sponsor")
@@ -54,13 +59,8 @@ public class SponsorController {
     @RequestMapping(value="/payment/auth", method = RequestMethod.POST)
     public ResponseEntity<String> authorizePayment(@RequestParam("sponsorType") String sponsorType) throws Exception {
 
-        String shipping = "0.00";
-        String tax = "0.00";
-        String subtotal = "1.00";
-        String total = "1.00";
-
         try {
-            PaymentDetails payment = new PaymentDetails(sponsorType, subtotal, shipping, tax, total);
+            PaymentDetails payment = new PaymentDetails(sponsorType);
             String approvalLink = paypalService.authorizePayment(payment);
 
             return new ResponseEntity<>(approvalLink, HttpStatus.OK);
@@ -74,30 +74,34 @@ public class SponsorController {
     // se encarga de hacer la fase intermedia de mostrar el pago al cliente
     // devuelve datos necesarios para construir la pagina donde se muestra la transaccion
     @RequestMapping(value="/payment/review", method = RequestMethod.GET)
-    public ResponseEntity<?> reviewPayment(@RequestParam("paymentId") String paymentId,
+    public ModelAndView reviewPayment(Model model, @RequestParam("paymentId") String paymentId,
                                            @RequestParam("PayerID") String payerId) throws Exception {
 
-        try {
 
-            Payment payment = paypalService.getPaymentDetails(paymentId);
 
-            PayerInfo payerInfo = payment.getPayer().getPayerInfo();
-            Transaction transaction = payment.getTransactions().get(0);
-            ShippingAddress shippingAddress = transaction.getItemList().getShippingAddress();
+        Payment payment = paypalService.getPaymentDetails(paymentId);
 
-            // se mete informacion en una lista para poder utilizar los datos en clases superiores
-            List<Object> data = new ArrayList<Object>();
-            data.add(paymentId);
-            data.add(payerId);
-            data.add(payerInfo);
-            data.add(transaction);
-            data.add(shippingAddress);
+        PayerInfo payerInfo = payment.getPayer().getPayerInfo();
+        Transaction transaction = payment.getTransactions().get(0);
+        ShippingAddress shippingAddress = transaction.getItemList().getShippingAddress();
 
-            return new ResponseEntity<>(data, HttpStatus.OK);
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-        }
+        // se mete informacion en una lista para poder utilizar los datos en clases superiores
+        Map<String, Object> data = new HashMap<>();
+        data.put("paymentID", paymentId);
+        data.put("payerID", payerId);
+        data.put("payerInfo", payerInfo);
+        data.put("transaction", transaction);
+        data.put("shippingAddres", shippingAddress);
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+
+        model.addAttribute("details", gson.toJson(data));
+        return new ModelAndView("reviewPayment");
+
+
     }
+
 
     // EJECUTA EL PAGO
     //
@@ -105,24 +109,30 @@ public class SponsorController {
     // ejecutarse con exito se encarga de crear/modificar el patrocinio del colaborador
     // devuelve los datos del patrocinio que se ha creado/modificado
     @RequestMapping(value="/payment/execute", method = RequestMethod.POST)
-    public ResponseEntity<?> executePayment(@RequestPart("paymentId") String paymentId,
-                                            @RequestPart("PayerID") String payerId, @RequestPart("id") String id,
-                                            @RequestPart("type") String type, @RequestPart("money") String money) throws Exception {
+    public ResponseEntity<?> executePayment(@RequestParam("paymentID") String paymentId, @RequestParam("payerID") String payerId) throws Exception {
 
-        try {
-            Payment payment = paypalService.executePayment(paymentId, payerId);
-            PatrocinioResource sponsorship = null;
-            // se obtiene el patrocinio actual del colaborador
-            if(sponsorService.getSponsorship(Integer.parseInt(id)) == null) { // se crea el patrocinio
-                sponsorship = sponsorService.obtain(Integer.parseInt(id), Integer.parseInt(type), Float.parseFloat(money));
-            }
-            else { // se modifica el patrocinio
-                sponsorship = sponsorService.modify(Integer.parseInt(id), Integer.parseInt(type), Float.parseFloat(money));
-            }
+        Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+       try {
 
-            return sponsorship != null ? ResponseEntity.ok(sponsorship) : ResponseEntity.notFound().build();
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-        }
+           Payment payment = paypalService.executePayment(paymentId, payerId);
+           PatrocinioResource sponsorship = null;
+
+           // se obtiene el patrocinio actual del colaborador
+           String type = payment.getTransactions().get(0).getItemList().getItems().get(0).getName();
+           String money = payment.getTransactions().get(0).getAmount().getTotal();
+
+           if(sponsorService.getSponsorship(userID) == null)  // se crea el patrocinio
+               sponsorship = sponsorService.obtain(userID, Integer.parseInt(type), Float.parseFloat(money));
+
+           else // se modifica el patrocinio
+               sponsorship = sponsorService.modify(userID, Integer.parseInt(type), Float.parseFloat(money));
+
+
+           return sponsorship != null ? ResponseEntity.ok(sponsorship) : ResponseEntity.notFound().build();
+       }
+
+       catch (Exception ex) {
+           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+       }
     }
 }

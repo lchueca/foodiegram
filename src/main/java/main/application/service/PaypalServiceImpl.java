@@ -67,13 +67,13 @@ public class PaypalServiceImpl implements PaypalService {
     private List<Transaction> getTransactionInformation(PaymentDetails payment) {
 
         Details details = new Details();
-        details.setShipping(payment.getShipping().replace(",", "."));
-        details.setSubtotal(payment.getSubtotal().replace(",", "."));
-        details.setTax(payment.getTax().replace(",", "."));
+        details.setShipping(payment.getShipping());
+        details.setSubtotal(payment.getSubtotal());
+        details.setTax(payment.getTax());
 
         Amount amount = new Amount();
         amount.setCurrency("EUR");
-        amount.setTotal(payment.getTotal().replace(",", "."));
+        amount.setTotal(payment.getTotal());
         amount.setDetails(details);
 
         Transaction transaction = new Transaction();
@@ -85,9 +85,9 @@ public class PaypalServiceImpl implements PaypalService {
 
         Item item = new Item();
         item.setCurrency("EUR");
-        item.setName(payment.getSponsorType().replace(",", "."));
-        item.setPrice(payment.getSubtotal().replace(",", "."));
-        item.setTax(payment.getTax().replace(",", "."));
+        item.setName(payment.getSponsorType());
+        item.setPrice(payment.getSubtotal());
+        item.setTax(payment.getTax());
         item.setQuantity("1");
 
         items.add(item);
