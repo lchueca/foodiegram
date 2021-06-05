@@ -44,7 +44,7 @@ public class SponsorServiceImpl implements SponsorService {
     // pone a true el valor de VIP y mete el dinero aportado
     public void setVIP(Integer id, Float money) {
 
-        Colaborador colab = repoColab.findById(id);
+        Colaborador colab = repoColab.findOne(id);
         colab.setVip(true);
         colab.setMoney(colab.getMoney() + money);
         repoColab.save(colab);

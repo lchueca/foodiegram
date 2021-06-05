@@ -8,7 +8,6 @@ import java.util.List;
 
 @Repository
 public interface RepoEvento extends JpaRepository<Evento, Integer> {
-
-    Evento findById(Integer id);
+    
     List<Evento> findByIdcolab(Integer idcolab);
 }

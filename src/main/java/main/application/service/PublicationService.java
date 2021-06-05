@@ -4,7 +4,6 @@ import main.domain.resource.ComentarioResource;
 import main.domain.resource.PublicacionResource;
 import main.domain.resource.ValoracionResource;
 import main.rest.forms.CommentForm;
-import main.rest.forms.MessageForm;
 import main.rest.forms.PostForm;
 import main.rest.forms.RatingForm;
 

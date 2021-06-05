@@ -18,8 +18,10 @@ public class ComentarioConverter implements Converter<Comentario, ComentarioReso
         ComentarioResource response=new ComentarioResource();
         response.setId(source.getId());
         response.setIdpubli(source.getIdpubli());
-        response.setIduser(source.getIduser());
+        response.setIduser(source.getAutor().getId());
         response.setText(source.getText());
+        response.setPfp(source.getAutor().getImage());
+        response.setUser(source.getAutor().getName());
         return response;
 
     }

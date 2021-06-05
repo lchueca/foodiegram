@@ -18,5 +18,4 @@ public class ColaboradorResource {
     private boolean vip;
     private float money;
 
-
 }
