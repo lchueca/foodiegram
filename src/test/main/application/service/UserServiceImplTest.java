@@ -91,6 +91,7 @@ class UserServiceImplTest {
     List<PreviewPublicacion> ListPrePubliMock;
     RepoPublicacion repoPubliMock;
 
+
     @Test
     void getPostsTestGood() { //X
 
@@ -98,7 +99,7 @@ class UserServiceImplTest {
 
         //DEVUELVE UNA LISTA
         when(usuarioMock == null).thenReturn(false);
-        when(repoPubliMock.findByIduser(usuarioMock.getId())).thenReturn(ListPubliMock);
+        when(repoPubliMock.findByIduserOrderByIdDesc(usuarioMock.getId())).thenReturn(ListPubliMock);
         when(ListPubliMock.stream().map(converterPreviewMock::convert).collect(Collectors.toList())).thenReturn(ListPrePubliMock);
         assertNotNull(ListPrePubliMock);
 
