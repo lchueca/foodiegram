@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>PersonalPage</title>
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"/>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"/>
+
+    <link rel="stylesheet"  href="/css/styles.css"/>
+    <script src="/js/collab.js"></script>
+
+</head>
+<body class="foodiegram-bg">
+
+<div class="container" style="left: 0; right:0; top: 10vh; bottom:0; position: fixed; display: flex;justify-content: center;">
+
+    <div class="card bg-light" style="border-radius: 15px; width: 100%; display: flex; flex-direction: column; align-items: center;">
+
+        <h1 class="card-title mt-3 text-center;">Panel del colaborador</h1>
+
+        <div id="user-restaurant" style="width: 50%; transform: translateY(50px);">
+
+            <table class="table" style="width:100%">
+                <tr>
+                    <th style="border: none;">Origin</th>
+                    <th style="border: none;">Type</th>
+                    <th style="border: none;">Pais</th>
+                    <th style="border: none;">Ciudad</th>
+                    <th style="border: none;">Calle</th>
+                    <th style="border: none;">Money</th>
+                    <th style="border: none;"></th>
+                    <th style="border: none;"></th>
+                </tr>
+
+                <tr>
+                    <td id="restaurant-origin"></td>
+                    <td id="restaurant-type"></td>
+                    <td id="restaurant-pais"></td>
+                    <td id="restaurant-ciudad"></td>
+                    <td id="restaurant-calle"></td>
+                    <td id="restaurant-money"></td>
+                    <td id="updateButtonColumn" style="border: none; display: none;">
+
+                        <button onclick="pay()" style="border: solid 1px; cursor: pointer;"> Pay </button>
+
+                    </td>
+                    <td id="tierSelectColumn" style="border: none; display: none;">
+                        <select name="cars" id="tierSelect">
+                            <option value="invalid">Tier</option>
+                            <option value="1">1 month,  10EUR</option>
+                            <option value="2">3 months, 25EUR</option>
+                            <option value="3">6 months, 45EUR</option>
+                            <option value="4">1 year,   85EUR</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+</body>
+</html>

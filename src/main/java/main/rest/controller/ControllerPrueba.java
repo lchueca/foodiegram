@@ -327,4 +327,10 @@ public class ControllerPrueba {
         return new ModelAndView("friendsPage");
     }
 
+
+    @GetMapping("/collab")
+    ModelAndView myCollab(Model model){
+        return new ModelAndView("collab");
+    }
+
 }

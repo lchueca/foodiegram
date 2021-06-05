@@ -56,8 +56,8 @@ public class PaypalServiceImpl implements PaypalService {
     private RedirectUrls getRedirectURLs() {
 
         RedirectUrls redirectUrls = new RedirectUrls();
-        redirectUrls.setCancelUrl("http://localhost:8080/sponsor/payment/cancel.html");
-        redirectUrls.setReturnUrl("http://localhost:8080/sponsor/payment/review");
+        redirectUrls.setCancelUrl("https://localhost:8080/sponsor/payment/cancel.html");
+        redirectUrls.setReturnUrl("https://localhost:8080/sponsor/payment/review");
 
         return redirectUrls;
     }
@@ -67,13 +67,13 @@ public class PaypalServiceImpl implements PaypalService {
     private List<Transaction> getTransactionInformation(PaymentDetails payment) {
 
         Details details = new Details();
-        details.setShipping(payment.getShipping());
-        details.setSubtotal(payment.getSubtotal());
-        details.setTax(payment.getTax());
+        details.setShipping(payment.getShipping().replace(",", "."));
+        details.setSubtotal(payment.getSubtotal().replace(",", "."));
+        details.setTax(payment.getTax().replace(",", "."));
 
         Amount amount = new Amount();
         amount.setCurrency("EUR");
-        amount.setTotal(payment.getTotal());
+        amount.setTotal(payment.getTotal().replace(",", "."));
         amount.setDetails(details);
 
         Transaction transaction = new Transaction();
@@ -85,9 +85,9 @@ public class PaypalServiceImpl implements PaypalService {
 
         Item item = new Item();
         item.setCurrency("EUR");
-        item.setName(payment.getSponsorType());
-        item.setPrice(payment.getSubtotal());
-        item.setTax(payment.getTax());
+        item.setName(payment.getSponsorType().replace(",", "."));
+        item.setPrice(payment.getSubtotal().replace(",", "."));
+        item.setTax(payment.getTax().replace(",", "."));
         item.setQuantity("1");
 
         items.add(item);

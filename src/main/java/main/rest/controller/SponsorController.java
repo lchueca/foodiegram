@@ -52,9 +52,12 @@ public class SponsorController {
     // devuelve el link a la pagina para que haga login en paypal
     // despues redirige a una pagina para continuar/cancelar el proceso (esto es de paypal)
     @RequestMapping(value="/payment/auth", method = RequestMethod.POST)
-    public ResponseEntity<String> authorizePayment(@RequestPart("sponsorType") String sponsorType, @RequestPart("subtotal") String subtotal,
-                                              @RequestPart("shipping") String shipping, @RequestPart("tax") String tax,
-                                              @RequestPart("total") String total) throws Exception {
+    public ResponseEntity<String> authorizePayment(@RequestParam("sponsorType") String sponsorType) throws Exception {
+
+        String shipping = "0.00";
+        String tax = "0.00";
+        String subtotal = "1.00";
+        String total = "1.00";
 
         try {
             PaymentDetails payment = new PaymentDetails(sponsorType, subtotal, shipping, tax, total);
@@ -67,7 +70,7 @@ public class SponsorController {
     }
 
     // REVISAR EL PAGO
-    //
+    //sy
     // se encarga de hacer la fase intermedia de mostrar el pago al cliente
     // devuelve datos necesarios para construir la pagina donde se muestra la transaccion
     @RequestMapping(value="/payment/review", method = RequestMethod.GET)

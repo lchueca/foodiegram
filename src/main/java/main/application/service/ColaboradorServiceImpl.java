@@ -60,6 +60,10 @@ public class ColaboradorServiceImpl implements ColaboradorService {
         return converterCol.convert(colaborador);
     }
 
+    @Override
+    public ColaboradorResource getCollab(Integer User) {
+        return converterCol.convert(repoColaborador.findOne(User));
+    }
 
 
 }
