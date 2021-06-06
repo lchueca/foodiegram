@@ -28,7 +28,7 @@ public class Mensaje {
     }
 
     @PreRemove
-    private void preventUnauthorizedRemove() throws NoPermissionException {
+    private void preventUnauthorizedRemove() throws ForbiddenException {
 
         Integer deleterId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
 

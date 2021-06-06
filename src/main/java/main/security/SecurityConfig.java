@@ -57,6 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring()
 
                 // Controller usuario
+                .antMatchers("/css/**")
                 .antMatchers("/users/**")
                 .antMatchers("/pruebas")
                 .antMatchers("/pruebas/postLogin")
@@ -66,17 +67,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // Controller publicacion
                 .regexMatchers(HttpMethod.GET, "\\/posts\\/\\w+$")
                 .regexMatchers(HttpMethod.GET, "\\/posts\\/\\w+\\/ratings$")
+                .regexMatchers(HttpMethod.GET, "\\/posts\\/\\w+\\/ratings/\\d+$")
                 .regexMatchers(HttpMethod.GET, "\\/posts\\/\\w+\\/comments$")
 
                 // Controller search
                 .antMatchers("/search/**")
 
                 // Controller event
-                .antMatchers("/event/**")
-
-                // Controller patrocinio
-                .antMatchers("/sponsor/**");
-
+                .antMatchers("/event/**");
 
     }
 

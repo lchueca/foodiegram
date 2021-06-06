@@ -81,7 +81,7 @@ public class ManageFriendsImpl implements ManageFriends{
 
     @Override
     public List<String> getFriends(Integer id){
-        Usuario user = repoUser.findById(id);
+        Usuario user = repoUser.findOne(id);
 
         if(user == null) return null;
         else{
@@ -89,7 +89,7 @@ public class ManageFriendsImpl implements ManageFriends{
             List<String> friendsName = new ArrayList<>();
             for(Amigo friend : friends){
                 if(user.getId() == friend.getIduser1()){
-                    friendsName.add(repoUser.findById(friend.getIduser2()).getName());
+                    friendsName.add(repoUser.findOne(friend.getIduser2()).getName());
                 }
 
             }

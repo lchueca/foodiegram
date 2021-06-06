@@ -7,14 +7,8 @@ import main.domain.resource.ComentarioResource;
 import main.domain.resource.PublicacionResource;
 import main.domain.resource.ValoracionResource;
 import main.persistence.IDs.IDvaloracion;
-import main.persistence.entity.Comentario;
-import main.persistence.entity.Publicacion;
-import main.persistence.entity.Usuario;
-import main.persistence.entity.Valoracion;
-import main.persistence.repository.RepoComentario;
-import main.persistence.repository.RepoPublicacion;
-import main.persistence.repository.RepoUsuario;
-import main.persistence.repository.RepoValoracion;
+import main.persistence.entity.*;
+import main.persistence.repository.*;
 import main.rest.forms.CommentForm;
 import main.rest.forms.PostForm;
 import main.rest.forms.RatingForm;
@@ -115,7 +109,7 @@ PublicationServiceImpl implements PublicationService {
             Map<String, Object> geoData = restService.getGeoData(form.getLatitud(), form.getLongitud());
             try {
                 country = geoData.get("country").toString();
-                city = geoData.get("locality").toString();
+                city = geoData.get("city").toString();
             }
 
             catch (NullPointerException ignored) {
@@ -221,7 +215,7 @@ PublicationServiceImpl implements PublicationService {
 
         else {
 
-            List<Comentario> comentarios = repoComen.findByIdpubli(pubID);
+            List<Comentario> comentarios = repoComen.findByIdpubliOrderByIdAsc(pubID);
             return comentarios.stream().map(converterCom::convert).collect(Collectors.toList());
         }
 
@@ -234,7 +228,7 @@ PublicationServiceImpl implements PublicationService {
             throw new IllegalArgumentException("Text must be not null");
 
 
-        Comentario comment = new Comentario(form.getPubID(), form.getUserID(), form.getText());
+        Comentario comment = new Comentario(form.getPubID(), new Usuario(form.getUserID()), form.getText());
         repoComen.save(comment);
         return converterCom.convert(comment);
 

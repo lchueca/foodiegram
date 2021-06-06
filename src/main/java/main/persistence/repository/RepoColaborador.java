@@ -11,9 +11,5 @@ import java.util.List;
 @Repository
 public interface RepoColaborador extends JpaRepository<Colaborador, Integer> {
 
-    Colaborador findById(Integer id);
-
-
-
 
 }

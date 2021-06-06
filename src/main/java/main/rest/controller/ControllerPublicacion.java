@@ -8,7 +8,6 @@ import main.domain.resource.ValoracionResource;
 import main.rest.forms.CommentForm;
 import main.rest.forms.PostForm;
 import main.rest.forms.RatingForm;
-import main.rest.forms.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -102,11 +101,12 @@ public class ControllerPublicacion {
 
     //setea o updatea la valoracion de un usuario en una publicacion
     @RequestMapping(value="/{pubID}/ratings", method = RequestMethod.POST)
-    public ResponseEntity<?> setRating(RatingForm form){
+    public ResponseEntity<?> setRating(RatingForm form, @PathVariable Integer pubID){
 
         try {
             Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
             form.setUserID(userID);
+            form.setPubID(pubID);
             ValoracionResource valoracion = service.setRating(form);
             return ResponseEntity.ok(valoracion);
         }

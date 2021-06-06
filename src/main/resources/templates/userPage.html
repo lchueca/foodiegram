@@ -2,22 +2,26 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>PersonalPage</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous"/>
-    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
-    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"/>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"/>
+
+    <link rel="stylesheet"  href="/css/styles.css"/>
+    <script src="/js/postClick.js"></script>
+
+
 </head>
-<body style="background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url(https://cdn.discordapp.com/attachments/734750766895595581/848359437122666516/cute-food-icon-doodle-background_57490-171.jpg)">
+<body class="foodiegram-bg">
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-light bg-dark static-top mb-5 shadow">
     <div class="container">
 
         <script>
             function deleteCookies() {
-                document.cookie = "loggedIn=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";;
+                document.cookie = "loggedIn=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
             }
         </script>
 
@@ -85,40 +89,112 @@
 </nav>
 
 <!-- Page Content -->
-<div class="container">
+<div class="container" style="position: relative">
 
-    <div th:if="${postList.empty}">
-        <p class="text-center"> Upload Posts! </p>
-    </div>
+    <div id="page-mask">
+
+            <div id="post-modal">
+
+                <img class="modal-click-box" id="post-modal-image"/>
+
+                <div class="modal-click-box" id="post-modal-right">
+
+                    <div id = "post-modal-details">
+                        <p id="post-modal-text"></p>
+                        <p id="post-modal-ratings"></p>
+                        <p id="post-modal-loc"></p>
+                        <p id="post-modal-date"></p>
+
+                        <div style="width: 50%; height: 20%; bottom: 0; left: 10px; position: absolute" >
+                            <p>
+                                <i onclick="setRating(this)" id="star1" class="bi bi-star" style="cursor: pointer; z-index: 1;"></i>
+                                <i onclick="setRating(this)" id="star2" class="bi bi-star" style="cursor: pointer; z-index: 1;"></i>
+                                <i onclick="setRating(this)" id="star3" class="bi bi-star" style="cursor: pointer; z-index: 1;"></i>
+                                <i onclick="setRating(this)" id="star4" class="bi bi-star" style="cursor: pointer; z-index: 1;"></i>
+                                <i onclick="setRating(this)" id="star5" class="bi bi-star" style="cursor: pointer; z-index: 1;"></i></p>
+                        </div>
+                    </div >
 
 
 
-        <div class="cards" style="max-width: 1200px;display: grid;grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));grid-gap: 12px;">
+                    <div id="post-modal-comments-container">
 
-            <div class="card text-white bg-dark border-dark" th:each="image : ${postList}" style="width:200px;height:350px;border-style: solid solid solid solid;border-radius: 10px;">
-                <img class="card-img-top" th:src="${image.image}"  alt="AN ERROR TOOK PLACE LOADING THE PHOTO" style="width:200px;height:200px;transform: translate(-1px, -2px);border-radius: 10px;"/>
+                        <ul id="post-modal-comments" style="padding-top: 10px;">
 
-                <div class="card-body">
-                    <p class="card-text" th:text="${image.text}"></p>
-                    <div style="position: absolute;bottom: 0;right: 0;">
-                        <p class="card-text"  th:text="${image.media} + '⭐'"></p>
+                        </ul>
+
                     </div>
 
+                    <div id="post-modal-comment-input">
 
+                        <div style="width: 80%; height: 100%;">
+                            <label style="width: 100%; height: 100%">
+                                <input onkeydown="sendComment(event)" id="post-modal-comment-input-field" placeholder="Write something nice." autocomplete="off" style="width: 100%; height: 100%; border: none; padding-left: 10px;"/>
+                            </label>
+                        </div>
+
+                        <div id="post-modal-send-button-container">
+                            <span onclick="sendComment(event)" id="post-modal-send-button" class="bi bi-arrow-right-circle"></span>
+                        </div>
+
+                    </div>
                 </div>
             </div>
 
+    </div>
+
+    <div th:if="${postList.empty}">
+        <p class="text-center text-white"> Upload Posts! </p>
+    </div>
+
+    <div class="cards user-images">
+
+        <div class="card text-white bg-dark border-dark post-card" th:each="image : ${postList}">
+
+            <div style="width: 100%; height: 60%">
+                <img class="card-img-top post-card-image" onclick="onPostClicked(this)" th:src="${image.image}"  alt="AN ERROR TOOK PLACE LOADING THE PHOTO" th:attr="data-postid=${image.id}"/>
+            </div>
+
+
+            <div class="card-body">
+                <p class="card-text" th:text="${image.text}"></p>
+                <div style="position: absolute;bottom: -10px;right: 10px;">
+                    <p>
+                        <i class="card-text"  th:text="${image.media}"></i>
+                        <i class="bi bi-star"></i>
+                    </p>
+                </div>
+
+
+            </div>
         </div>
 
+    </div>
 
 
-<!--        <div class="card" th:each="image : ${postList}">-->
-<!--            <div class="card-img-top" style="width:700px;height:700px;">-->
-<!--                <img class="image-responsive" th:src="${image.image}" alt="AN ERROR TOOK PLACE LOADING THE PHOTO" style="width:700px;height:600px;"/>-->
-<!--                <h5 th:text="${image.text}"/>-->
-<!--                Average Rating <p class="card-text" th:text="${image.media}"/>-->
-<!--            </div>-->
-<!--        </div>-->
+    <template>
+
+        <li class="list-group-item" style=" padding-left: 0; padding-top: 2px; border:none;">
+
+            <div style="width: 100%; display: flex;" >
+
+                <div style="width: 20%; display: flex; justify-content: center">
+<!--                    <img class="comment-pfp" alt="pfp" src="https://new.reactionvrsports.com/wp-content/uploads/2020/11/ACCOUNT.png" />-->
+                    <img class="comment-pfp" alt="pfp" src="https://new.reactionvrsports.com/wp-content/uploads/2020/11/ACCOUNT.png" />
+                </div>
+
+                <div style="width: 90%">
+                    <p></p>
+                </div>
+
+            </div>
+
+        </li>
+    </template>
+
+
+
+
 
 </div>
 </body>

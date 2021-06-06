@@ -36,7 +36,7 @@ public class ManageInfoImpl implements ManageInfo{
     @Override
     public UsuarioResource changeName(Integer idUser, String newName) throws IllegalArgumentException{
 
-        Usuario user = repoUser.findById(idUser);
+        Usuario user = repoUser.findOne(idUser);
 
         if(user == null)
             return null;
@@ -56,7 +56,7 @@ public class ManageInfoImpl implements ManageInfo{
 
     @Override
     public UsuarioResource changePasswd(Integer idUser, String newPasswd) {
-        Usuario user = repoUser.findById(idUser);
+        Usuario user = repoUser.findOne(idUser);
 
         if(user == null)
             return null;
@@ -70,7 +70,7 @@ public class ManageInfoImpl implements ManageInfo{
 
     @Override
     public UsuarioResource changeEmail(Integer idUser, String newMail) {
-        Usuario user = repoUser.findById(idUser);
+        Usuario user = repoUser.findOne(idUser);
 
         if(user == null)
             return null;
@@ -84,7 +84,7 @@ public class ManageInfoImpl implements ManageInfo{
     @Override
     public UsuarioResource changeProfilePicture(Integer idUser, MultipartFile newProfilePic) throws IOException {
 
-        Usuario user = repoUser.findById(idUser);
+        Usuario user = repoUser.findOne(idUser);
 
         if(user == null)
             return null;
