@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
 
 
 import java.util.List;
@@ -132,4 +133,41 @@ class SearchServiceImplTest {
         assertNotNull(publiListByTagMock);
 
     }
+
+    @Mock
+    ResponseEntity<List<PreviewUsuario>> ResponseEntityMock;
+    SearchService serviceMock;
+
+    @Test
+    void getUserListByPubliOk(){ //x
+        when(serviceMock.getUserListByPubli()).thenReturn(PrevUsuarioMock);
+        when(PrevUsuarioMock != null).thenReturn(true);
+        when(ResponseEntity.ok(PrevUsuarioMock)).thenReturn(ResponseEntityMock);
+        assertNotNull(ResponseEntityMock);
+    }
+
+    @Test
+    void getUserListByPubliNull(){ //x
+        when(serviceMock.getUserListByPubli()).thenReturn(PrevUsuarioMock);
+        when(PrevUsuarioMock != null).thenReturn(false);
+        when(ResponseEntity.notFound().build()).thenReturn(null);
+        assertNull(ResponseEntityMock);
+    }
+
+    @Test
+    void getUserListByValOk(){ //ok
+        when(serviceMock.getUserListByVal()).thenReturn(PrevUsuarioMock);
+        when(PrevUsuarioMock != null).thenReturn(true);
+        when(ResponseEntity.ok(PrevUsuarioMock)).thenReturn(ResponseEntityMock);
+        assertNotNull(ResponseEntityMock);
+    }
+
+    @Test
+    void getUserListByValNull(){ //ok
+        when(serviceMock.getUserListByVal()).thenReturn(PrevUsuarioMock);
+        when(PrevUsuarioMock != null).thenReturn(false);
+        when(ResponseEntity.notFound().build()).thenReturn(null);
+        assertNull(ResponseEntityMock);
+    }
+
 }

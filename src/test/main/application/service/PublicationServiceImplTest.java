@@ -86,6 +86,14 @@ class PublicationServiceImplTest {
         assertNotNull(deletePostMock);
     }
 
+    @Test
+    void deletePostNull(){
+        when(repoPubliMock.findOne(117)).thenReturn(publiMock);
+        when(publiMock != null).thenReturn(false);
+        when(converterPubliMock.convert(publiMock)).thenReturn(deletePostMock);
+        assertNull(deletePostMock);
+    }
+
     @Mock
     List<ValoracionResource> getRatingsMock;
     List<Valoracion> valoracionesMock;
@@ -179,7 +187,7 @@ class PublicationServiceImplTest {
         Integer pubID = 123;
         when(repoPubliMock.findOne(pubID)).thenReturn(publiMock);
         when(publiMock == null).thenReturn(false);
-        when(repoComenMock.findByIdpubli(pubID)).thenReturn(comentariosMock);
+        when(repoComenMock.findByIdpubliOrderByIdAsc(pubID)).thenReturn(comentariosMock);
         when(comentariosMock.stream().map(converterComMock::convert).collect(Collectors.toList())).thenReturn(comentarioResourcesMock);
         assertNotNull(comentarioResourcesMock);
 
@@ -203,7 +211,7 @@ class PublicationServiceImplTest {
     @Test
     void setCommentOk() { //X
         when(commentFormMock.getText() == null || commentFormMock.getText().length() == 0).thenReturn(false);
-        when(new Comentario(commentFormMock.getPubID(), commentFormMock.getUserID(), commentFormMock.getText())).thenReturn(comentarioMock);
+        when(new Comentario(commentFormMock.getPubID(), new Usuario(commentFormMock.getUserID()), commentFormMock.getText())).thenReturn(comentarioMock);
         when(converterComMock.convert(comentarioMock)).thenReturn(ComentarioResourceMock);
         assertNotNull(ComentarioResourceMock);
     }
