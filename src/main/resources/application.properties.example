@@ -1,15 +1,44 @@
+domain = localhost
+
 spring.http.multipart.max-file-size = 20MB
 spring.http.multipart.max-request-size = 20MB
 spring.datasource.platform=mysql
 spring.datasource.driverClassName=com.mysql.cj.jdbc.Driver
-spring.datasource.url=jdbc:mysql://localhost:3306/foodiegram?serverTimezone=UTC
+spring.datasource.url=jdbc:mysql://localhost:3306/foodiegram?serverTimezone=Europe/Madrid
 spring.datasource.username=root
 spring.datasource.password=toor
 
 spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQLDialect
 
+positionstack.api.key =
 
-
-apache.address = http://localhost:{port}
-
+apache.address = http://localhost:4555
 apache.rootFolder = images/
+
+spring.mail.protocol=smtp
+spring.mail.host=smtp.gmail.com
+spring.mail.post=587
+spring.mail.username=
+spring.mail.password=
+spring.mail.properties.mail.smtp.auth=true;
+spring.mail.properties.mail.smtp.starttls.enable=true
+
+jwt.auth.secret =
+jwt.refresh.secret =
+jwt.logout.secret =
+
+server.ssl.key-store-type=PKCS12
+server.ssl.key-store=
+server.ssl.key-store-password=
+server.ssl.key-alias=
+
+server.ssl.enabled=true
+
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds=5000
+hystrix.command.default.circuitBreaker.errorThresholdPercentage = 30
+hystrix.command.default.metrics.rollingStats.timeInMilliseconds = 15000
+hystrix.command.default.circuitBreaker.requestVolumeThreshold = 2
+hystrix.command.default.circuitBreaker.sleepWindowInMilliseconds = 30000
+
+paypal.id =
+paypal.secret =

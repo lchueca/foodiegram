@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>LandingPage</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"/>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet"  href="/css/styles.css"/>
+</head>
+
+<body class="foodiegram-bg">
+
+    <div class="container" style="left: 0; right:0; top: 10vh; bottom:0; position: fixed; display: flex;justify-content: center;">
+
+        <form th:action="@{/pruebas/postLogin}" th:object="${userLog}" method="post" style="width: max(35%, 250px)">
+
+            <div class="card bg-light" style="border-radius: 15px; width: 100%; display: flex; flex-direction: column; align-items: center;">
+
+                <h1 style="font-family: 'Papyrus', sans-serif ; font-weight: bold; padding-top: 20px" class="card-title mt-3 text-center;">Foodiegram</h1>
+
+                <article class="card-body mx-auto">
+
+                    <h4 class="card-title mt-3 text-center">Log in</h4><p></p>
+
+                    <div class="form-group input-group">
+                        <input type="text" class="form-control" placeholder="Username" th:field="*{username}"/><p></p>
+                    </div>
+
+                    <div class="form-group input-group">
+                        <input type="password" class="form-control" placeholder="Password" th:field="*{password}"/><p></p>
+                    </div>
+
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-primary btn-block"> log-in </button>
+                    </div>
+
+                </article>
+
+
+                <article class="card-body mx-auto" style="max-width: 400px;">
+                    <h5 class="card-title mt-3 text-center">Don't you have an account?
+                        <h5 class="card-title mt-3 text-center"> <a href="/pruebas/register"> Register </a></h5>
+                    </h5>
+                </article>
+            </div>
+        </form>
+    </div>
+
+    <article class="bg-secondary" style="position: absolute;bottom: 0; width: 100vw;">
+        <div class="card-body text-center">
+            <h5 class="text-white mt-3">Foodiegram, for the real foodies</h5>
+        </div>
+    </article>
+
+</body>
+</html>
