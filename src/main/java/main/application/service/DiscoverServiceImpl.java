@@ -62,9 +62,9 @@ public class DiscoverServiceImpl implements DiscoverService {
     }
 
     @Override
-    public List<PreviewPublicacion> discoverMostRated(String period) {
+    public List<PreviewPublicacion> discoverMostRated(String period, String country, String city) {
 
-        List<Publicacion> publi = repoPublicacion.mostRated(getDayAmount(period));
+        List<Publicacion> publi = repoPublicacion.mostRated(getDayAmount(period),  country, city);
 
         if(publi==null)
             return  null;

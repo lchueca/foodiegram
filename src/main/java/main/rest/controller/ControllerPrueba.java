@@ -4,17 +4,14 @@ package main.rest.controller;
 import main.application.service.PublicationService;
 import main.application.service.UserService;
 import main.application.service.manageAccountService.ManageFriends;
-import main.application.service.manageAccountService.ViewImages;
-import main.domain.converter.PublicacionConverter;
 import main.domain.resource.AmigoResource;
-import main.domain.resource.PreviewPublicacion;
 import main.domain.resource.PublicacionResource;
 import main.domain.resource.UsuarioResource;
-import main.persistence.repository.RepoPublicacion;
 import main.rest.forms.*;
-import main.security.*;
+import main.security.AuthTokenGenerator;
+import main.security.LogoutTokenGenerator;
+import main.security.RefreshTokenGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -28,7 +25,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController

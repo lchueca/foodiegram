@@ -3,7 +3,6 @@ package main.application.service.manageAccountService;
 
 import main.domain.resource.AmigoResource;
 import main.domain.resource.PreviewPublicacion;
-import main.persistence.entity.Amigo;
 
 import java.util.List;
 

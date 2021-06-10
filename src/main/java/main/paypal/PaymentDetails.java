@@ -1,7 +1,5 @@
 package main.paypal;
 
-import com.paypal.api.payments.Payment;
-
 import java.util.Locale;
 
 public class PaymentDetails {

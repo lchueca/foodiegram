@@ -3,7 +3,6 @@ package main.persistence.repository;
 import main.persistence.entity.Publicacion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,7 +25,7 @@ public interface RepoPublicacion extends JpaRepository<Publicacion, Integer> {
              "LIMIT 0,50 "
 
              ,nativeQuery = true)
-     List<Publicacion> mostRated(Integer amount);
+     List<Publicacion> mostRated(Integer amount, String pais, String ciudad);
 
      @Query(value="SELECT publicacion.* " +
              "FROM publicacion JOIN amigo ON amigo.iduser2 = publicacion.iduser " +

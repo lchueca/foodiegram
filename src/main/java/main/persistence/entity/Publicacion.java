@@ -6,7 +6,6 @@ import main.security.ForbiddenException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import javax.naming.NoPermissionException;
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.Calendar;
