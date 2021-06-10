@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Search</title>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="/js/reviewPay.js"></script>
+</head>
+<body>
+
+    <p id="paymentDetails" class="card-title mt-3 text-center" th:text="${details}"></p>
+
+    <div>
+
+        <button style="cursor: pointer;" onclick="volver()">Deny</button>
+        <button style="cursor: pointer;" onclick="aceptar()">Accept</button>
+
+    </div>
+
+
+
+</body>
+</html>

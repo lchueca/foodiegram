@@ -19,13 +19,15 @@ public class LogoutTokenGenerator {
     @Autowired
     private RepoUsuario repo;
 
-    public String getToken(String username) {
+    public String getToken(String username, Integer minutes) {
 
+        minutes *= 60000;
         Usuario user = repo.findByName(username);
-
+        
         return  Jwts.builder()
                 .setSubject(user.getId().toString())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + minutes))
                 .signWith(SignatureAlgorithm.HS512, secretKey.getBytes()).compact();
     }
 }

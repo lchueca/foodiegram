@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
-
 import javax.persistence.Id;
 
 @Entity
@@ -19,7 +18,7 @@ public class Colaborador {
     private String ciudad;
     private String calle;
     private Boolean vip;
-    private Integer money;
+    private float money;
 
     public Colaborador(Integer id,String origin, String type, String pais,String ciudad,String calle) {
         this.id = id;
@@ -29,7 +28,7 @@ public class Colaborador {
         this.ciudad=ciudad;
         this.pais=pais;
         vip=false;
-        money=0;
+        money=0.0f;
 
     }
 

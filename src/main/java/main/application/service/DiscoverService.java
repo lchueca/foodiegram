@@ -1,7 +1,9 @@
 package main.application.service;
 
 
-import main.domain.resource.*;
+import main.domain.resource.PreviewColabJOINUser;
+import main.domain.resource.PreviewPublicacion;
+import main.domain.resource.PreviewUsuario;
 
 import java.util.List;
 
@@ -14,7 +16,7 @@ public interface DiscoverService {
     List<PreviewPublicacion> discoverBestRated(String period, String country, String city) throws IllegalArgumentException;
 
     // Devuelve una lista de Previewpublicaciones con las publicaciones mas valoradas.
-    List<PreviewPublicacion> discoverMostRated(String period) throws IllegalArgumentException;
+    List<PreviewPublicacion> discoverMostRated(String period, String country, String city) throws IllegalArgumentException;
 
 
 

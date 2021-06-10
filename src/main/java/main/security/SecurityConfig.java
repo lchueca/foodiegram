@@ -27,9 +27,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${jwt.logout.secret}")
     private String logoutSecret;
 
-    @Value("${domain}")
-    private String domain;
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
          http.cors().and().csrf().disable();
@@ -57,6 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring()
 
                 // Controller usuario
+                .antMatchers("/css/**")
                 .antMatchers("/users/**")
                 .antMatchers("/pruebas")
                 .antMatchers("/pruebas/postLogin")
@@ -66,17 +64,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // Controller publicacion
                 .regexMatchers(HttpMethod.GET, "\\/posts\\/\\w+$")
                 .regexMatchers(HttpMethod.GET, "\\/posts\\/\\w+\\/ratings$")
+                .regexMatchers(HttpMethod.GET, "\\/posts\\/\\w+\\/ratings/\\d+$")
                 .regexMatchers(HttpMethod.GET, "\\/posts\\/\\w+\\/comments$")
 
                 // Controller search
                 .antMatchers("/search/**")
 
                 // Controller event
-                .antMatchers("/event/**")
-
-                // Controller patrocinio
-                .antMatchers("/sponsor/**");
-
+                .antMatchers("/event/**");
 
     }
 

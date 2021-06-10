@@ -4,20 +4,14 @@ package main.rest.controller;
 import main.application.service.PublicationService;
 import main.application.service.UserService;
 import main.application.service.manageAccountService.ManageFriends;
-import main.application.service.manageAccountService.ViewImages;
-import main.domain.converter.PublicacionConverter;
 import main.domain.resource.AmigoResource;
-import main.domain.resource.PreviewPublicacion;
 import main.domain.resource.PublicacionResource;
 import main.domain.resource.UsuarioResource;
-import main.persistence.repository.RepoPublicacion;
-import main.rest.forms.FriendForm;
-import main.rest.forms.PostForm;
-import main.rest.forms.SearchForm;
-import main.rest.forms.UserForm;
-import main.security.*;
+import main.rest.forms.*;
+import main.security.AuthTokenGenerator;
+import main.security.LogoutTokenGenerator;
+import main.security.RefreshTokenGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -31,7 +25,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -42,6 +35,9 @@ public class ControllerPrueba {
     private PublicationService postService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private UserService service;
 
     @Autowired
@@ -50,9 +46,6 @@ public class ControllerPrueba {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @Value("${domain}")
-    private String domain;
-
     @Autowired
     private AuthTokenGenerator authTokenGenerator;
 
@@ -60,16 +53,8 @@ public class ControllerPrueba {
     private RefreshTokenGenerator refreshTokenGenerator;
 
     @Autowired
-    private ViewImages viewImages;
-
-    @Autowired
-    private RepoPublicacion repoPubli;
-
-    @Autowired
     private LogoutTokenGenerator logoutTokenGenerator;
 
-    private Model model;
-    private final PublicacionConverter converterPubli = new PublicacionConverter();
 
 
     //devuelve un id de usuario dado un nombre
@@ -79,17 +64,7 @@ public class ControllerPrueba {
         return usuario;
     }
 
-    //Devuelve la lista de publicaciones de un usuario dado su id
-    public List<PublicacionResource> getPosts(Integer user) {
 
-        List<PreviewPublicacion> publicaciones = viewImages.viewPost(user);
-        List<PublicacionResource> listPosts = new ArrayList<>();
-        for(PreviewPublicacion p : publicaciones){
-            listPosts.add(converterPubli.convert(repoPubli.findOne(p.getId())));
-        }
-
-        return listPosts;
-    }
 
     ////---------------------------------------PROBLEMS---------------------------------------//
 
@@ -164,10 +139,11 @@ public class ControllerPrueba {
 
             response.addCookie(cookieR);
 
-            String loginToken = logoutTokenGenerator.getToken(user.getUsername());
+            String loginToken = logoutTokenGenerator.getToken(user.getUsername(), 300);
 
             Cookie loggedInCookie = new Cookie("loggedIn", loginToken);
             loggedInCookie.setPath("/");
+            loggedInCookie.setMaxAge(18000);
 
             response.addCookie(loggedInCookie);
 
@@ -226,10 +202,10 @@ public class ControllerPrueba {
 
     @GetMapping("/me")
     ModelAndView personalPage(Model model){
-        Integer userId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+        String user = SecurityContextHolder.getContext().getAuthentication().getDetails().toString();
 
         model.addAttribute("search" , new SearchForm());
-        model.addAttribute("postList", getPosts(userId));
+        model.addAttribute("postList", userService.getPosts(user));
 
         return new ModelAndView("userPage");
     }
@@ -287,6 +263,7 @@ public class ControllerPrueba {
         Integer userId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
         List<String> friends = friendsService.getFriends(userId);
 
+        model.addAttribute("userName", new FriendNameForm());
         model.addAttribute("friendManagement", new FriendForm());
         model.addAttribute("friends", friends);
         return new ModelAndView("friends");
@@ -325,14 +302,31 @@ public class ControllerPrueba {
     }
 
     //---------------------------------------Friends Page---------------------------------------//
+    /*
     @GetMapping("/friendsPage")
     ModelAndView friendsPage(Model model){
 
-
-        model.addAttribute("userName", "user1");
-        model.addAttribute("profilePic", getUserByName("user1").getImage());
-        model.addAttribute("postList", getPosts(getUserByName("user1").getId()));
+        model.addAttribute("userName", "friend");
+        model.addAttribute("profilePic", "https://offloadmedia.feverup.com/madridsecreto.co/wp-content/uploads/2019/06/08103837/shutterstock_1051494194-1.jpg" );
+        model.addAttribute("postList", userService.getPosts(getUserByName("user1").getName()));
 
         return new ModelAndView("friendsPage");
     }
+    */
+    @GetMapping("/friendsPage/{userName}")
+    ModelAndView friendsPage(@PathVariable String userName, HttpServletResponse response,Model model){
+
+        model.addAttribute("userName", userName.toString());
+        model.addAttribute("profilePic", getUserByName(userName).getImage());
+        model.addAttribute("postList", userService.getPosts(getUserByName(userName).getName()));
+
+        return new ModelAndView("friendsPage");
+    }
+
+
+    @GetMapping("/collab")
+    ModelAndView myCollab(Model model){
+        return new ModelAndView("collab");
+    }
+
 }

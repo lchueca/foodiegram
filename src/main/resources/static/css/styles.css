@@ -1,0 +1,178 @@
+.foodiegram-bg {
+    height: 100vh;
+    background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url(https://cdn.discordapp.com/attachments/734750766895595581/848359437122666516/cute-food-icon-doodle-background_57490-171.jpg);
+}
+
+.user-images {
+    max-width: 101%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    justify-items: center;
+    grid-gap: 20px;
+}
+
+.post-card {
+    width:200px;
+    height:350px;
+    border-radius: 10px;
+    border: none;
+}
+
+.post-card-image {
+    padding:0;
+    width:100%;
+    height:100%;
+    object-fit: cover;
+    object-position: 0, 0;
+
+    border-radius: 10px;
+    cursor: pointer;
+    -webkit-user-drag: none;
+    user-select: none;
+    z-index: 1;
+}
+
+#post-modal {
+    position: absolute;
+    width: 100%;
+    height: 50%;
+    top: 20%;
+    display:flex;
+    justify-content: center;
+}
+
+#post-modal-image {
+    max-width: 70%;
+    max-height: 100%;
+}
+
+#post-modal-details {
+    width: 100%;
+    height:25%;
+    position: relative;
+    border-bottom: 1px solid lightgray;
+}
+
+#post-modal-right {
+    width: 15%;
+    background-color: rgb(255,255,255);
+    border-left: 1px solid lightgray;
+    min-width: 230px;
+}
+
+
+#post-modal-text {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-family: Arial,serif;
+}
+
+#post-modal-ratings {
+    position: absolute;
+    bottom: 3px;
+    left: 10px;
+    font-family: Arial,serif;
+}
+
+#post-modal-date {
+    position: absolute;
+    bottom: -15px;
+    right: 10px;
+    font-family: Arial,serif;
+    font-size: smaller;
+}
+
+#post-modal-loc {
+    position: absolute;
+    bottom: 0;
+    right: 10px;
+    font-family: Arial,serif;
+    font-size: smaller;
+}
+
+#post-modal-comments-container {
+    width: 100%;
+    height:65%;
+}
+
+#post-modal-comments {
+    list-style: none;
+    padding:0;
+    overflow-y: scroll;
+    width: 100%;
+    height: 100%;
+}
+
+.comment-pfp {
+
+    max-width: min(75%, 30px);
+    max-height: min(75%, 30px);
+    border-radius: 50%;
+}
+
+.username {
+    color: black;
+}
+
+.comment {
+    color: gray;
+}
+
+#post-modal-comment-input {
+    width: 100%;
+    height:10%;
+    display: flex;
+    border-top: lightgray 1px solid;
+}
+
+#page-mask {
+    background: rgba(0, 0, 0, 0.85);
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+
+    display: none;
+    justify-content: center;
+
+}
+
+#post-modal-send-button-container {
+    width: 20%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#post-modal-send-button {
+    font-size: 180%;
+    cursor: pointer;
+    z-index: 3;
+}
+
+#post-modal-send-button:hover {
+
+    color: cornflowerblue;
+}
+
+
+::-webkit-scrollbar {
+    width: 3px;
+
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

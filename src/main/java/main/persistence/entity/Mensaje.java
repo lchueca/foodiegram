@@ -6,7 +6,6 @@ import main.security.ForbiddenException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import javax.naming.NoPermissionException;
 import javax.persistence.*;
 import java.util.Collection;
 
@@ -28,7 +27,7 @@ public class Mensaje {
     }
 
     @PreRemove
-    private void preventUnauthorizedRemove() throws NoPermissionException {
+    private void preventUnauthorizedRemove() throws ForbiddenException {
 
         Integer deleterId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
 

@@ -12,7 +12,6 @@ import main.rest.forms.CollaborateForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -43,7 +42,7 @@ public class ColaboradorServiceImpl implements ColaboradorService {
             Map<String, Object> geoData = restService.getGeoData(form.getLatitud(), form.getLongitud());
             try {
                 country = geoData.get("country").toString();
-                city = geoData.get("locality").toString();
+                city = geoData.get("city").toString();
                 street=geoData.get("street").toString();
             }
 
@@ -58,6 +57,11 @@ public class ColaboradorServiceImpl implements ColaboradorService {
         repoColaborador.save(colaborador);
 
         return converterCol.convert(colaborador);
+    }
+
+    @Override
+    public ColaboradorResource getCollab(Integer User) {
+        return converterCol.convert(repoColaborador.findOne(User));
     }
 
 

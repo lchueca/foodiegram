@@ -6,7 +6,6 @@ import main.security.ForbiddenException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import javax.naming.NoPermissionException;
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.Calendar;
@@ -53,7 +52,7 @@ public class Publicacion {
 
     @PreRemove
     @PreUpdate
-    private void preventUnauthorizedRemove() throws NoPermissionException {
+    private void preventUnauthorizedRemove() throws ForbiddenException {
 
         Integer deleterId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
         Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();

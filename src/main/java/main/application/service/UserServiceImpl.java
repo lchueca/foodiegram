@@ -75,8 +75,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-
-
     @Override
     public List<ValoracionResource> getRatings(String user) {
 
@@ -131,7 +129,7 @@ public class UserServiceImpl implements UserService {
 
 
             // Se envia el email de confirmacion
-            String mensaje="Enlace de verificación: " + "http://" + domain + ":8080/users/verify/" + token;
+            String mensaje="Enlace de verificación: " + "https://" + domain + ":8080/users/verify/" + token;
             String topic="Confirmación de correo electrónico en foodiegram.";
             sendEmailService.sendEmails(user.getEmail(), mensaje, topic);
 
@@ -212,7 +210,7 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Usuario no existe");
         }
 
-        Usuario_baneado bannedUser=repoUsuario_baneado.findById(id);
+        Usuario_baneado bannedUser=repoUsuario_baneado.findOne(id);
         repoUsuario_baneado.delete(bannedUser);
         newUser.setEnabled(true);
 
