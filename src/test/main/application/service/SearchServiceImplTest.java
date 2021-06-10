@@ -134,40 +134,45 @@ class SearchServiceImplTest {
 
     }
 
-    @Mock
-    ResponseEntity<List<PreviewUsuario>> ResponseEntityMock;
-    SearchService serviceMock;
+
+    //@Mock estan por arriba
 
     @Test
     void getUserListByPubliOk(){ //x
-        when(serviceMock.getUserListByPubli()).thenReturn(PrevUsuarioMock);
-        when(PrevUsuarioMock != null).thenReturn(true);
-        when(ResponseEntity.ok(PrevUsuarioMock)).thenReturn(ResponseEntityMock);
-        assertNotNull(ResponseEntityMock);
+
+        when(repoUserMock.findByPopuPubli()).thenReturn(userListMock);
+        when(userListMock.stream().map(converterPrevUsuarioMock::convert).collect(Collectors.toList())).thenReturn(PrevUsuarioMock);
+        assertNotNull(PrevUsuarioMock);
+
     }
 
     @Test
     void getUserListByPubliNull(){ //x
-        when(serviceMock.getUserListByPubli()).thenReturn(PrevUsuarioMock);
-        when(PrevUsuarioMock != null).thenReturn(false);
-        when(ResponseEntity.notFound().build()).thenReturn(null);
-        assertNull(ResponseEntityMock);
+
+        PrevUsuarioMock = null;
+
+        when(repoUserMock.findByPopuPubli()).thenReturn(userListMock);
+        when(userListMock.stream().map(converterPrevUsuarioMock::convert).collect(Collectors.toList())).thenReturn(PrevUsuarioMock);
+        assertNull(PrevUsuarioMock);
+
     }
 
     @Test
     void getUserListByValOk(){ //ok
-        when(serviceMock.getUserListByVal()).thenReturn(PrevUsuarioMock);
-        when(PrevUsuarioMock != null).thenReturn(true);
-        when(ResponseEntity.ok(PrevUsuarioMock)).thenReturn(ResponseEntityMock);
-        assertNotNull(ResponseEntityMock);
+
+        when(repoUserMock.findByPopuVal()).thenReturn(userListMock);
+        when(userListMock.stream().map(converterPrevUsuarioMock::convert).collect(Collectors.toList())).thenReturn(PrevUsuarioMock);
+        assertNotNull(PrevUsuarioMock);
+
     }
 
     @Test
     void getUserListByValNull(){ //ok
-        when(serviceMock.getUserListByVal()).thenReturn(PrevUsuarioMock);
-        when(PrevUsuarioMock != null).thenReturn(false);
-        when(ResponseEntity.notFound().build()).thenReturn(null);
-        assertNull(ResponseEntityMock);
+
+        when(repoUserMock.findByPopuVal()).thenReturn(userListMock);
+        when(userListMock.stream().map(converterPrevUsuarioMock::convert).collect(Collectors.toList())).thenReturn(PrevUsuarioMock);
+        assertNull(PrevUsuarioMock);
+
     }
 
 }

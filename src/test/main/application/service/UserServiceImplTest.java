@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -331,29 +332,64 @@ class UserServiceImplTest {
      * TEST VERIFY
      */
 
+    @Mock
+    Verifytoken verifytokenMock;
+    Integer tokenMock;
+    RepoVerifytoken repoVerifytokenMock;
+
+
     @Test
     void verifyTestOK(){
+
+        when(repoVerifytokenMock.findByToken(tokenMock)).thenReturn(verifytokenMock);
+        when(verifytokenMock == null).thenReturn(false);
+        when(verifytokenMock.getExpiredate().before(new Date())).thenReturn(false);
+        when(repoUsuarioMock.findByEmail(verifytokenMock.getEmail())).thenReturn(usuarioMock);
+        when(converterUserMock.convert(usuarioMock)).thenReturn(usuarioResourceMock);
+        assertNotNull(usuarioResourceMock);
 
     }
 
     @Test
-    void verifyTestNull(){
+    void verifyTestNullToken(){
+
+        when(repoVerifytokenMock.findByToken(tokenMock)).thenReturn(verifytokenMock);
+        when(verifytokenMock == null).thenReturn(true);
+        assertNull(usuarioResourceMock);
 
     }
 
     @Test
     void verifyTestExpired(){
-
+        when(repoVerifytokenMock.findByToken(tokenMock)).thenReturn(verifytokenMock);
+        when(verifytokenMock == null).thenReturn(false);
+        when(verifytokenMock.getExpiredate().before(new Date())).thenReturn(true);
+        assertNull(usuarioResourceMock);
     }
 
 
     /**
-     * TEST BAN USER
+     * TEST BAN USER  //Tiene el metodo privado Calculate Date
      */
+
+
+    /*
+    @Mock
+    Integer severityMock, maxPenaltyMock;
+    String userMockse, seveMock;
+    Date dateMock;
 
     @Test
     void banUserTestOk(){
 
+        maxPenaltyMock = 5;
+
+        when(repoUsuarioMock.findByName(userMockse)).thenReturn(usuarioMock);
+        when(Integer.parseInt(seveMock)).thenReturn(severityMock);
+        when(severityMock>maxPenaltyMock||severityMock<=0).thenReturn(false);
+        when(this.calculateDate(Severity)).thenReturn(dateMock);
+        when().thenReturn();
+        when().thenReturn();
     }
 
     @Test
@@ -361,27 +397,48 @@ class UserServiceImplTest {
 
     }
 
-    //No se como poner el de exception
+    */
 
 
     /**
      * TEST UNBAN USER
      */
 
+    @Mock
+    Integer idMock;
+    String userMock;
+    Usuario_baneado bannedUserMock;
+    RepoUsuario_baneado repoUsuario_baneadoMock;
+    Usuario_baneadoResource usuario_baneadoResourceMock;
+
+
+
     @Test
     void unbanUserTestOk(){ //Devuelve un NULL
 
+        try{
+            when(repoUsuarioMock.findByName(userMock)).thenReturn(usuarioMock);
+            when(usuarioMock.getId()).thenReturn(idMock);
+        }catch (Exception e){ //Si salta la exception la coge
+            e.printStackTrace();
+        }
+
+        when(repoUsuario_baneadoMock.findOne(idMock)).thenReturn(bannedUserMock);
+        assertNull(usuario_baneadoResourceMock);
+
     }
-
-    //Tiene una exception
-
 
     /**
      * TEST DELETE USER
      */
 
+
+
     @Test
     void deleteUserTestOk(){ //Devuelve NULL
+
+        when(repoUsuarioMock.findByName(userMock)).thenReturn(usuarioMock);
+        assertNull(usuarioResourceMock);
 
     }
 
@@ -389,17 +446,29 @@ class UserServiceImplTest {
      * TEST GET BANNED USER LIST
      */
 
+    @Mock
+    List<Usuario_baneado> listabaneado;
+    List<Usuario_baneadoResource> listUserBanUserMock;
+    Usuario_baneadoConverter userBanConverterMock;
+
+
     @Test
     void getBannedUserListTestOk(){
+
+        when(repoUsuario_baneadoMock.findAll()).thenReturn(listabaneado);
+        when(listabaneado.stream().map(userBanConverterMock::convert).collect(Collectors.toList())).thenReturn(listUserBanUserMock);
+        assertNotNull(listUserBanUserMock);
 
     }
 
     /**
-     * TEST SEND WARNING
+     * TEST SEND WARNING // Tiene un metodo privado get Warning Message
      */
 
+    /*
     @Test
     void sendWarningTestOk(){ //Devuelve Null
 
     }
+    */
 }
