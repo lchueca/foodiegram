@@ -41,7 +41,7 @@ class UserServiceImplTest {
     @Mock
     RepoUsuario repoUsuarioMock;
     UsuarioConverter converterUserMock;
-
+    Usuario usuarioMock;
 
     @Test
     void getUserByNameTestGood() { //X
@@ -55,6 +55,7 @@ class UserServiceImplTest {
         assertEquals("Grogu", usuario.getName());
 
     }
+
 
     @Test
     void getUserByNameTestAMedias(){ //X
@@ -71,10 +72,8 @@ class UserServiceImplTest {
     void getUserByNameTestNull(){ //X
 
         UsuarioResource usuario = new UsuarioResource();
-        usuario.setName("Grogu");
-
-        //DEVUELVE UN NULL
         usuario = null;
+        //DEVUELVE UN NULL
         when(converterUserMock.convert(repoUsuarioMock.findByName("Aslan"))).thenReturn(usuario);
         assertNull(usuario);
     }
@@ -102,6 +101,17 @@ class UserServiceImplTest {
         when(repoPubliMock.findByIduserOrderByIdDesc(usuarioMock.getId())).thenReturn(ListPubliMock);
         when(ListPubliMock.stream().map(converterPreviewMock::convert).collect(Collectors.toList())).thenReturn(ListPrePubliMock);
         assertNotNull(ListPrePubliMock);
+
+    }
+
+    @Test
+    void getPostsTestNull() { //X
+
+        Usuario usuarioMock = Mockito.mock(Usuario.class);
+
+        //DEVUELVE UNA LISTA Null
+        when(usuarioMock == null).thenReturn(true);
+        assertNull(ListPrePubliMock);
 
     }
 
@@ -192,6 +202,16 @@ class UserServiceImplTest {
 
     }
 
+    @Test
+    void getRatingsTestNull() { //X
+
+        Usuario usuarioMock = Mockito.mock(Usuario.class);
+
+        when(repoUsuarioMock.findByName("Xayah")).thenReturn(usuarioMock);
+        when(usuarioMock==null).thenReturn(true);
+        assertNull(valoracionResoMock);
+
+    }
 
 
     /**
@@ -285,7 +305,7 @@ class UserServiceImplTest {
     /**
      * TEST GET MENSAJES
      */
-
+    /*
     @Mock
     List<MensajeResource> mensajeResoMock;
     MensajeConverter mensajeConvMock;
@@ -303,5 +323,83 @@ class UserServiceImplTest {
         assertNotNull(mensajeResoMock);
 
     }
+    */
 
+
+
+    /**
+     * TEST VERIFY
+     */
+
+    @Test
+    void verifyTestOK(){
+
+    }
+
+    @Test
+    void verifyTestNull(){
+
+    }
+
+    @Test
+    void verifyTestExpired(){
+
+    }
+
+
+    /**
+     * TEST BAN USER
+     */
+
+    @Test
+    void banUserTestOk(){
+
+    }
+
+    @Test
+    void banUserTestNull(){
+
+    }
+
+    //No se como poner el de exception
+
+
+    /**
+     * TEST UNBAN USER
+     */
+
+    @Test
+    void unbanUserTestOk(){ //Devuelve un NULL
+
+    }
+
+    //Tiene una exception
+
+
+    /**
+     * TEST DELETE USER
+     */
+
+    @Test
+    void deleteUserTestOk(){ //Devuelve NULL
+
+    }
+
+    /**
+     * TEST GET BANNED USER LIST
+     */
+
+    @Test
+    void getBannedUserListTestOk(){
+
+    }
+
+    /**
+     * TEST SEND WARNING
+     */
+
+    @Test
+    void sendWarningTestOk(){ //Devuelve Null
+
+    }
 }
