@@ -1,20 +1,103 @@
 package main.application.service;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
+
+import main.domain.converter.MensajeConverter;
+import main.domain.resource.MensajeResource;
+import main.persistence.entity.Mensaje;
+import main.persistence.entity.Usuario;
+import main.persistence.repository.RepoMensaje;
+
+
+import main.persistence.repository.RepoUsuario;
+import main.rest.forms.MessageForm;
+import org.junit.jupiter.api.Test;;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+
+@ExtendWith(MockitoExtension.class)
 class MensajeServiceImplTest {
 
+    @Mock
+    MensajeConverter MensConvMock;
+    RepoMensaje repoMensMock;
+    MensajeResource resoMensMock;
+    Integer mensIDMock;
+
     @Test
-    void getMensaje() {
+    void getMensajeOK() { //X
+
+        //DEVUELVE MensajeResource
+        when(MensConvMock.convert((repoMensMock).findOne(mensIDMock))).thenReturn(resoMensMock);
+        assertNotNull(resoMensMock);
     }
 
     @Test
-    void deleteMensaje() {
+    void getMensajeNull(){
+        //DEVUELVE NULL
+        resoMensMock = null;
+        when(MensConvMock.convert((repoMensMock).findOne(mensIDMock))).thenReturn(resoMensMock);
+        assertNull(resoMensMock);
+    }
+
+    @Mock
+    //mensIDMock
+    Mensaje mensMock;
+
+    @Test
+    void deleteMensajeOK() { //
+
+
+        //DEVUELVE MENSAJE
+
+        when(repoMensMock.findOne(mensIDMock)).thenReturn(mensMock);
+        when(mensMock != null).thenReturn(false);
+        //when(repoMensMock.delete().thenReturn();
+        assertNotNull(resoMensMock);
+
     }
 
     @Test
-    void setMensaje() {
+    void deleteMensajeNull(){
+
+        //DEVUELVE NULL
+        mensMock=null;
+        when(mensMock != null).thenReturn(true);
+        when(repoMensMock.findOne(mensIDMock)).thenReturn(mensMock);
+        when(MensConvMock.convert(mensMock)).thenReturn(resoMensMock);
+        assertNull(resoMensMock);
+    }
+
+    @Mock
+    RepoUsuario repoUsuarioMock;
+    Usuario usuarioMock;
+    Usuario usuarioMock2;
+    MessageForm mensajeMock;
+    @Test
+    void setMensajeOK() {
+        //DEVUELVE Mensajeresource
+        when(repoUsuarioMock.findByName(mensajeMock.getReceiver())).thenReturn(usuarioMock);
+        when(repoUsuarioMock.findByName(mensajeMock.getReceiver())).thenReturn(usuarioMock2);
+        when(usuarioMock == null || usuarioMock2 == null).thenReturn(false);
+        when(new Mensaje(usuarioMock.getId(),usuarioMock2.getId(),mensajeMock.getText())).thenReturn(mensMock);
+        when(repoMensMock.save(mensMock)).thenReturn(null);
+        when(MensConvMock.convert(mensMock));
+        assertNotNull(mensMock);
+
+    }
+    @Test
+    void setMensajeNull(){
+        //DEVUELVE NULL
+        usuarioMock2 = null;
+        when(repoUsuarioMock.findByName(mensajeMock.getReceiver())).thenReturn(usuarioMock);
+        when(repoUsuarioMock.findByName(mensajeMock.getReceiver())).thenReturn(usuarioMock2);
+        when(usuarioMock == null || usuarioMock2 == null).thenThrow(new IllegalArgumentException("Both users should exist."));
+        Throwable exception = assertThrows(IllegalArgumentException.class, () -> usuarioMock2.getId());
+        assertNotNull(exception.getMessage());
+
     }
 }
