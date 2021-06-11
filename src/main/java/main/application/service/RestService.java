@@ -32,8 +32,6 @@ public class RestService {
 
         String query = String.format("https://nominatim.openstreetmap.org/reverse?format=json&lat=%s8&lon=%s&accept-language=en", latitude, longitude);
 
-        Map<String, Object> response;
-
         Map<String, Object> data = (Map<String, Object>) getJSON(query).get("address");
 
         if (!data.containsKey("city")) {
@@ -57,22 +55,7 @@ public class RestService {
         return data;
     }
 
-    // Dejo este aqui por si acaso, pero en principio usariamos el de arriba
-    @HystrixCommand(fallbackMethod = "noFunciona")
-    public Map<String, Object> getGeoDataFromPositionStack(Double lat, Double lon) {
-        String latitude = lat.toString().replace(",", ".");
-        String longitude = lon.toString().replace(",", ".");
-
-        String query = String.format("http://api.positionstack.com/v1/reverse?access_key=%s&query=%s,%s&limit=1", apiKey, latitude, longitude);
-
-        List<Map<String, Object>> data = (List<Map<String, Object>>) getJSON(query).get("data");
-        return data.get(0);
-    }
-
-
-
-
-    public Map<String, Object> noFunciona(Double lat, Double lon) {
+    public Map<String, Object> fallback(Double lat, Double lon) {
 
         System.out.println("Could not geoCode from neither sources-");
         return null;
