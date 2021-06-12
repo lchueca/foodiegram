@@ -25,7 +25,7 @@ public class RestService {
         this.gson = new Gson();
     }
 
-    @HystrixCommand(fallbackMethod = "noFunciona")
+    @HystrixCommand(fallbackMethod = "fallback")
     public Map<String, Object> getGeoData(Double lat, Double lon) {
         String latitude = lat.toString().replace(",", ".");
         String longitude = lon.toString().replace(",", ".");
@@ -57,7 +57,7 @@ public class RestService {
 
     public Map<String, Object> fallback(Double lat, Double lon) {
 
-        System.out.println("Could not geoCode from neither sources-");
+        System.out.println("Could not geoCode.");
         return null;
     }
 
