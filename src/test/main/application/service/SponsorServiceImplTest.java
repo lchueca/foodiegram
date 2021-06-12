@@ -1,44 +1,27 @@
 package main.application.service;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-
 
 import main.domain.converter.PatrocinioConverter;
 import main.domain.resource.PatrocinioResource;
+
 import main.persistence.entity.Colaborador;
 import main.persistence.entity.Patrocinio;
 import main.persistence.repository.RepoColaborador;
 import main.persistence.repository.RepoPatrocinio;
 
-
-
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.sql.Date;
 import java.time.LocalDate;
 
+@ExtendWith(MockitoExtension.class)
 
 class SponsorServiceImplTest {
-
-    /*
-    /**
-     * TEST GET NEW DATE OLD SPONSOR
-
-
-    @Test
-    void getNewDateOldSponsor() {
-
-
-    }
-
-    */
-
 
     /**
      * TEST GET SPONSOR SHIP
@@ -52,6 +35,7 @@ class SponsorServiceImplTest {
     Integer idMock;
     Float moneyMock;
     Colaborador colabMock;
+
     @Test
     void getSponsorshipTestOk() {
 
@@ -62,6 +46,7 @@ class SponsorServiceImplTest {
 
     @Test
     void getSponsorshipTestNull() {
+
         patrocinioResourceMock = null;
 
         when(patrocinioConverterMock.convert(repoPatrocinioMock.findById(idMock))).thenReturn(patrocinioResourceMock);
@@ -73,40 +58,16 @@ class SponsorServiceImplTest {
     /**
      * TEST SET VIP
     */
+
     @Test
     void setVIPTest() {
+
         when(repoColaboradorMock.findOne(idMock)).thenReturn(colabMock);
         colabMock.setVip(true);
         colabMock.setMoney(colabMock.getMoney() + moneyMock);
         repoColaboradorMock.save(colabMock);
 
-        //No sabemos que assert poner
     }
-
-
-
-    /**
-     * TEST OBTAIN // Metodo privado get New Date New Sponsor
-     */
-
-    /*
-    @Mock
-    Patrocinio patrocinioMock;
-    Integer typeMock;
-    Float money;
-
-    @Test
-    void obtainTest1() {
-
-        switch(typeMock){
-            case 1:
-                when(new Patrocinio(idMock, Date.valueOf(getNewDateNewSponsor(30)))).thenReturn();
-        }
-
-
-    }
-
-     */
 
     /**
      * TEST MODIFY
@@ -117,10 +78,9 @@ class SponsorServiceImplTest {
     LocalDate dateMock;
     Integer typeMock;
 
-
-
     @Test
     void modify() {
+
         when(repoPatrocinioMock.findById(idMock)).thenReturn(patrocinioMock);
         when(patrocinioMock.getEndtime().toLocalDate()).thenReturn(dateMock);
 

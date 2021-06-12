@@ -1,15 +1,13 @@
 package main.application.service;
 
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-
 import main.domain.converter.ComentarioConverter;
 import main.domain.resource.ComentarioResource;
+
 import main.persistence.entity.Comentario;
 import main.persistence.repository.RepoComentario;
-
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 
 @ExtendWith(MockitoExtension.class)
+
 class ComentarioServiceImplTest {
 
     /**
@@ -31,7 +30,7 @@ class ComentarioServiceImplTest {
     ComentarioResource comentarioResoMock;
 
     @Test
-    void editComentario() { //X
+    void editComentario() {
 
         Comentario commentMock = Mockito.mock(Comentario.class);
         Integer comIdMock = Mockito.mock(Integer.class);
@@ -68,7 +67,7 @@ class ComentarioServiceImplTest {
      */
 
     @Test
-    void deleteComentario() { //X
+    void deleteComentario() {
 
         Comentario commentMocki = Mockito.mock(Comentario.class);
         Integer comIdMock = Mockito.mock(Integer.class);

@@ -3,16 +3,16 @@ package main.application.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-
 import main.domain.converter.MensajeConverter;
 import main.domain.resource.MensajeResource;
+
 import main.persistence.entity.Mensaje;
 import main.persistence.entity.Usuario;
 import main.persistence.repository.RepoMensaje;
-
-
 import main.persistence.repository.RepoUsuario;
+
 import main.rest.forms.MessageForm;
+
 import org.junit.jupiter.api.Test;;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -20,7 +20,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 
 @ExtendWith(MockitoExtension.class)
+
 class MensajeServiceImplTest {
+
+    /**
+     * TEST GET MENSAJE
+     */
 
     @Mock
     MensajeConverter MensConvMock;
@@ -29,7 +34,7 @@ class MensajeServiceImplTest {
     Integer mensIDMock;
 
     @Test
-    void getMensajeOK() { //X
+    void getMensajeOK() {
 
         //DEVUELVE MensajeResource
         when(MensConvMock.convert((repoMensMock).findOne(mensIDMock))).thenReturn(resoMensMock);
@@ -38,25 +43,26 @@ class MensajeServiceImplTest {
 
     @Test
     void getMensajeNull(){
+
         //DEVUELVE NULL
         resoMensMock = null;
         when(MensConvMock.convert((repoMensMock).findOne(mensIDMock))).thenReturn(resoMensMock);
         assertNull(resoMensMock);
     }
 
+    /**
+     * TEST DELETE MENSAJE
+     */
+
     @Mock
-    //mensIDMock
     Mensaje mensMock;
 
     @Test
-    void deleteMensajeOK() { //
-
-
-        //DEVUELVE MENSAJE
+    void deleteMensajeOK() {
 
         when(repoMensMock.findOne(mensIDMock)).thenReturn(mensMock);
         when(mensMock != null).thenReturn(false);
-        //when(repoMensMock.delete().thenReturn();
+
         assertNotNull(resoMensMock);
 
     }
@@ -72,13 +78,19 @@ class MensajeServiceImplTest {
         assertNull(resoMensMock);
     }
 
+    /**
+     * TEST SET MENSAJE
+     */
+
     @Mock
     RepoUsuario repoUsuarioMock;
     Usuario usuarioMock;
     Usuario usuarioMock2;
     MessageForm mensajeMock;
+
     @Test
     void setMensajeOK() {
+
         //DEVUELVE Mensajeresource
         when(repoUsuarioMock.findByName(mensajeMock.getReceiver())).thenReturn(usuarioMock);
         when(repoUsuarioMock.findByName(mensajeMock.getReceiver())).thenReturn(usuarioMock2);
@@ -89,8 +101,10 @@ class MensajeServiceImplTest {
         assertNotNull(mensMock);
 
     }
+
     @Test
     void setMensajeNull(){
+
         //DEVUELVE NULL
         usuarioMock2 = null;
         when(repoUsuarioMock.findByName(mensajeMock.getReceiver())).thenReturn(usuarioMock);
