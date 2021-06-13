@@ -3,13 +3,13 @@ package main.application.service;
 import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.*;
 
-
 import main.domain.converter.PreviewColabJOINUserConverter;
 import main.domain.converter.PreviewPubliJOINUserConverter;
 import main.domain.converter.PreviewUserConverter;
 import main.domain.resource.PreviewColabJOINUser;
 import main.domain.resource.PreviewPubliJOINUser;
 import main.domain.resource.PreviewUsuario;
+
 import main.persistence.entity.ColabJOINUser;
 import main.persistence.entity.PubliJOINUser;
 import main.persistence.entity.Usuario;
@@ -17,19 +17,16 @@ import main.persistence.repository.RepoColabJOINUser;
 import main.persistence.repository.RepoPubliJOINUser;
 import main.persistence.repository.RepoUsuario;
 
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
-
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @ExtendWith(MockitoExtension.class)
+
 class SearchServiceImplTest {
 
     /**
@@ -43,7 +40,7 @@ class SearchServiceImplTest {
     PreviewUserConverter converterPrevUsuarioMock;
 
     @Test
-    void getUserList() { //X
+    void getUserList() {
 
         String userName = "Ahsoka";
         when(repoUserMock.findBynameContainingIgnoreCase(userName)).thenReturn(userListMock);
@@ -51,8 +48,6 @@ class SearchServiceImplTest {
         assertNotNull(PrevUsuarioMock);
 
     }
-
-
 
     /**
      * TEST GET COLAB LIST BY NAME
@@ -65,7 +60,7 @@ class SearchServiceImplTest {
     PreviewColabJOINUserConverter PreviewColabJOINUserConverterMock;
 
     @Test
-    void getColabListByName() { //X
+    void getColabListByName() {
 
         String colabMock = "Mos Eisley";
         when(RepoColabJOINUserMock.findByUsername(colabMock)).thenReturn(colabJuserMock);
@@ -73,8 +68,6 @@ class SearchServiceImplTest {
         assertNotNull(ColabListByNameMock);
 
     }
-
-
 
     /**
      * TEST GET COLAB LIST BY ORIGIN
@@ -84,7 +77,7 @@ class SearchServiceImplTest {
     List<PreviewColabJOINUser> ColabListByOriginMock;
 
     @Test
-    void getColabListByOrigin() { //X
+    void getColabListByOrigin() {
 
         String origin = "Tatooine";
         when(RepoColabJOINUserMock.findByOrigin(origin)).thenReturn(colabJuserMock);
@@ -92,8 +85,6 @@ class SearchServiceImplTest {
         assertNotNull(ColabListByOriginMock);
 
     }
-
-
 
     /**
      * TEST GET COLAB LIST BY TYPE
@@ -103,7 +94,7 @@ class SearchServiceImplTest {
     List<PreviewColabJOINUser> ColabListByTypeMock;
 
     @Test
-    void getColabListByType() { //X
+    void getColabListByType() {
 
         String type = "Veggie";
         when(RepoColabJOINUserMock.findByType(type)).thenReturn(colabJuserMock);
@@ -111,8 +102,6 @@ class SearchServiceImplTest {
         assertNotNull(ColabListByTypeMock);
 
     }
-
-
 
     /**
      * TEST GET PUBLI LIST BY TAG
@@ -125,7 +114,7 @@ class SearchServiceImplTest {
     PreviewPubliJOINUserConverter converterPreviewPubliJUserMock;
 
     @Test
-    void getPubliListByTag(){ //X
+    void getPubliListByTag(){
 
         String tag = "Cheap";
         when(repoPubliJUserMock.findByTag(tag)).thenReturn(publiJuserMock);
@@ -134,11 +123,12 @@ class SearchServiceImplTest {
 
     }
 
-
-    //@Mock estan por arriba
+    /**
+     * TEST GET USERLIST BY PUBLI
+     */
 
     @Test
-    void getUserListByPubliOk(){ //x
+    void getUserListByPubliOk(){
 
         when(repoUserMock.findByPopuPubli()).thenReturn(userListMock);
         when(userListMock.stream().map(converterPrevUsuarioMock::convert).collect(Collectors.toList())).thenReturn(PrevUsuarioMock);
@@ -147,7 +137,7 @@ class SearchServiceImplTest {
     }
 
     @Test
-    void getUserListByPubliNull(){ //x
+    void getUserListByPubliNull(){
 
         PrevUsuarioMock = null;
 
@@ -157,8 +147,12 @@ class SearchServiceImplTest {
 
     }
 
+    /**
+     * TEST GET USER LIST BY VALORATION
+     */
+
     @Test
-    void getUserListByValOk(){ //ok
+    void getUserListByValOk(){
 
         when(repoUserMock.findByPopuVal()).thenReturn(userListMock);
         when(userListMock.stream().map(converterPrevUsuarioMock::convert).collect(Collectors.toList())).thenReturn(PrevUsuarioMock);
@@ -167,7 +161,7 @@ class SearchServiceImplTest {
     }
 
     @Test
-    void getUserListByValNull(){ //ok
+    void getUserListByValNull(){
 
         when(repoUserMock.findByPopuVal()).thenReturn(userListMock);
         when(userListMock.stream().map(converterPrevUsuarioMock::convert).collect(Collectors.toList())).thenReturn(PrevUsuarioMock);

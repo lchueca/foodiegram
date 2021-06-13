@@ -1,5 +1,8 @@
 package main.application.service;
 
+import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+
 import main.domain.converter.ComentarioConverter;
 import main.domain.converter.PublicacionConverter;
 import main.domain.converter.ValoracionConverter;
@@ -20,10 +23,9 @@ import main.persistence.repository.RepoValoracion;
 import main.rest.forms.CommentForm;
 import main.rest.forms.RatingForm;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
+import org.junit.jupiter.api.Assertions;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -31,11 +33,13 @@ import java.util.List;
 import java.lang.*;
 import java.util.stream.Collectors;
 
-import static org.mockito.Mockito.when;
-import static org.junit.jupiter.api.Assertions.*;
-
 @ExtendWith(MockitoExtension.class)
+
 class PublicationServiceImplTest {
+
+    /**
+     * TEST GET POST
+     */
 
     @Mock
     PublicacionResource getPostMock;
@@ -43,17 +47,22 @@ class PublicationServiceImplTest {
     RepoPublicacion repoPubliMock;
 
     @Test
-    void getPost() { //X
+    void getPost() {
+
         when(converterPubliMock.convert(repoPubliMock.findOne(117))).thenReturn(getPostMock);
         assertNotNull(getPostMock);
     }
+
+    /**
+     * TEST EDIT POST
+     */
 
     @Mock
     PublicacionResource editPostMock;
     Publicacion publiMock;
 
     @Test
-    void editPostOk() { //REVISAR
+    void editPostOk() {
 
         String text = "This belongs in a museum";
         String loc = "Piltover";
@@ -69,17 +78,24 @@ class PublicationServiceImplTest {
 
     @Test
     void editPostException(){
+
         String textN = "This belongs in a museum";
         String locN = null;
         when(textN == null || locN == null).thenReturn(true);
         Assertions.assertThrows(IllegalArgumentException.class, () -> { });
 
     }
+
+    /**
+     * TEST DELETE POST
+     */
+
     @Mock
     PublicacionResource deletePostMock;
 
     @Test
-    void deletePost() { //X
+    void deletePost() {
+
         when(repoPubliMock.findOne(117)).thenReturn(publiMock);
         when(publiMock != null).thenReturn(true);
         when(converterPubliMock.convert(publiMock)).thenReturn(deletePostMock);
@@ -88,11 +104,16 @@ class PublicationServiceImplTest {
 
     @Test
     void deletePostNull(){
+
         when(repoPubliMock.findOne(117)).thenReturn(publiMock);
         when(publiMock != null).thenReturn(false);
         when(converterPubliMock.convert(publiMock)).thenReturn(deletePostMock);
         assertNull(deletePostMock);
     }
+
+    /**
+     * TEST GET RATINGS
+     */
 
     @Mock
     List<ValoracionResource> getRatingsMock;
@@ -101,7 +122,8 @@ class PublicationServiceImplTest {
     ValoracionConverter ValoracionConverterMock;
 
     @Test
-    void getRatingsOk() { //X
+    void getRatingsOk() {
+
         when(repoPubliMock.findOne(117)).thenReturn(publiMock);
         when(publiMock == null).thenReturn(false);
         when(repoValoracionMock.findByIdpubli(117)).thenReturn(valoracionesMock);
@@ -110,11 +132,16 @@ class PublicationServiceImplTest {
     }
 
     @Test
-    void getRatingNull(){ //REVISAR
+    void getRatingNull(){
+
         when(repoPubliMock.findOne(117)).thenReturn(publiMock);
         when(publiMock == null).thenReturn(true);
         assertNull(getRatingsMock);
     }
+
+    /**
+     * TEST SET RATINGS
+     */
 
     @Mock
     ValoracionResource valoracionResourceMock;
@@ -123,6 +150,7 @@ class PublicationServiceImplTest {
 
     @Test
     void setRatingOk() {
+
         when(new Valoracion(formMock.getPubID(), formMock.getUserID(), formMock.getScore())).thenReturn(valMock);
         when(ValoracionConverterMock.convert(valMock)).thenReturn(valoracionResourceMock);
         assertNotNull(valoracionResourceMock);
@@ -130,17 +158,23 @@ class PublicationServiceImplTest {
 
     @Test
     void setRatingException(){
+
         when(formMock.getScore() < 0 || formMock.getScore() > 5).thenReturn(true);
         Assertions.assertThrows(IllegalArgumentException.class, () -> { });
 
     }
+
+    /**
+     * TEST GET RATINGS VALORATION
+     */
 
     @Mock
     RepoUsuario repoUsuarioMock;
     Usuario usuarioMock;
 
     @Test
-    void getRatingValOk() { //X
+    void getRatingValOk() {
+
         String user = "Grogu";
         Integer id = 1256;
         when(repoUsuarioMock.findByName(user)).thenReturn(usuarioMock);
@@ -150,7 +184,8 @@ class PublicationServiceImplTest {
     }
 
     @Test
-    void getRatingValNull() { //X
+    void getRatingValNull() {
+
         String user = null;
         Integer id = 1256;
         when(repoUsuarioMock.findByName(user)).thenReturn(usuarioMock);
@@ -159,8 +194,13 @@ class PublicationServiceImplTest {
 
     }
 
+    /**
+     * TEST DELETE RATINGS VALORATION
+     */
+
     @Test
-    void deleteRatingValOk() { //X
+    void deleteRatingValOk() {
+
         when(repoValoracionMock.findOne(new IDvaloracion(formMock.getPubID(), formMock.getUserID()))).thenReturn(valMock);
         when(valMock != null).thenReturn(true);
         when(ValoracionConverterMock.convert(valMock)).thenReturn(valoracionResourceMock);
@@ -168,13 +208,18 @@ class PublicationServiceImplTest {
     }
 
     @Test
-    void deleteRatingValNull(){ //X
+    void deleteRatingValNull(){
+
         when(repoValoracionMock.findOne(new IDvaloracion(formMock.getPubID(), formMock.getUserID()))).thenReturn(valMock);
         when(valMock != null).thenReturn(false);
         when(ValoracionConverterMock.convert(valMock)).thenReturn(valoracionResourceMock);
         assertNull(valoracionResourceMock);
 
     }
+
+    /**
+     * TEST GET COMMENTS
+     */
 
     @Mock
     List<ComentarioResource> comentarioResourcesMock;
@@ -183,7 +228,8 @@ class PublicationServiceImplTest {
     ComentarioConverter converterComMock;
 
     @Test
-    void getCommentsOkiDocky() { //X
+    void getCommentsOk() {
+
         Integer pubID = 123;
         when(repoPubliMock.findOne(pubID)).thenReturn(publiMock);
         when(publiMock == null).thenReturn(false);
@@ -195,7 +241,8 @@ class PublicationServiceImplTest {
     }
 
     @Test
-    void getCommentsNull(){ //X
+    void getCommentsNull(){
+
         Integer pubID = 123;
         when(repoPubliMock.findOne(pubID)).thenReturn(publiMock);
         when(publiMock == null).thenReturn(true);
@@ -203,13 +250,18 @@ class PublicationServiceImplTest {
 
     }
 
+    /**
+     * TEST GET COMMENTS
+     */
+
     @Mock
     ComentarioResource ComentarioResourceMock;
     Comentario comentarioMock;
     CommentForm commentFormMock;
 
     @Test
-    void setCommentOk() { //X
+    void setCommentOk() {
+
         when(commentFormMock.getText() == null || commentFormMock.getText().length() == 0).thenReturn(false);
         when(new Comentario(commentFormMock.getPubID(), new Usuario(commentFormMock.getUserID()), commentFormMock.getText())).thenReturn(comentarioMock);
         when(converterComMock.convert(comentarioMock)).thenReturn(ComentarioResourceMock);
@@ -217,11 +269,13 @@ class PublicationServiceImplTest {
     }
 
     @Test
-    void setCommentNull(){ //X
+    void setCommentNull(){
+
         when(commentFormMock.getText() == null || commentFormMock.getText().length() == 0).thenReturn(true);
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            //String.format("Text must be not null");
         });
 
     }
+
+
 }

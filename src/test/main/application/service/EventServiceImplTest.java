@@ -1,6 +1,5 @@
 package main.application.service;
 
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -19,20 +18,19 @@ import main.rest.forms.EventForm;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.swing.event.ListDataEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@ExtendWith(MockitoExtension.class)
 
 class EventServiceImplTest {
 
@@ -56,10 +54,10 @@ class EventServiceImplTest {
 
     }
 
-
     /**
      * TEST UPLOAD
      */
+
     @Mock
     EventoResource EventoResourceMock;
     Evento EventoMock;
@@ -68,17 +66,20 @@ class EventServiceImplTest {
     EventoConverter converterEventMock;
 
     @Test
-    void uploadNull() { //X
+    void uploadNull() {
+
         when(new Evento(formMock.getIdCollab(), formMock.getText(), formMock.getDate())).thenReturn(EventoMock);
         when(formMock.getImage() != null).thenReturn(false);
         when(converterEventMock.convert(EventoMock)).thenReturn(EventoResourceMock);
         assertNull(EventoResourceMock);
     }
+
     @Mock
     Matcher matcherMock;
 
     @Test
-    void uploadException(){ //X
+    void uploadException(){
+
         when(new Evento(formMock.getIdCollab(), formMock.getText(), formMock.getDate())).thenReturn(EventoMock);
         when(formMock.getImage() != null).thenReturn(true);
         when(imagePatternMock.matcher(formMock.getImage().getOriginalFilename())).thenReturn(matcherMock);
@@ -98,7 +99,7 @@ class EventServiceImplTest {
     String apacheAddressMock;
 
     @Test
-    void uploadTC(){ //X
+    void uploadTC(){
 
         when(new Evento(formMock.getIdCollab(), formMock.getText(), formMock.getDate())).thenReturn(EventoMock);
         when(formMock.getImage() != null).thenReturn(true);
@@ -113,7 +114,7 @@ class EventServiceImplTest {
             when(String.format("%s/events/%s/%s.%s", apacheAddressMock, formMock.getIdCollab(), formMock.getDate(), matcherMock.group(1))).thenReturn(addressMock);
 
         } catch (IOException e) {
-            e.printStackTrace(); //HOLI
+            e.printStackTrace();
         }
         when(converterEventMock.convert(EventoMock)).thenReturn(EventoResourceMock);
         assertNotNull(EventoResourceMock);
@@ -124,9 +125,9 @@ class EventServiceImplTest {
      * TEST MODIFY
      */
 
-
     @Test
-    void modifyText_Image_Date() { //x
+    void modifyText_Image_Date() {
+
         Integer id = Mockito.mock(Integer.class);
         when(repoEventoMock.findOne(id)).thenReturn(EventoMock);
 
@@ -155,7 +156,7 @@ class EventServiceImplTest {
     }
 
     @Test
-    void modifyImage_Date(){ //x
+    void modifyImage_Date(){
 
         Integer id = Mockito.mock(Integer.class);
         when(repoEventoMock.findOne(id)).thenReturn(EventoMock);
@@ -184,7 +185,7 @@ class EventServiceImplTest {
     }
 
     @Test
-    void modifyText_Image() { //x
+    void modifyText_Image() {
         Integer id = Mockito.mock(Integer.class);
         when(repoEventoMock.findOne(id)).thenReturn(EventoMock);
 
@@ -213,7 +214,8 @@ class EventServiceImplTest {
     }
 
     @Test
-    void modifyText_Date() { //x
+    void modifyText_Date() {
+
         Integer id = Mockito.mock(Integer.class);
         when(repoEventoMock.findOne(id)).thenReturn(EventoMock);
 
@@ -229,7 +231,8 @@ class EventServiceImplTest {
     }
 
     @Test
-    void modifyNull() { //x
+    void modifyNull() {
+
         Integer id = Mockito.mock(Integer.class);
         when(repoEventoMock.findOne(id)).thenReturn(EventoMock);
 
@@ -250,8 +253,10 @@ class EventServiceImplTest {
 
     @Mock
     Integer idMock;
+
     @Test
     void deleteOK() {
+
         when(repoEventoMock.findOne(idMock)).thenReturn(EventoMock);
         when(EventoMock != null).thenReturn(true);
         assertTrue(true);
@@ -259,10 +264,15 @@ class EventServiceImplTest {
 
     @Test
     void deleteNull() {
+
         when(repoEventoMock.findOne(idMock)).thenReturn(EventoMock);
         when(EventoMock != null).thenReturn(false);
         assertFalse(false);
     }
+
+    /**
+     * TEST JOIN EVENT
+     */
 
     @Mock
     MeetupResource meetupResourceMock;
@@ -273,7 +283,8 @@ class EventServiceImplTest {
     RepoMeetup repoMeetupMock;
 
     @Test
-    void joinEventOK(){ //x
+    void joinEventOK(){
+
         when(repoEventoMock.findOne(eventIDMock)).thenReturn(EventoMock);
         when(EventoMock!= null).thenReturn(true);
         when(new MeetUp(eventIDMock,useridMock)).thenReturn(meetMock);
@@ -282,14 +293,20 @@ class EventServiceImplTest {
     }
 
     @Test
-    void joinEventNull() { //x
+    void joinEventNull() {
+
         when(repoEventoMock.findOne(eventIDMock)).thenReturn(EventoMock);
         when(EventoMock != null).thenReturn(false);
         assertNull(meetupResourceMock);
     }
 
+    /**
+     * TEST LEAVE EVENT
+     */
+
     @Test
-    void leaveEventOK(){ //x
+    void leaveEventOK(){
+
         when(repoMeetupMock.findOne(new IDmeetUp(eventIDMock,useridMock))).thenReturn(meetMock);
         when(meetMock!= null).thenReturn(true);
         when(converterMeetMock.convert(meetMock)).thenReturn(meetupResourceMock);
@@ -297,7 +314,8 @@ class EventServiceImplTest {
     }
 
     @Test
-    void leaveEventNull(){ //x
+    void leaveEventNull(){
+
         when(repoMeetupMock.findOne(new IDmeetUp(eventIDMock,useridMock))).thenReturn(meetMock);
         when(meetMock!= null).thenReturn(false);
         assertNull(meetupResourceMock);

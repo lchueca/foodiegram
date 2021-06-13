@@ -1,5 +1,8 @@
 package main.application.service;
 
+import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+
 import main.domain.converter.ColaboradorConverter;
 import main.domain.resource.ColaboradorResource;
 
@@ -11,13 +14,17 @@ import main.persistence.repository.RepoUsuario;
 import main.rest.forms.CollaborateForm;
 
 import org.junit.jupiter.api.Test;
-
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+
+
+@ExtendWith(MockitoExtension.class)
 
 class ColaboradorServiceImplTest {
 
@@ -36,8 +43,12 @@ class ColaboradorServiceImplTest {
     Colaborador colaboradorMock;
     RepoColaborador repoColaboradorMock;
 
+    /**
+     * TEST UPGRADE USER
+     */
+
     @Test
-    void upgradeUserOK() { //x
+    void upgradeUserOK() {
         when(repoUsuarioMock.findOne(useridMock)).thenReturn(userMock);
         when(formMock.getLatitud() != null && formMock.getLongitud() != null).thenReturn(true);
         when(restServiceMock.getGeoData(formMock.getLatitud(), formMock.getLongitud())).thenReturn(geoDataMock);
@@ -59,7 +70,7 @@ class ColaboradorServiceImplTest {
     }
 
     @Test
-    void upgradeUserNull() { //x
+    void upgradeUserNull() {
         when(repoUsuarioMock.findOne(useridMock)).thenReturn(userMock);
         when(formMock.getLatitud() != null && formMock.getLongitud() != null).thenReturn(false);
 
@@ -69,11 +80,15 @@ class ColaboradorServiceImplTest {
 
     }
 
+    /**
+     * TEST GET COLLAB
+     */
+
     @Mock
     Integer User;
 
     @Test
-    void getCollab() { //x
+    void getCollab() {
         when(converterColMock.convert(repoColaboradorMock.findOne(User))).thenReturn(ColaboradorResourceMock);
         assertNotNull(ColaboradorResourceMock);
     }

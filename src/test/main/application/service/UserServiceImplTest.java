@@ -1,38 +1,32 @@
 package main.application.service;
 
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
+import main.domain.converter.*;
+import main.domain.resource.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import main.persistence.entity.*;
+import main.persistence.repository.*;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.regex.Pattern;
-import java.util.Properties;
 import java.util.regex.Matcher;
 
-
-import main.domain.converter.*;
-import main.domain.converter.MensajeConverter;
-import main.domain.resource.*;
-import main.persistence.entity.*;
-import main.persistence.repository.*;
-
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.multipart.MultipartFile;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 @ExtendWith(MockitoExtension.class)
+
 class UserServiceImplTest {
 
     /**
@@ -45,7 +39,7 @@ class UserServiceImplTest {
     Usuario usuarioMock;
 
     @Test
-    void getUserByNameTestGood() { //X
+    void getUserByNameTestGood() {
 
         //DEVUELVE UN TIPO USUARIO
         //Creamos un tipo usuario y solo rellenamos lo que nos interesa
@@ -59,7 +53,7 @@ class UserServiceImplTest {
 
 
     @Test
-    void getUserByNameTestAMedias(){ //X
+    void getUserByNameTestAMedias(){
 
         UsuarioResource usuario = new UsuarioResource();
         usuario.setName("Grogu");
@@ -70,7 +64,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void getUserByNameTestNull(){ //X
+    void getUserByNameTestNull(){
 
         UsuarioResource usuario = new UsuarioResource();
         usuario = null;
@@ -78,8 +72,6 @@ class UserServiceImplTest {
         when(converterUserMock.convert(repoUsuarioMock.findByName("Aslan"))).thenReturn(usuario);
         assertNull(usuario);
     }
-
-
 
     /**
     * TEST GET POSTS
@@ -91,9 +83,8 @@ class UserServiceImplTest {
     List<PreviewPublicacion> ListPrePubliMock;
     RepoPublicacion repoPubliMock;
 
-
     @Test
-    void getPostsTestGood() { //X
+    void getPostsTestGood() {
 
         Usuario usuarioMock = Mockito.mock(Usuario.class);
 
@@ -106,7 +97,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void getPostsTestNull() { //X
+    void getPostsTestNull() {
 
         Usuario usuarioMock = Mockito.mock(Usuario.class);
 
@@ -115,69 +106,6 @@ class UserServiceImplTest {
         assertNull(ListPrePubliMock);
 
     }
-
-
-
-    /**
-     * TEST UPLOAD
-     */
-
-    @Mock
-    Publicacion publiMock;
-    PublicacionResource publiResoMock;
-    PublicacionConverter converterPubliMock;
-    Pattern imagePatMock;
-    MultipartFile imageMock;
-    Matcher matchMock;
-
-    /*
-    @Test
-    void uploadTestGood() { //Test X
-
-        Usuario usuarioMock = Mockito.mock(Usuario.class);
-        String apacheMock = Mockito.mock(String.class);
-        String nameMock = Mockito.mock(String.class);
-        String addressMock = Mockito.mock(String.class);
-        File fileMock = Mockito.mock(File.class);
-        FileOutputStream streamMock = Mockito.mock(FileOutputStream.class);
-
-        //DEVUELVE UNA PUBLICACION (Xayah)
-        when(usuarioMock == null).thenReturn(false);
-        when(imagePatMock.matcher(imageMock.getOriginalFilename())).thenReturn(matchMock);
-        when(!matchMock.matches()).thenReturn(false);
-        when(new Publicacion("Un baile conmigo termina con sangre", usuarioMock.getId(), "Jonia")).thenReturn(publiMock);
-        when(repoPubliMock.save(publiMock)).thenReturn(publiMock);
-
-        try {
-            when(new File(apacheMock + "/" + usuarioMock.getId())).thenReturn(fileMock);
-            when(fileMock.getAbsolutePath() + "/" + publiMock.getId() + "." + matchMock.group(1)).thenReturn(nameMock);
-            when(new FileOutputStream(nameMock)).thenReturn(streamMock);
-            when(String.format("%s/%s/%s.%s", apacheMock, usuarioMock.getId(), publiMock.getId(), matchMock.group(1))).thenReturn(addressMock);
-
-        } catch (FileNotFoundException e) {
-
-        }
-
-        when(converterPubliMock.convert(publiMock)).thenReturn(publiResoMock);
-        assertNotNull(publiResoMock);
-
-    }
-
-    @Test
-    void uploadTestException(){ //X
-
-        //EXCEPCION NO SE PUEDE GUARDAR LA IMAGEN
-        Properties properties = Mockito.mock(Properties.class);
-        Usuario usuarioMock = Mockito.mock(Usuario.class);
-
-        when(usuarioMock == null).thenReturn(false);
-        when(imagePatMock.matcher(imageMock.getOriginalFilename())).thenThrow(new IllegalArgumentException("Only jpeg and png images are supported."));
-        Throwable exception = assertThrows(IllegalArgumentException.class, () -> properties.get("Only jpeg and png images are supported."));
-        assertEquals("Only jpeg and png images are supported.",exception.getMessage());
-
-    }
-    */
-
 
     /**
      * TEST GET RATINGS
@@ -189,9 +117,8 @@ class UserServiceImplTest {
     List<Valoracion> valoracionMock;
     List<ValoracionResource> valoracionResoMock;
 
-
     @Test
-    void getRatingsTestGood() { //X
+    void getRatingsTestGood() {
 
         Usuario usuarioMock = Mockito.mock(Usuario.class);
 
@@ -204,7 +131,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void getRatingsTestNull() { //X
+    void getRatingsTestNull() {
 
         Usuario usuarioMock = Mockito.mock(Usuario.class);
 
@@ -214,7 +141,6 @@ class UserServiceImplTest {
 
     }
 
-
     /**
      * TEST REGISTER
      */
@@ -223,7 +149,7 @@ class UserServiceImplTest {
     UsuarioResource usuarioResourceMock;
 
     @Test
-    void registerTestNombreUSuario() { //X
+    void registerTestNombreUSuario() {
 
         Usuario usuarioMock = Mockito.mock(Usuario.class);
 
@@ -235,7 +161,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void registerTestPassword(){ //X
+    void registerTestPassword(){
 
         Usuario usuarioMock = Mockito.mock(Usuario.class);
         when(usuarioMock.getName().length() >= 20).thenReturn(false);
@@ -246,7 +172,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void registerTestMalEmail(){ //X
+    void registerTestMalEmail(){
 
         Usuario usuarioMock = Mockito.mock(Usuario.class);
         when(usuarioMock.getName().length() >= 20).thenReturn(false);
@@ -258,7 +184,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void registerTestEmailRepe(){ //X
+    void registerTestEmailRepe(){
 
         Usuario usuarioMock = Mockito.mock(Usuario.class);
 
@@ -272,7 +198,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void registerTestTodoGood(){ //X
+    void registerTestTodoGood(){
 
         Usuario usuarioMock = Mockito.mock(Usuario.class);
         Usuario newUserMock = Mockito.mock(Usuario.class);
@@ -301,33 +227,6 @@ class UserServiceImplTest {
 
     }
 
-
-
-    /**
-     * TEST GET MENSAJES
-     */
-    /*
-    @Mock
-    List<MensajeResource> mensajeResoMock;
-    MensajeConverter mensajeConvMock;
-    List<Mensaje> mensajesMock;
-    RepoMensaje repoMensMock;
-
-    @Test
-    void getMensajesTestGood() { //X
-
-        Usuario usuarioMock = Mockito.mock(Usuario.class);
-        when(repoUsuarioMock.findByName("Xayah")).thenReturn(usuarioMock);
-        when(usuarioMock == null).thenReturn(false);
-        when(repoMensMock.findByIduser1OrIduser2(usuarioMock.getId(), usuarioMock.getId())).thenReturn(mensajesMock);
-        when(mensajesMock.stream().map(mensajeConvMock::convert).collect(Collectors.toList())).thenReturn(mensajeResoMock);
-        assertNotNull(mensajeResoMock);
-
-    }
-    */
-
-
-
     /**
      * TEST VERIFY
      */
@@ -336,7 +235,6 @@ class UserServiceImplTest {
     Verifytoken verifytokenMock;
     Integer tokenMock;
     RepoVerifytoken repoVerifytokenMock;
-
 
     @Test
     void verifyTestOK(){
@@ -367,39 +265,6 @@ class UserServiceImplTest {
         assertNull(usuarioResourceMock);
     }
 
-
-    /**
-     * TEST BAN USER  //Tiene el metodo privado Calculate Date
-     */
-
-
-    /*
-    @Mock
-    Integer severityMock, maxPenaltyMock;
-    String userMockse, seveMock;
-    Date dateMock;
-
-    @Test
-    void banUserTestOk(){
-
-        maxPenaltyMock = 5;
-
-        when(repoUsuarioMock.findByName(userMockse)).thenReturn(usuarioMock);
-        when(Integer.parseInt(seveMock)).thenReturn(severityMock);
-        when(severityMock>maxPenaltyMock||severityMock<=0).thenReturn(false);
-        when(this.calculateDate(Severity)).thenReturn(dateMock);
-        when().thenReturn();
-        when().thenReturn();
-    }
-
-    @Test
-    void banUserTestNull(){
-
-    }
-
-    */
-
-
     /**
      * TEST UNBAN USER
      */
@@ -411,11 +276,10 @@ class UserServiceImplTest {
     RepoUsuario_baneado repoUsuario_baneadoMock;
     Usuario_baneadoResource usuario_baneadoResourceMock;
 
-
-
     @Test
-    void unbanUserTestOk(){ //Devuelve un NULL
+    void unbanUserTestOk(){
 
+        //Devuelve un NULL
         try{
             when(repoUsuarioMock.findByName(userMock)).thenReturn(usuarioMock);
             when(usuarioMock.getId()).thenReturn(idMock);
@@ -432,11 +296,10 @@ class UserServiceImplTest {
      * TEST DELETE USER
      */
 
-
-
     @Test
-    void deleteUserTestOk(){ //Devuelve NULL
+    void deleteUserTestOk(){
 
+        //Devuelve NULL
         when(repoUsuarioMock.findByName(userMock)).thenReturn(usuarioMock);
         assertNull(usuarioResourceMock);
 
@@ -451,7 +314,6 @@ class UserServiceImplTest {
     List<Usuario_baneadoResource> listUserBanUserMock;
     Usuario_baneadoConverter userBanConverterMock;
 
-
     @Test
     void getBannedUserListTestOk(){
 
@@ -461,14 +323,4 @@ class UserServiceImplTest {
 
     }
 
-    /**
-     * TEST SEND WARNING // Tiene un metodo privado get Warning Message
-     */
-
-    /*
-    @Test
-    void sendWarningTestOk(){ //Devuelve Null
-
-    }
-    */
 }
