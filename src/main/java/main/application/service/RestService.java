@@ -17,9 +17,6 @@ public class RestService {
     RestTemplate template;
     Gson gson;
 
-    @Value("${positionstack.api.key}")
-    private String apiKey;
-
     public RestService() {
 
         this.gson = new Gson();

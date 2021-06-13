@@ -10,8 +10,6 @@ spring.datasource.password=toor
 
 spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQLDialect
 
-positionstack.api.key =
-
 apache.address = http://localhost:4555
 apache.rootFolder = images/
 
