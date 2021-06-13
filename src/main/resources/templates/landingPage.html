@@ -19,20 +19,20 @@
 
         <form th:action="@{/pruebas/postLogin}" th:object="${userLog}" method="post" style="width: max(35%, 250px)">
 
-            <div class="card bg-light" style="border-radius: 15px; width: 100%; display: flex; flex-direction: column; align-items: center;">
+            <div class="card bg-light" style="border-radius: 15px; width: 100%;">
 
-                <h1 style="font-family: 'Papyrus', sans-serif ; font-weight: bold; padding-top: 20px" class="card-title mt-3 text-center;">Foodiegram</h1>
+                <article class="card-body mx-auto"  style="display: flex; flex-direction: column; align-items: center;">
 
-                <article class="card-body mx-auto">
+                    <img src="https://cdn.discordapp.com/attachments/814566690960310335/853582069506113576/image0.png" style="width: 70%; height: 70%" alt="Foodiegram"/>
 
                     <h4 class="card-title mt-3 text-center">Log in</h4><p></p>
 
-                    <div class="form-group input-group">
-                        <input type="text" class="form-control" placeholder="Username" th:field="*{username}"/><p></p>
+                    <div class="form-group input-group" style="width: 60%">
+                        <input type="text" class="form-control" placeholder="Username" th:field="*{username}"/>
                     </div>
 
-                    <div class="form-group input-group">
-                        <input type="password" class="form-control" placeholder="Password" th:field="*{password}"/><p></p>
+                    <div class="form-group input-group" style="width: 60%">
+                        <input type="password" class="form-control" placeholder="Password" th:field="*{password}"/>
                     </div>
 
                     <div class="form-group text-center">
