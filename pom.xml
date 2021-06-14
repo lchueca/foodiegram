@@ -138,7 +138,6 @@
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
->>>>>>> develop
         </dependency>
 
         <dependency>
