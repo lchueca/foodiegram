@@ -8,12 +8,14 @@ import main.persistence.IDs.IDmeetUp;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.Table;
 
 @Entity
 @IdClass(IDmeetUp.class)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name="meetup")
 public class MeetUp {
 
     @Id
