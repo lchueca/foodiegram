@@ -29,7 +29,7 @@ public class EventServiceImpl implements EventService {
 
     private MeetUpConverter converterMeet= new MeetUpConverter();
 
-    private final Pattern imagePattern = Pattern.compile("\\.+.(png|jpg|jpeg)$", Pattern.CASE_INSENSITIVE);
+    private final Pattern imagePattern = Pattern.compile(".+\\.(png|jpg|jpeg)$", Pattern.CASE_INSENSITIVE);
 
     @Autowired
     private RepoEvento repoEvent;
