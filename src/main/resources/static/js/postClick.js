@@ -52,7 +52,7 @@ function onPostClicked(e) {
     // Se llama a /posts/postId/comments para obtener la lista de los comentarios
     $.get("/posts/" + e.dataset.postid + "/comments", loadComments);
 
-    $.get("/posts/" + e.dataset.postid + "/ratings", loadRatings);
+    $.get("/posts/" + e.dataset.postid + "/ratings/me", loadRatings);
 
 }
 
@@ -102,7 +102,7 @@ function drawRating(score) {
 
 function loadRatings(data) {
 
-    drawRating(data[0].punt)
+    drawRating(data.punt)
 
 
 
