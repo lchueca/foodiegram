@@ -15,10 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
@@ -46,10 +43,10 @@ public class SponsorController {
     //
     // devuelve un patrocinio especifico buscado por id de colaborador
     // devuelve null si no existe
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<PatrocinioResource> getSponsorship(@PathVariable String id) {
-
-        PatrocinioResource sponsorship = sponsorService.getSponsorship(Integer.parseInt(id));
+    @GetMapping
+    public ResponseEntity<PatrocinioResource> getSponsorship() {
+        Integer userID = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+        PatrocinioResource sponsorship = sponsorService.getSponsorship(userID);
         return sponsorship != null ? ResponseEntity.ok(sponsorship) : ResponseEntity.notFound().build();
     }
 

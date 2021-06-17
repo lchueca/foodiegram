@@ -14,7 +14,12 @@ function getCollab() {
         document.getElementById("updateButtonColumn").style.display = "table-cell";
 
 
-    })
+    });
+
+    $.get("/sponsor", data => {
+
+        document.getElementById("restaurant-date").innerText = data.endtime;
+    });
 
 }
 
