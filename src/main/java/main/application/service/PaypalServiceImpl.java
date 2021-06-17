@@ -19,6 +19,10 @@ public class PaypalServiceImpl implements PaypalService {
     private String SECRET;
     private final String MODE = "sandbox";
 
+
+    @Value("${domain}")
+    private String domain;
+
     // AUTORIZAR EL PAGO
     //
     // autoriza el pago y devuelve el link de aprobado
@@ -56,8 +60,8 @@ public class PaypalServiceImpl implements PaypalService {
     private RedirectUrls getRedirectURLs() {
 
         RedirectUrls redirectUrls = new RedirectUrls();
-        redirectUrls.setCancelUrl("https://localhost:8080/sponsor/payment/cancel.html");
-        redirectUrls.setReturnUrl("https://localhost:8080/sponsor/payment/review");
+        redirectUrls.setCancelUrl("https://"+ domain+":8080/sponsor/payment/cancel.html");
+        redirectUrls.setReturnUrl("https://"+ domain+":8080/sponsor/payment/review");
 
         return redirectUrls;
     }
