@@ -2,6 +2,7 @@ package main.rest.controller;
 
 
 import main.application.service.PublicationService;
+import main.application.service.SearchService;
 import main.application.service.UserService;
 import main.application.service.manageAccountService.ManageFriends;
 import main.domain.resource.AmigoResource;
@@ -42,6 +43,9 @@ public class ControllerPrueba {
 
     @Autowired
     private ManageFriends friendsService;
+
+    @Autowired
+    private SearchService searchService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -295,9 +299,14 @@ public class ControllerPrueba {
     //---------------------------------------SEARCH---------------------------------------//
 
     @PostMapping("/search")
-    ModelAndView search(@Valid @ModelAttribute("search") SearchForm search, HttpServletResponse response, Model model){
+    ModelAndView search(@Valid @ModelAttribute("search") SearchForm search, HttpServletResponse response, Model model) throws IOException {
+
+        if (search.getText().length() == 0) {
+            response.sendRedirect("/pruebas/problems/4");
+        }
 
         model.addAttribute("search", "searching : " + search.getText());
+        model.addAttribute("userList", searchService.getUserList(search.getText()));
         return new ModelAndView("search");
     }
 
