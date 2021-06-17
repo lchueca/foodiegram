@@ -298,15 +298,15 @@ public class ControllerPrueba {
 
     //---------------------------------------SEARCH---------------------------------------//
 
-    @PostMapping("/search")
-    ModelAndView search(@Valid @ModelAttribute("search") SearchForm search, HttpServletResponse response, Model model) throws IOException {
+    @GetMapping("/search")
+    ModelAndView search(@RequestParam(name = "name") String name, HttpServletResponse response, Model model) throws IOException {
 
-        if (search.getText().length() == 0) {
+        if (name.length() == 0) {
             response.sendRedirect("/pruebas/problems/4");
         }
 
-        model.addAttribute("search", "searching : " + search.getText());
-        model.addAttribute("userList", searchService.getUserList(search.getText()));
+        model.addAttribute("search", "searching : " + name);
+        model.addAttribute("userList", searchService.getUserList(name));
         return new ModelAndView("search");
     }
 

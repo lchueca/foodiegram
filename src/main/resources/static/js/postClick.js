@@ -119,6 +119,10 @@ function setRating(target) {
 
 }
 
+function buscar(t) {
+    let xDD= document.getElementById("searchBar");
+    window.location.href = "/pruebas/search?name=" + xDD.value;
+}
 
 document.addEventListener("click", e => {
 
