@@ -119,12 +119,13 @@ public class ControllerPublicacion {
     }
 
    //devuele si un usuario a valorado una publicacion
-   @RequestMapping(value="/{pubID}/ratings/{user}", method = RequestMethod.GET)
-    public ResponseEntity<ValoracionResource> getRating(@PathVariable String user, @PathVariable Integer pubID){
+   @RequestMapping(value="/{pubID}/ratings/me", method = RequestMethod.GET)
+    public ResponseEntity<ValoracionResource> getRating(@PathVariable Integer pubID){
 
+        String user = SecurityContextHolder.getContext().getAuthentication().getDetails().toString();
         ValoracionResource val=  service.getRating(pubID, user);
 
-       return val != null ? ResponseEntity.ok(val) : ResponseEntity.notFound().build();
+        return val != null ? ResponseEntity.ok(val) : ResponseEntity.notFound().build();
 
     }
 
